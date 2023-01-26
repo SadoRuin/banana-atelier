@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://i8A108.p.ssafy.io:3306/banana?serverTimezone=Asia/Seoul
+    url: jdbc:mariadb://i8A108.p.ssafy.io:3324/banana?serverTimezone=Asia/Seoul
     username: ssafy
     password: dlzmfflqtm
   jpa:
