@@ -16,13 +16,13 @@ public class User {
 	@Column(name = "user_seq", nullable = false)
 	private Long id;
 
-	@Column(name = "email", nullable = false, length = 50)
+	@Column(name = "email", nullable = false, length = 50, unique = true)
 	private String email;
 
 	@Column(name = "password", nullable = false, length = 100)
 	private String password;
 
-	@Column(name = "nickname", nullable = false, length = 12)
+	@Column(name = "nickname", nullable = false, length = 12, unique = true)
 	private String nickname;
 
 	@Column(name = "profile_img", nullable = false, length = 100)
