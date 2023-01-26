@@ -1,4 +1,4 @@
-package com.ssafy.banana.entity;
+package com.ssafy.banana.db.entity;
 
 import java.io.Serializable;
 import java.util.Objects;

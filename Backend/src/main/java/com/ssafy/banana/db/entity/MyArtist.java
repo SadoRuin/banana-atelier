@@ -1,4 +1,4 @@
-package com.ssafy.banana.entity;
+package com.ssafy.banana.db.entity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,26 +9,26 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "my_art")
-public class MyArt {
+@Table(name = "my_artist")
+public class MyArtist {
 	@EmbeddedId
-	private MyArtId id;
+	private MyArtistId id;
 
 	@MapsId("userSeq")
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private User user;
 
-	@MapsId("artSeq")
+	@MapsId("artistSeq")
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "art_seq", nullable = false)
-	private Art art;
+	@JoinColumn(name = "artist_seq", nullable = false)
+	private Artist artist;
 
-	public MyArtId getId() {
+	public MyArtistId getId() {
 		return id;
 	}
 
-	public void setId(MyArtId id) {
+	public void setId(MyArtistId id) {
 		this.id = id;
 	}
 
@@ -40,12 +40,12 @@ public class MyArt {
 		this.user = user;
 	}
 
-	public Art getArt() {
-		return art;
+	public Artist getArtist() {
+		return artist;
 	}
 
-	public void setArt(Art art) {
-		this.art = art;
+	public void setArtist(Artist artist) {
+		this.artist = artist;
 	}
 
 }

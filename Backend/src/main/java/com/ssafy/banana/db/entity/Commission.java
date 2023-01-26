@@ -1,4 +1,4 @@
-package com.ssafy.banana.entity;
+package com.ssafy.banana.db.entity;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.ssafy.banana.entity.enums.CommissionStatus;
+import com.ssafy.banana.db.entity.enums.CommissionStatus;
 
 @Entity
 @Table(name = "commission")

@@ -1,4 +1,4 @@
-package com.ssafy.banana.entity;
+package com.ssafy.banana.db.entity;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.ssafy.banana.entity.enums.AuctionStatus;
+import com.ssafy.banana.db.entity.enums.AuctionStatus;
 
 @Entity
 @Table(name = "auction")

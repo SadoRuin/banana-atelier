@@ -1,4 +1,4 @@
-package com.ssafy.banana.entity;
+package com.ssafy.banana.db.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
