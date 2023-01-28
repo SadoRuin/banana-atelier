@@ -26,8 +26,8 @@ public class Curation {
 	@Column(name = "curation_name", nullable = false, length = 100)
 	private String curationName;
 
-	@Column(name = "curation_summury", length = 1000)
-	private String curationSummury;
+	@Column(name = "curation_summary", length = 1000)
+	private String curationSummary;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_seq", nullable = false)
@@ -65,12 +65,12 @@ public class Curation {
 		this.curationName = curationName;
 	}
 
-	public String getCurationSummury() {
-		return curationSummury;
+	public String getCurationSummary() {
+		return curationSummary;
 	}
 
-	public void setCurationSummury(String curationSummury) {
-		this.curationSummury = curationSummury;
+	public void setCurationSummary(String curationSummary) {
+		this.curationSummary = curationSummary;
 	}
 
 	public Artist getArtist() {

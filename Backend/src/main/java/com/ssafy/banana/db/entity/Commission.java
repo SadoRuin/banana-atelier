@@ -52,7 +52,7 @@ public class Commission {
 	private CommissionStatus commissionStatus;
 
 	@Column(name = "commission_rating", nullable = false)
-	private byte commissionRating;
+	private double commissionRating;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_seq", nullable = false)
@@ -146,11 +146,11 @@ public class Commission {
 		this.commissionStatus = commissionStatus;
 	}
 
-	public byte getCommissionRating() {
+	public double getCommissionRating() {
 		return commissionRating;
 	}
 
-	public void setCommissionRating(byte commissionRating) {
+	public void setCommissionRating(double commissionRating) {
 		this.commissionRating = commissionRating;
 	}
 

@@ -33,6 +33,28 @@ public class Artist {
 	@Column(name = "artist_intro", length = 500)
 	private String artistIntro;
 
+	@Column(name = "youtube_link", length = 100)
+	private String youtubeLink;
+
+	@Column(name = "artist_commission_avg", nullable = false)
+	private double artistCommissionAvg;
+
+	public double getArtistCommissionAvg() {
+		return artistCommissionAvg;
+	}
+
+	public void setArtistCommissionAvg(double artistCommissionAvg) {
+		this.artistCommissionAvg = artistCommissionAvg;
+	}
+
+	public String getYoutubeLink() {
+		return youtubeLink;
+	}
+
+	public void setYoutubeLink(String youtubeLink) {
+		this.youtubeLink = youtubeLink;
+	}
+
 	public Long getId() {
 		return id;
 	}

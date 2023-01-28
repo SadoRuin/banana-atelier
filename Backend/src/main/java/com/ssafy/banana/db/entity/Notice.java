@@ -25,7 +25,7 @@ public class Notice {
 	@Column(name = "notice_content")
 	private String noticeContent;
 
-	@Column(name = "notice_time")
+	@Column(name = "notice_time", nullable = false)
 	private LocalDateTime noticeTime;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
