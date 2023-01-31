@@ -5,33 +5,31 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.Hibernate;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Embeddable
 public class AuctionJoinId implements Serializable {
-	private static final long serialVersionUID = -6861373055621882603L;
+	private static final long serialVersionUID = -2232878839612329324L;
+	@NotNull
 	@Column(name = "user_seq", nullable = false)
 	private Long userSeq;
 
+	@NotNull
 	@Column(name = "curation_art_seq", nullable = false)
 	private Long curationArtSeq;
-
-	public Long getUserSeq() {
-		return userSeq;
-	}
-
-	public void setUserSeq(Long userSeq) {
-		this.userSeq = userSeq;
-	}
-
-	public Long getCurationArtSeq() {
-		return curationArtSeq;
-	}
-
-	public void setCurationArtSeq(Long curationArtSeq) {
-		this.curationArtSeq = curationArtSeq;
-	}
 
 	@Override
 	public boolean equals(Object o) {
