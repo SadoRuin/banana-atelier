@@ -2,6 +2,7 @@ package com.ssafy.banana.db.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -9,6 +10,7 @@ import javax.persistence.Table;
 @Table(name = "commission_category")
 public class CommissionCategory {
 	@Id
+	@GeneratedValue
 	@Column(name = "commission_category_seq", nullable = false)
 	private Long id;
 

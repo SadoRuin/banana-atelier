@@ -1,6 +1,6 @@
 package com.ssafy.banana.api.controller;
 
-import java.util.Map;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.api.service.UserService;
+import com.ssafy.banana.dto.UserDto;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,11 +22,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-	private final UserRepository userRepository;
+	private final UserService userService;
 
-	@PostMapping("/login")
-	@ApiOperation(value = "일반 로그인")
-	public ResponseEntity login(@ApiParam(value = "email, password") @RequestBody Map<String, String> userData) {
-		return ResponseEntity.ok().build();
+	@PostMapping("/signup")
+	@ApiOperation(value = "회원가입")
+	public ResponseEntity<UserDto> signup(
+		@ApiParam(value = "email, password, nickname") @Valid @RequestBody UserDto userDto) {
+		return ResponseEntity.ok(userService.signup(userDto));
 	}
 }

@@ -3,6 +3,7 @@ package com.ssafy.banana.db.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 @Table(name = "artist")
 public class Artist {
 	@Id
+	@GeneratedValue
 	@Column(name = "user_seq", nullable = false)
 	private Long id;
 

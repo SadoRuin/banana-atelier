@@ -4,15 +4,28 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import com.ssafy.banana.db.entity.enums.Role;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@DynamicInsert
 @Table(name = "user")
 public class User {
 	@Id
+	@GeneratedValue
 	@Column(name = "user_seq", nullable = false)
 	private Long id;
 
@@ -26,6 +39,7 @@ public class User {
 	private String nickname;
 
 	@Column(name = "profile_img", nullable = false, length = 100)
+	@ColumnDefault("default_profile_1.png")
 	private String profileImg;
 
 	@Column(name = "artist_like_count", nullable = false)
@@ -34,6 +48,17 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false, length = 10)
 	private Role role;
+
+	@Column(name = "is_authorized", nullable = false)
+	private boolean isAuthorized;
+
+	public boolean getIsAuthorized() {
+		return isAuthorized;
+	}
+
+	public void setIsAuthorized(boolean isAuthorized) {
+		this.isAuthorized = isAuthorized;
+	}
 
 	public Long getId() {
 		return id;

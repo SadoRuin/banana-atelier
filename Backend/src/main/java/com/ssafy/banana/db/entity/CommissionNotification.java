@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 @Table(name = "commission_notification")
 public class CommissionNotification {
 	@Id
+	@GeneratedValue
 	@Column(name = "notification_seq", nullable = false)
 	private Long id;
 

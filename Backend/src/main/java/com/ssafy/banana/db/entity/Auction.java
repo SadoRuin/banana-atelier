@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,6 +21,7 @@ import com.ssafy.banana.db.entity.enums.AuctionStatus;
 @Table(name = "auction")
 public class Auction {
 	@Id
+	@GeneratedValue
 	@Column(name = "curation_art_seq", nullable = false)
 	private Long id;
 

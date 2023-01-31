@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -19,6 +20,7 @@ import com.ssafy.banana.db.entity.enums.CommissionStatus;
 @Table(name = "commission")
 public class Commission {
 	@Id
+	@GeneratedValue
 	@Column(name = "commission_seq", nullable = false)
 	private Long id;
 
