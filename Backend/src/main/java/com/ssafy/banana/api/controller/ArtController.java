@@ -1,19 +1,26 @@
 package com.ssafy.banana.api.controller;
 
+import java.util.List;
 
-import com.ssafy.banana.api.service.ArtService;
-import com.ssafy.banana.dto.response.ArtResponseDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-전체 작품 리스트 나의 작품 리스트 좋아요한 작품 리스트
-import java.util.List;
+
+import com.ssafy.banana.api.service.ArtService;
+import com.ssafy.banana.db.repository.ArtRepository;
+import com.ssafy.banana.dto.request.ArtRequestDto;
+import com.ssafy.banana.dto.request.MasterpieceRequestDto;
+import com.ssafy.banana.dto.response.ArtResponseDto;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @Api(tags = "작품관련 API")
@@ -21,57 +28,63 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArtController {
 
-    private final ArtService artService;
+	private final ArtService artService;
+	private final ArtRepository artRepository;
 
-//    @PostMapping
-//    public ResponseEntity uploadArt(@RequestBody ArtRequestDto artRequestDto){
-//        return null;
-//    }
+	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
+	@PostMapping
+	public ResponseEntity uploadArt(@RequestBody ArtRequestDto artRequestDto) {
 
-    @ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
-    @GetMapping
-    public ResponseEntity<List<ArtResponseDto>> getAllArtList(){
+		artService.uploadArt(artRequestDto);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
 
-        List<ArtResponseDto> artList = artService.getAllArtList();
+	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
+	@GetMapping
+	public ResponseEntity<List<ArtResponseDto>> getAllArtList() {
 
-        if (artList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(artList);
+		List<ArtResponseDto> artList = artService.getAllArtList();
 
-    }
+		if (artList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
 
-    @ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
-    @GetMapping("/{user_seq}")
-    public ResponseEntity<List<ArtResponseDto>> getMyArtList(@PathVariable("user_seq") Long userSeq){
+	}
 
-        List<ArtResponseDto> artList = artService.getMyArtList(userSeq);
+	@ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
+	@GetMapping("/{user_seq}")
+	public ResponseEntity<List<ArtResponseDto>> getMyArtList(@PathVariable("user_seq") Long userSeq) {
 
-        if (artList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(artList);
+		List<ArtResponseDto> artList = artService.getMyArtList(userSeq);
 
-    }
+		if (artList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
 
-//    // 보류
-//    @ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
-//    @GetMapping("/{user_seq}/masterpiece")
-//    public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq){
-//
-//        return null;
-//    }
+	}
 
-    @ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
-    @GetMapping("/{user_seq}/like")
-    public ResponseEntity<List<ArtResponseDto>> getLikedArtList(@PathVariable("user_seq") Long userSeq){
+	//    // 보류
+	//    @ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
+	//    @GetMapping("/{user_seq}/masterpiece")
+	//    public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq){
+	//
+	//        return null;
+	//    }
 
-        List<ArtResponseDto> artList = artService.getLikedArtList(userSeq);
-        if (artList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(artList);
-    }
+	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
+	@GetMapping("/{user_seq}/like")
+	public ResponseEntity<List<ArtResponseDto>> getLikedArtList(@PathVariable("user_seq") Long userSeq) {
+
+		List<ArtResponseDto> artList = artService.getLikedArtList(userSeq);
+		if (artList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
+	}
 
 	@ApiOperation(value = "대표 작품 설정", notes = "작가 본인의 대표작을 설정합니다")
 	@PutMapping("/masterpiece")

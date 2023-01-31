@@ -1,30 +1,56 @@
 package com.ssafy.banana.api.service;
 
-import com.ssafy.banana.db.repository.ArtRepository;
-import com.ssafy.banana.dto.request.MasterpieceRequestDto;
-import com.ssafy.banana.dto.response.ArtResponseDto;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.ssafy.banana.db.entity.Art;
+import com.ssafy.banana.db.entity.ArtCategory;
+import com.ssafy.banana.db.repository.ArtCategoryRepository;
+import com.ssafy.banana.db.repository.ArtRepository;
+import com.ssafy.banana.dto.request.ArtRequestDto;
+import com.ssafy.banana.dto.request.MasterpieceRequestDto;
+import com.ssafy.banana.dto.response.ArtResponseDto;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ArtService {
 
-    private final ArtRepository artRepository;
+	private final ArtRepository artRepository;
+	private final ArtCategoryRepository artCategoryRepository;
 
-    public List<ArtResponseDto> getAllArtList() {
-        return artRepository.findAllArts();
-    }
+	public void uploadArt(ArtRequestDto artRequestDto) {
 
-    public List<ArtResponseDto> getMyArtList(Long userSeq) {
-        return artRepository.findMyArts(userSeq);
-    }
+		Optional<ArtCategory> artCategory = artCategoryRepository.findById(artRequestDto.getArtCategorySeq());
 
-    public List<ArtResponseDto> getLikedArtList(Long userSeq) {
-        return artRepository.findLikedArt(userSeq);
-    }
+		if (artCategory != null) {
+
+			Art art = Art.builder()
+				.artImg(artRequestDto.getArtImg())
+				.artName(artRequestDto.getArtName())
+				.artDescription(artRequestDto.getArtDescription())
+				.artCategory(artCategory.orElse(null))
+				.build();
+
+			artRepository.save(art);
+		}
+		
+	}
+
+	public List<ArtResponseDto> getAllArtList() {
+		return artRepository.findAllArts();
+	}
+
+	public List<ArtResponseDto> getMyArtList(Long userSeq) {
+		return artRepository.findMyArts(userSeq);
+	}
+
+	public List<ArtResponseDto> getLikedArtList(Long userSeq) {
+		return artRepository.findLikedArt(userSeq);
+	}
 
 	public void setMasterpieceList(List<MasterpieceRequestDto> masterpieceRequestDtoList) {
 
