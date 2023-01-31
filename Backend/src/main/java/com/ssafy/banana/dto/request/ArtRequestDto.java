@@ -1,16 +1,22 @@
 package com.ssafy.banana.dto.request;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
+@Builder
+@Accessors(chain = true)
 public class ArtRequestDto {
-    private String artImg;
-    private String artName;
-    private String artDescription;
-    private Long artCategorySeq;
-    private Long userSeq;
+	private String artImg;
+	private String artName;
+	private String artDescription;
+	private Long artCategorySeq;
+	private Long userSeq;
 }
