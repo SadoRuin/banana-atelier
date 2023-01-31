@@ -73,55 +73,57 @@ public class ArtController {
         return ResponseEntity.status(HttpStatus.OK).body(artList);
     }
 
-//    @PutMapping("/masterpiece")
-//    public ResponseEntity<List<ArtResponseDto>> setMasterpieceList(@RequestBody MasterpieceRequestDto masterpieceRequestDto){
-//
-//        List<ArtResponseDto> artList = artService.setMasterpieceList(masterpieceRequestDto);
-//        return null;
-//    }
-//
-//    @GetMapping("/category/{art_category_name}")
-//    public ResponseEntity getArtListbyCategory(@PathVariable("art_category_name") String artCategoryName){
-//
-//        return null;
-//    }
-//
-//    @GetMapping("/trend")
-//    public ResponseEntity getTrendArtList(){
-//
-//        return null;
-//    }
-//
-//    @GetMapping("/new")
-//    public ResponseEntity getNewArtList(){
-//
-//        return null;
-//    }
-//
-//    @GetMapping("/popular")
-//    public ResponseEntity getPopularArtList(){
-//
-//        return null;
-//    }
-//
-//    @GetMapping("/{art_seq}")
-//    public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq){
-//
-//        return null;
-//    }
-//
-//
-//    @PostMapping("/like")
-//    @ApiOperation(value = "작품 좋아요 추가하기", notes = "")
-//    public ResponseEntity addArtLike(){
-//
-//        return null;
-//    }
-//
-//    @GetMapping("/download/{art_seq}")
-//    public ResponseEntity downloadArt(@PathVariable("art_seq") Long artSeq){
-//
-//        return null;
-//    }
+	@ApiOperation(value = "대표 작품 설정", notes = "작가 본인의 대표작을 설정합니다")
+	@PutMapping("/masterpiece")
+	public ResponseEntity<?> setMasterpieceList(@RequestBody List<MasterpieceRequestDto> masterpieceRequestDtoList) {
+
+		artService.setMasterpieceList(masterpieceRequestDtoList);
+
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+
+	//    @GetMapping("/category/{art_category_name}")
+	//    public ResponseEntity getArtListbyCategory(@PathVariable("art_category_name") String artCategoryName){
+	//
+	//        return null;
+	//    }
+	//
+	//    @GetMapping("/trend")
+	//    public ResponseEntity getTrendArtList(){
+	//
+	//        return null;
+	//    }
+	//
+	//    @GetMapping("/new")
+	//    public ResponseEntity getNewArtList(){
+	//
+	//        return null;
+	//    }
+	//
+	//    @GetMapping("/popular")
+	//    public ResponseEntity getPopularArtList(){
+	//
+	//        return null;
+	//    }
+	//
+	//    @GetMapping("/{art_seq}")
+	//    public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq){
+	//
+	//        return null;
+	//    }
+	//
+	//
+	//    @PostMapping("/like")
+	//    @ApiOperation(value = "작품 좋아요 추가하기", notes = "")
+	//    public ResponseEntity addArtLike(){
+	//
+	//        return null;
+	//    }
+	//
+	//    @GetMapping("/download/{art_seq}")
+	//    public ResponseEntity downloadArt(@PathVariable("art_seq") Long artSeq){
+	//
+	//        return null;
+	//    }
 
 }

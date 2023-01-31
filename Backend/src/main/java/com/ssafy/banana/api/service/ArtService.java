@@ -26,9 +26,21 @@ public class ArtService {
         return artRepository.findLikedArt(userSeq);
     }
 
-//    public List<ArtResponseDto> setMasterpieceList(MasterpieceRequestDto masterpieceRequestDto) {
-//
-//        boolean isRepresent = masterpieceRequestDto.getIsRepresent();
-//
-//    }
+	public void setMasterpieceList(List<MasterpieceRequestDto> masterpieceRequestDtoList) {
+
+		boolean isRepresent = false;
+		Art art = null;
+
+		for (int i = 0; i < masterpieceRequestDtoList.size(); i++) {
+			MasterpieceRequestDto masterpieceRequestDto = masterpieceRequestDtoList.get(i);
+			isRepresent = masterpieceRequestDto.isRepresent();
+			art = artRepository.findById(masterpieceRequestDto.getArtSeq()).orElse(null);
+			if (art != null) {
+				art.setRepresent(isRepresent);
+				artRepository.save(art);
+			}
+		}
+
+	}
+
 }
