@@ -13,9 +13,25 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.ssafy.banana.db.entity.enums.AuctionStatus;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "auction")
 public class Auction {
@@ -25,124 +41,48 @@ public class Auction {
 
 	@MapsId
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "curation_art_seq", nullable = false)
 	private CurationArt curationArt;
 
+	@NotNull
 	@Column(name = "auction_start_price", nullable = false)
 	private int auctionStartPrice;
 
+	@NotNull
 	@Column(name = "auction_gap", nullable = false)
 	private int auctionGap;
 
+	@NotNull
 	@Column(name = "auction_start_time", nullable = false)
 	private LocalDateTime auctionStartTime;
 
+	@NotNull
 	@Column(name = "auction_end_time", nullable = false)
 	private LocalDateTime auctionEndTime;
 
+	@NotNull
 	@Column(name = "auction_paid_time", nullable = false)
 	private LocalDateTime auctionPaidTime;
 
+	@NotNull
 	@Column(name = "auction_status_time", nullable = false)
 	private LocalDateTime auctionStatusTime;
 
+	@NotNull
 	@Column(name = "auction_end_price", nullable = false)
 	private int auctionEndPrice;
 
+	@Size(max = 10)
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "auction_status", nullable = false, length = 10)
 	private AuctionStatus auctionStatus;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private User user;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public CurationArt getCurationArt() {
-		return curationArt;
-	}
-
-	public void setCurationArt(CurationArt curationArt) {
-		this.curationArt = curationArt;
-	}
-
-	public int getAuctionStartPrice() {
-		return auctionStartPrice;
-	}
-
-	public void setAuctionStartPrice(int auctionStartPrice) {
-		this.auctionStartPrice = auctionStartPrice;
-	}
-
-	public int getAuctionGap() {
-		return auctionGap;
-	}
-
-	public void setAuctionGap(int auctionGap) {
-		this.auctionGap = auctionGap;
-	}
-
-	public LocalDateTime getAuctionStartTime() {
-		return auctionStartTime;
-	}
-
-	public void setAuctionStartTime(LocalDateTime auctionStartTime) {
-		this.auctionStartTime = auctionStartTime;
-	}
-
-	public LocalDateTime getAuctionEndTime() {
-		return auctionEndTime;
-	}
-
-	public void setAuctionEndTime(LocalDateTime auctionEndTime) {
-		this.auctionEndTime = auctionEndTime;
-	}
-
-	public LocalDateTime getAuctionPaidTime() {
-		return auctionPaidTime;
-	}
-
-	public void setAuctionPaidTime(LocalDateTime auctionPaidTime) {
-		this.auctionPaidTime = auctionPaidTime;
-	}
-
-	public LocalDateTime getAuctionStatusTime() {
-		return auctionStatusTime;
-	}
-
-	public void setAuctionStatusTime(LocalDateTime auctionStatusTime) {
-		this.auctionStatusTime = auctionStatusTime;
-	}
-
-	public int getAuctionEndPrice() {
-		return auctionEndPrice;
-	}
-
-	public void setAuctionEndPrice(int auctionEndPrice) {
-		this.auctionEndPrice = auctionEndPrice;
-	}
-
-	public AuctionStatus getAuctionStatus() {
-		return auctionStatus;
-	}
-
-	public void setAuctionStatus(AuctionStatus auctionStatus) {
-		this.auctionStatus = auctionStatus;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 }
