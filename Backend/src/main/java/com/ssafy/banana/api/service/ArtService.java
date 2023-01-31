@@ -37,7 +37,7 @@ public class ArtService {
 
 			artRepository.save(art);
 		}
-		
+
 	}
 
 	public List<ArtResponseDto> getAllArtList() {
@@ -45,10 +45,12 @@ public class ArtService {
 	}
 
 	public List<ArtResponseDto> getMyArtList(Long userSeq) {
+
 		return artRepository.findMyArts(userSeq);
 	}
 
 	public List<ArtResponseDto> getLikedArtList(Long userSeq) {
+
 		return artRepository.findLikedArt(userSeq);
 	}
 
@@ -69,4 +71,9 @@ public class ArtService {
 
 	}
 
+	public List<ArtResponseDto> getArtListbyCategory(Long artCategorySeq) {
+
+		return artRepository.findArtsbyCategory(artCategorySeq);
+
+	}
 }
