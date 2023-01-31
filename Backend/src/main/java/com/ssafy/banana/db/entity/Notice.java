@@ -5,19 +5,40 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "notice")
 public class Notice {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "notice_seq", nullable = false)
 	private Long id;
 
+	@Size(max = 100)
+	@NotNull
 	@Column(name = "notice_title", nullable = false, length = 100)
 	private String noticeTitle;
 
@@ -25,51 +46,14 @@ public class Notice {
 	@Column(name = "notice_content")
 	private String noticeContent;
 
-	@Column(name = "notice_time")
+	@NotNull
+	@Column(name = "notice_time", nullable = false)
 	private LocalDateTime noticeTime;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private Artist artist;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNoticeTitle() {
-		return noticeTitle;
-	}
-
-	public void setNoticeTitle(String noticeTitle) {
-		this.noticeTitle = noticeTitle;
-	}
-
-	public String getNoticeContent() {
-		return noticeContent;
-	}
-
-	public void setNoticeContent(String noticeContent) {
-		this.noticeContent = noticeContent;
-	}
-
-	public LocalDateTime getNoticeTime() {
-		return noticeTime;
-	}
-
-	public void setNoticeTime(LocalDateTime noticeTime) {
-		this.noticeTime = noticeTime;
-	}
-
-	public Artist getArtist() {
-		return artist;
-	}
-
-	public void setArtist(Artist artist) {
-		this.artist = artist;
-	}
 
 }
