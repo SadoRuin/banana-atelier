@@ -99,7 +99,7 @@ public class ArtController {
 	@GetMapping("/category/{art_category_seq}")
 	public ResponseEntity<List<ArtResponseDto>> getArtListbyCategory(
 		@PathVariable("art_category_seq") Long artCategorySeq) {
-		
+
 		List<ArtResponseDto> artList = artService.getArtListbyCategory(artCategorySeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
@@ -118,14 +118,19 @@ public class ArtController {
 	//
 	// 	return null;
 	// }
-	//
-	// @ApiOperation(value = "인기 작품 리스트", notes = "좋아요를 많이 받은 작품 목록을 반환합니다")
-	// @GetMapping("/popular")
-	// public ResponseEntity<List<ArtResponseDto>> getPopularArtList() {
-	//
-	// 	return null;
-	// }
-	//
+
+	@ApiOperation(value = "인기 작품 리스트", notes = "좋아요를 많이 받은 작품 목록을 반환합니다")
+	@GetMapping("/popular")
+	public ResponseEntity<List<ArtResponseDto>> getPopularArtList() {
+
+		List<ArtResponseDto> artList = artService.getPopularArtList();
+
+		if (artList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
+	}
+
 	// @ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
 	// @GetMapping("/{art_seq}")
 	// public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq) {

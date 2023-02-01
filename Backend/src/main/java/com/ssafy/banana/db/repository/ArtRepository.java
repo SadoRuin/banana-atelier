@@ -28,4 +28,7 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 
 	@Query("select a, u from Art a, User u where a.artCategory.id = :artCategorySeq")
 	List<ArtResponseDto> findArtsbyCategory(@Param("artCategorySeq") Long artCategorySeq);
+
+	@Query("select a, u from Art a join User u on a.artist.id = u.id order by a.artLikeCount desc")
+	List<ArtResponseDto> findAllOrderByArtLikeCount();
 }

@@ -76,4 +76,9 @@ public class ArtService {
 		return artRepository.findArtsbyCategory(artCategorySeq);
 
 	}
+
+	public List<ArtResponseDto> getPopularArtList() {
+
+		return artRepository.findAllOrderByArtLikeCount();
+	}
 }
