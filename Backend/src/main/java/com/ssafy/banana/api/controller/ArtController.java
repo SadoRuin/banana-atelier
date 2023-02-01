@@ -151,14 +151,16 @@ public class ArtController {
 	//
 	// 	return null;
 	// }
-	//
-	// @ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
-	// @PutMapping
-	// public ResponseEntity modifyArt(@RequestBody ArtRequestDto artRequestDto) {
-	//
-	// 	return null;
-	// }
-	//
+
+	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
+	@PutMapping
+	public ResponseEntity modifyArt(@RequestBody ArtRequestDto artRequestDto) {
+
+		artService.updateArt(artRequestDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+
 	// @ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
 	// @DeleteMapping("")
 	// public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq) {

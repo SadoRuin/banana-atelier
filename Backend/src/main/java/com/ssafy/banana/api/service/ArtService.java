@@ -9,6 +9,7 @@ import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
+import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.dto.request.ArtRequestDto;
 import com.ssafy.banana.dto.request.MasterpieceRequestDto;
 import com.ssafy.banana.dto.response.ArtResponseDto;
@@ -21,6 +22,7 @@ public class ArtService {
 
 	private final ArtRepository artRepository;
 	private final ArtCategoryRepository artCategoryRepository;
+	private final ArtistRepository artistRepository;
 
 	public void uploadArt(ArtRequestDto artRequestDto) {
 
@@ -80,5 +82,21 @@ public class ArtService {
 	public List<ArtResponseDto> getPopularArtList() {
 
 		return artRepository.findAllOrderByArtLikeCount();
+	}
+
+	public Art updateArt(ArtRequestDto artRequestDto) {
+
+		Art art = artRepository.findById(artRequestDto.getArtSeq()).orElse(null);
+		Long artistSeq = artistRepository.findById(artRequestDto.getUserSeq()).orElse(null).getId();
+
+		if (artRequestDto.getUserSeq() == artistSeq) {
+			art.setArtImg(artRequestDto.getArtImg());
+			art.setArtDescription(artRequestDto.getArtDescription());
+			art.getArtCategory().setId(artRequestDto.getArtCategorySeq());
+
+		} else {
+			return null;
+		}
+		return art;
 	}
 }

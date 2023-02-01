@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 @Builder
 @Accessors(chain = true)
 public class ArtRequestDto {
+	private Long artSeq;
 	private String artImg;
 	private String artName;
 	private String artDescription;
