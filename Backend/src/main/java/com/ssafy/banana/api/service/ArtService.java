@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
+import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
+import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,7 @@ public class ArtService {
 	}
 
 	public List<ArtResponse> getAllArtList() {
+		
 		return artRepository.findAllArts();
 	}
 
@@ -69,7 +72,6 @@ public class ArtService {
 				artRepository.save(art);
 			}
 		}
-
 	}
 
 	public List<ArtResponse> getArtListbyCategory(Long artCategorySeq) {
@@ -83,6 +85,14 @@ public class ArtService {
 		return artRepository.findAllOrderByArtLikeCount();
 	}
 
+	public ArtDetailResponse getArt(Long artSeq) {
+
+		Art art = artRepository.findById(artSeq).orElse(null);
+		User artist = art.getArtist().getUser();
+
+		return new ArtDetailResponse(art, artist);
+	}
+
 	public Art updateArt(ArtRequest artRequest, Long userSeq) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
@@ -92,7 +102,7 @@ public class ArtService {
 			art.setArtImg(artRequest.getArtImg());
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
-
+			artRepository.save(art);
 		} else {
 			return null;
 		}

@@ -17,6 +17,7 @@ import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
+import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
 
 import io.swagger.annotations.Api;
@@ -131,13 +132,14 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
-	// @ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
-	// @GetMapping("/{art_seq}")
-	// public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq) {
-	//
-	// 	return null;
-	// }
-	//
+	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
+	@GetMapping("/{art_seq}")
+	public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq) {
+		ArtDetailResponse artDetailResponse = artService.getArt(artSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(artDetailResponse);
+	}
+
 	// @ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
 	// @PostMapping("/like")
 	// public ResponseEntity addArtLike() {
@@ -155,7 +157,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
 	@PutMapping
 	public ResponseEntity modifyArt(@RequestBody ArtRequest artRequest) {
-		
+
 		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
 		Art art = artService.updateArt(artRequest, userSeq);
 
