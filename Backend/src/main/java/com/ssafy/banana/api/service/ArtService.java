@@ -7,11 +7,15 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
+import com.ssafy.banana.db.entity.MyArt;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
+import com.ssafy.banana.db.repository.MyArtRepository;
+import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
+import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
 
@@ -23,6 +27,8 @@ public class ArtService {
 
 	private final ArtRepository artRepository;
 	private final ArtCategoryRepository artCategoryRepository;
+	private final UserRepository userRepository;
+	private final MyArtRepository myArtRepository;
 
 	public Art uploadArt(ArtRequest artRequest) {
 
@@ -44,7 +50,7 @@ public class ArtService {
 	}
 
 	public List<ArtResponse> getAllArtList() {
-		
+
 		return artRepository.findAllArts();
 	}
 
@@ -91,6 +97,24 @@ public class ArtService {
 		User artist = art.getArtist().getUser();
 
 		return new ArtDetailResponse(art, artist);
+	}
+
+	public MyArt addArtLike(MyArtRequest myArtRequest, Long userSeq) {
+
+		User user = userRepository.findById(userSeq).orElse(null);
+		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
+
+		MyArt myArt = null;
+
+		if (user != null && art != null) {
+			myArt = MyArt.builder()
+				.user(userRepository.findById(myArtRequest.getUserSeq()).orElse(null))
+				.art(artRepository.findById(myArtRequest.getArtSeq()).orElse(null))
+				.build();
+			myArtRepository.save(myArt);
+		}
+		
+		return myArt;
 	}
 
 	public Art updateArt(ArtRequest artRequest, Long userSeq) {

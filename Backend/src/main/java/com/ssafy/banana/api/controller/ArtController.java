@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.db.entity.Art;
+import com.ssafy.banana.db.entity.MyArt;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
+import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
 
@@ -38,7 +40,7 @@ public class ArtController {
 
 		Art art = artService.uploadArt(artRequest);
 
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
@@ -140,13 +142,16 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artDetailResponse);
 	}
 
-	// @ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
-	// @PostMapping("/like")
-	// public ResponseEntity addArtLike() {
-	//
-	// 	return null;
-	// }
-	//
+	@ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
+	@PostMapping("/like")
+	public ResponseEntity addArtLike(@RequestBody MyArtRequest myArtRequest) {
+
+		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
+		MyArt myArt = artService.addArtLike(myArtRequest, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(myArt);
+	}
+
 	// @ApiOperation(value = "작품 다운로드", notes = "작품을 다운로드합니다")
 	// @GetMapping("/download/{art_seq}")
 	// public ResponseEntity downloadArt(@PathVariable("art_seq") Long artSeq) {
