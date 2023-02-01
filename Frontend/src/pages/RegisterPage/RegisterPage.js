@@ -42,13 +42,22 @@ import {
     //     })
     // }
   
-    // // 이메일 유효성 확인
-    // const isEmail = email => {
-    //   const emailRegex = 
-    //   /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+    // 이메일 유효성 확인
+    const isEmail = email => {
+      const emailRegex = 
+      /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
       
-    //   return emailRegex.test(email)
-    // }
+      return emailRegex.test(email)
+    }
+
+    // 비밀번호 유효성 확인
+    // 8자 이상, 16자 미만이면서 알파벳, 숫자 및 특수문자는 하나 이상 포함
+    const isPassword = password => {
+      const passwordRegex = 
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8, 16}$/
+
+      return passwordRegex.test(password)
+    }
   
     // // 이메일 중복확인
     // const onCheckEmail = event => {
@@ -102,10 +111,16 @@ import {
       //   return alert('이메일 중복확인을 진행해 주세요.')
       // }
   
-      // if (!isEmail(Email)) {
-      //   setEmail('')
-      //   return alert('이메일 형식을 지켜주세요.')
-      // }
+      if (!isEmail(Email)) {
+        setEmail('')
+        return alert('이메일 형식을 지켜주세요.')
+      }
+
+      if (!isPassword(Password)) {
+        setPassword('')
+        setConfirmPassword('')
+        return alert('비밀번호 형식을 지켜랏!')
+      }
   
       let body = {
         email: Email,
@@ -115,8 +130,8 @@ import {
   
       dispatch(registerUser(body))
         .then(response => {
-          console.log('response', response);
-          console.log('response.payload', response.payload);
+          // console.log('response', response);
+          // console.log('response.payload', response.payload);
         //   if (response.payload.authorized) {
         //     alert('회원가입 성공')
         //     navigate('/')
@@ -128,7 +143,7 @@ import {
         //     alert('회원가입 실패')
         //   }
         })
-        // .catch(error => alert(error))
+        .catch(error => alert(error))
   
       
     }
