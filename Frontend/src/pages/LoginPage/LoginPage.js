@@ -33,19 +33,23 @@ export default function LoginPage(props) {
 
     dispatch(loginUser(body))
       .then(response => {
-        localStorage.setItem("token", response.payload.data.accessToken)
-          navigate("/")
+        console.log('response는 어떤 모습일까?', response.payload);
+        localStorage.setItem("token", response.payload.token)
         })
-      .catch(error => {
-        let error_code = error.response.data.message
-        if (error_code === "Invalid ID") {
-          alert("잘못된 아이디입니다.")
-        } else if (error_code === "Invalid Password") {
-          alert("잘못된 패스워드입니다.")
-        } else {
-          alert("이메일 인증을 진행해주세요.")
-        }
-      })
+
+    // 이거 token 잘 가져와짐
+    // const token = localStorage.getItem('token')
+
+      // .catch(error => {
+      //   let error_code = error.response.data.message
+      //   if (error_code === "Invalid ID") {
+      //     alert("잘못된 아이디입니다.")
+      //   } else if (error_code === "Invalid Password") {
+      //     alert("잘못된 패스워드입니다.")
+      //   } else {
+      //     alert("이메일 인증을 진행해주세요.")
+      //   }
+      // })
   }
   return (
     <div>

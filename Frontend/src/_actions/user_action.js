@@ -8,8 +8,11 @@ import {
 
 export function loginUser(dataTosubmit) {
 
-    const request = axios.post('https://i8a108.p.ssafy.io/api/users/login', dataTosubmit)
+    // const request = axios.post('https://i8a108.p.ssafy.io/api/users/login', dataTosubmit)
+    const request = axios.post('http://localhost:8099/auth/login', dataTosubmit)
         .then(response => response.data)
+        .catch(error => console.log('error', error))
+    console.log(request);
     // action을 reducer에 넘겨주자
     return {
         type: LOGIN_USER,
@@ -21,8 +24,10 @@ export function loginUser(dataTosubmit) {
 
 export function registerUser(dataTosubmit) {
 
-    const request = axios.post('https://i8a108.p.ssafy.io/api/users/signup', dataTosubmit)
-        .then(response => response.data)
+    // const request = axios.post('https://i8a108.p.ssafy.io/api/users/signup', dataTosubmit)
+    const request = axios.post('http://localhost:8099/users/signup', dataTosubmit)
+        .then(response => response)
+        .catch(error => console.log("error : ", error))
     // action을 reducer에 넘겨주자
     return {
         type: REGISTER_USER,
