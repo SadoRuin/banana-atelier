@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Transactional
 	public UserDetails loadUserByUsername(final String email) {
 		return userRepository.findByEmailAndIsAuthorized(email, true)
-			.map(user -> new UserPrincipal(user))
+			.map(user -> UserPrincipal.create(user))
 			.orElseThrow(() -> new UsernameNotFoundException(email + " -> 이메일 인증이 필요하거나 존재하지 않는 사용자입니다."));
 	}
 

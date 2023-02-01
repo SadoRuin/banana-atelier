@@ -2,26 +2,24 @@ package com.ssafy.banana.api.controller;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.banana.dto.LoginDto;
-import com.ssafy.banana.dto.TokenDto;
+import com.ssafy.banana.api.service.AuthService;
+import com.ssafy.banana.dto.request.LoginRequest;
+import com.ssafy.banana.dto.response.LoginResponse;
 import com.ssafy.banana.security.jwt.JwtFilter;
-import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,25 +27,22 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-	private final TokenProvider tokenProvider;
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final Logger logger = LoggerFactory.getLogger(AuthController.class);
+	private final AuthService authService;
 
 	@PostMapping("/login")
 	@ApiOperation(value = "일반 로그인")
-	public ResponseEntity<TokenDto> authorize(
-		@ApiParam(value = "email, password") @Valid @RequestBody LoginDto loginDto) {
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "email", value = "로그인할 이메일", required = true),
+		@ApiImplicitParam(name = "password", value = "비밀번호", required = true)
+	})
+	public ResponseEntity<LoginResponse> authorize(@Valid @RequestBody LoginRequest loginRequest) {
 
-		UsernamePasswordAuthenticationToken authenticationToken =
-			new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		String jwt = tokenProvider.createToken(authentication);
+		LoginResponse loginResponse = authService.login(loginRequest);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+		httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + loginResponse.getToken());
 
-		return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+		return ResponseEntity.ok().headers(httpHeaders).body(loginResponse);
 	}
 }

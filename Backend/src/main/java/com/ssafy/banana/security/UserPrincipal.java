@@ -9,32 +9,71 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.ssafy.banana.db.entity.User;
+import com.ssafy.banana.db.entity.enums.Role;
 
 // Authentication 객체에 저장할 수 있는 유일한 타입
 public class UserPrincipal implements UserDetails, OAuth2User {
-	private User user;
+	private Long id;
+	private String email;
+	private String password;
+	private String nickname;
+	private String profileImg;
+	private Role role;
 	private Map<String, Object> attributes;
 
 	// 일반 시큐리티 로그인시 사용
-
-	public UserPrincipal(User user) {
-		this.user = user;
+	public UserPrincipal(Long id, String email, String password, String nickname, String profileImg, Role role) {
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.profileImg = profileImg;
+		this.role = role;
 	}
 
 	// OAuth2.0 로그인시 사용
-	public UserPrincipal(User user, Map<String, Object> attributes) {
-		this.user = user;
+	public UserPrincipal(Long id, String email, String password, String nickname, String profileImg, Role role,
+		Map<String, Object> attributes) {
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.profileImg = profileImg;
+		this.role = role;
 		this.attributes = attributes;
+	}
+
+	public static UserPrincipal create(User user) {
+		return new UserPrincipal(
+			user.getId(),
+			user.getEmail(),
+			user.getPassword(),
+			user.getNickname(),
+			user.getProfileImg(),
+			user.getRole()
+		);
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public String getProfileImg() {
+		return profileImg;
+	}
+
+	public Role getRole() {
+		return role;
 	}
 
 	@Override
 	public String getPassword() {
-		return this.user.getPassword();
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
-		return this.user.getEmail();
+		return email;
 	}
 
 	@Override
@@ -59,9 +98,9 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> collet = new ArrayList<>();
-		collet.add(() -> String.valueOf(this.user.getRole()));
-		return collet;
+		Collection<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(() -> String.valueOf(role));
+		return authorities;
 	}
 
 	// 리소스 서버로 부터 받는 회원정보
@@ -77,7 +116,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 	// User의 PrimaryKey
 	@Override
 	public String getName() {
-		return this.user.getId() + "";
+		return id + "";
 	}
 
 }

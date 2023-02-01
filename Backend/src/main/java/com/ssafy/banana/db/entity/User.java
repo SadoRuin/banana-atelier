@@ -56,7 +56,6 @@ public class User {
 	@Column(name = "artist_like_count", nullable = false)
 	private int artistLikeCount;
 
-	@Size(max = 10)
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false, length = 10)

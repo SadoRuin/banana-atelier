@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * A DTO for the {@link com.ssafy.banana.db.entity.User} entity
@@ -20,9 +19,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Builder
-@Accessors(chain = true)
 public class UserDto implements Serializable {
-	private Long id;
 	private String email;
 	private String password;
 	private String nickname;
@@ -39,7 +36,7 @@ public class UserDto implements Serializable {
 			.nickname(user.getNickname())
 			.artistLikeCount(user.getArtistLikeCount())
 			.role(user.getRole())
-			.isAuthorized(user.getIsAuthorized())
+			.isAuthorized(user.isAuthorized())
 			.build();
 	}
 }

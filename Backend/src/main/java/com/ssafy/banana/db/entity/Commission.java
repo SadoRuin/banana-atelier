@@ -15,7 +15,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -73,7 +72,6 @@ public class Commission {
 	@Column(name = "commission_requirement")
 	private String commissionRequirement;
 
-	@Size(max = 10)
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "commission_status", nullable = false, length = 10)

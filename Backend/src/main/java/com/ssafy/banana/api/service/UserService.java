@@ -8,36 +8,39 @@ import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.UserDto;
+import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.exception.DuplicateUserException;
 import com.ssafy.banana.exception.NotFoundUserException;
 import com.ssafy.banana.util.SecurityUtil;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
-
 	@Transactional
-	public UserDto signup(UserDto userDto) {
-		if (userRepository.findByEmail(userDto.getEmail()).orElse(null) != null) {
+	public void signup(SignupRequest signupRequest) {
+		if (userRepository.findByEmail(signupRequest.getEmail()).orElse(null) != null) {
 			throw new DuplicateUserException("이미 가입되어 있는 유저입니다.");
 		}
 
+		int imgNum = (int)(Math.random() * 4) + 1;
+		String profileImg = "default_profile_" + imgNum + ".png";
+
 		User user = User.builder()
-			.email(userDto.getEmail())
-			.password(passwordEncoder.encode(userDto.getPassword()))
-			.nickname(userDto.getNickname())
+			.email(signupRequest.getEmail())
+			.password(passwordEncoder.encode(signupRequest.getPassword()))
+			.nickname(signupRequest.getNickname())
+			.profileImg(profileImg)
 			.artistLikeCount(0)
 			.role(Role.USER)
 			.isAuthorized(false)
 			.build();
 
-		return UserDto.from(userRepository.save(user));
+		userRepository.save(user);
 	}
 
 	@Transactional(readOnly = true)

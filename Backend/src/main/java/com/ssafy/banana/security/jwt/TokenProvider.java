@@ -17,6 +17,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import com.ssafy.banana.security.UserPrincipal;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -49,18 +51,17 @@ public class TokenProvider implements InitializingBean {
 	}
 
 	public String createToken(Authentication authentication) {
-		String authorities = authentication.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority)
-			.collect(Collectors.joining(","));
+		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
-		long now = (new Date()).getTime();
-		Date validity = new Date(now + this.tokenValidityInMilliseconds);
+		Date now = new Date();
+		Date expriyDate = new Date(now.getTime() + this.tokenValidityInMilliseconds);
 
 		return Jwts.builder()
-			.setSubject(authentication.getName())
-			.claim(AUTHORITIES_KEY, authorities)
+			.setSubject(userPrincipal.getName())
+			.setIssuedAt(now)
+			.setExpiration(expriyDate)
+			.claim(AUTHORITIES_KEY, userPrincipal.getRole())
 			.signWith(key, SignatureAlgorithm.HS512)
-			.setExpiration(validity)
 			.compact();
 	}
 
