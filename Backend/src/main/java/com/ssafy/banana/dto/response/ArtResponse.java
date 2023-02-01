@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Builder
 @Accessors(chain = true)
-public class ArtResponseDto {
+public class ArtResponse {
 
 	@JsonProperty(value = "art_seq")
 	private Long id;
@@ -57,7 +57,7 @@ public class ArtResponseDto {
 	@JsonProperty(value = "artist_like_count")
 	private int artistLikeCount;
 
-	public ArtResponseDto(Art art, User user) {
+	public ArtResponse(Art art, User user) {
 		this.id = art.getId();
 		this.artName = art.getArtName();
 		this.artHit = art.getArtHit();

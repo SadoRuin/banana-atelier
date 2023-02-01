@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Builder
 @Accessors(chain = true)
-public class MasterpieceRequestDto {
+public class MasterpieceRequest {
 
 	private Long userSeq;
 	private Long artSeq;

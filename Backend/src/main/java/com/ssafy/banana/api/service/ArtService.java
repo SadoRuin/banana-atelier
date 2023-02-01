@@ -10,9 +10,9 @@ import com.ssafy.banana.db.entity.ArtCategory;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.ArtistRepository;
-import com.ssafy.banana.dto.request.ArtRequestDto;
-import com.ssafy.banana.dto.request.MasterpieceRequestDto;
-import com.ssafy.banana.dto.response.ArtResponseDto;
+import com.ssafy.banana.dto.request.ArtRequest;
+import com.ssafy.banana.dto.request.MasterpieceRequest;
+import com.ssafy.banana.dto.response.ArtResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,47 +24,48 @@ public class ArtService {
 	private final ArtCategoryRepository artCategoryRepository;
 	private final ArtistRepository artistRepository;
 
-	public void uploadArt(ArtRequestDto artRequestDto) {
+	public Art uploadArt(ArtRequest artRequest) {
 
-		Optional<ArtCategory> artCategory = artCategoryRepository.findById(artRequestDto.getArtCategorySeq());
+		Optional<ArtCategory> artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq());
+		Art art = null;
 
 		if (artCategory != null) {
 
-			Art art = Art.builder()
-				.artImg(artRequestDto.getArtImg())
-				.artName(artRequestDto.getArtName())
-				.artDescription(artRequestDto.getArtDescription())
+			art = Art.builder()
+				.artImg(artRequest.getArtImg())
+				.artName(artRequest.getArtName())
+				.artDescription(artRequest.getArtDescription())
 				.artCategory(artCategory.orElse(null))
 				.build();
 
 			artRepository.save(art);
 		}
-
+		return art;
 	}
 
-	public List<ArtResponseDto> getAllArtList() {
+	public List<ArtResponse> getAllArtList() {
 		return artRepository.findAllArts();
 	}
 
-	public List<ArtResponseDto> getMyArtList(Long userSeq) {
+	public List<ArtResponse> getMyArtList(Long userSeq) {
 
 		return artRepository.findMyArts(userSeq);
 	}
 
-	public List<ArtResponseDto> getLikedArtList(Long userSeq) {
+	public List<ArtResponse> getLikedArtList(Long userSeq) {
 
 		return artRepository.findLikedArt(userSeq);
 	}
 
-	public void setMasterpieceList(List<MasterpieceRequestDto> masterpieceRequestDtoList) {
+	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList) {
 
 		boolean isRepresent = false;
 		Art art = null;
 
-		for (int i = 0; i < masterpieceRequestDtoList.size(); i++) {
-			MasterpieceRequestDto masterpieceRequestDto = masterpieceRequestDtoList.get(i);
-			isRepresent = masterpieceRequestDto.isRepresent();
-			art = artRepository.findById(masterpieceRequestDto.getArtSeq()).orElse(null);
+		for (int i = 0; i < masterpieceRequestList.size(); i++) {
+			MasterpieceRequest masterpieceRequest = masterpieceRequestList.get(i);
+			isRepresent = masterpieceRequest.isRepresent();
+			art = artRepository.findById(masterpieceRequest.getArtSeq()).orElse(null);
 			if (art != null) {
 				art.setRepresent(isRepresent);
 				artRepository.save(art);
@@ -73,26 +74,26 @@ public class ArtService {
 
 	}
 
-	public List<ArtResponseDto> getArtListbyCategory(Long artCategorySeq) {
+	public List<ArtResponse> getArtListbyCategory(Long artCategorySeq) {
 
 		return artRepository.findArtsbyCategory(artCategorySeq);
 
 	}
 
-	public List<ArtResponseDto> getPopularArtList() {
+	public List<ArtResponse> getPopularArtList() {
 
 		return artRepository.findAllOrderByArtLikeCount();
 	}
 
-	public Art updateArt(ArtRequestDto artRequestDto) {
+	public Art updateArt(ArtRequest artRequest) {
 
-		Art art = artRepository.findById(artRequestDto.getArtSeq()).orElse(null);
-		Long artistSeq = artistRepository.findById(artRequestDto.getUserSeq()).orElse(null).getId();
+		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
+		Long artistSeq = artistRepository.findById(artRequest.getUserSeq()).orElse(null).getId();
 
-		if (artRequestDto.getUserSeq() == artistSeq) {
-			art.setArtImg(artRequestDto.getArtImg());
-			art.setArtDescription(artRequestDto.getArtDescription());
-			art.getArtCategory().setId(artRequestDto.getArtCategorySeq());
+		if (artRequest.getUserSeq() == artistSeq) {
+			art.setArtImg(artRequest.getArtImg());
+			art.setArtDescription(artRequest.getArtDescription());
+			art.getArtCategory().setId(artRequest.getArtCategorySeq());
 
 		} else {
 			return null;
