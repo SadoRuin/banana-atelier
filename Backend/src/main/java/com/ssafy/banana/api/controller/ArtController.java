@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -154,17 +155,24 @@ public class ArtController {
 	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
 	@PutMapping
 	public ResponseEntity modifyArt(@RequestBody ArtRequest artRequest) {
-
-		artService.updateArt(artRequest);
+		
+		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
+		Art art = artService.updateArt(artRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
-	// @ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
-	// @DeleteMapping("")
-	// public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq) {
-	//
-	// 	return null;
-	// }
+	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
+	@DeleteMapping("art_seq")
+	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq) {
+
+		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
+		Long result = artService.deleteArt(artSeq, userSeq);
+
+		if (result == -1L) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
 
 }

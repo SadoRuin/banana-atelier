@@ -9,7 +9,6 @@ import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
-import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.response.ArtResponse;
@@ -22,7 +21,6 @@ public class ArtService {
 
 	private final ArtRepository artRepository;
 	private final ArtCategoryRepository artCategoryRepository;
-	private final ArtistRepository artistRepository;
 
 	public Art uploadArt(ArtRequest artRequest) {
 
@@ -85,12 +83,12 @@ public class ArtService {
 		return artRepository.findAllOrderByArtLikeCount();
 	}
 
-	public Art updateArt(ArtRequest artRequest) {
+	public Art updateArt(ArtRequest artRequest, Long userSeq) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
-		Long artistSeq = artistRepository.findById(artRequest.getUserSeq()).orElse(null).getId();
+		Long artistSeq = art.getArtist().getId();
 
-		if (artRequest.getUserSeq() == artistSeq) {
+		if (userSeq == artistSeq) {
 			art.setArtImg(artRequest.getArtImg());
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
@@ -99,5 +97,18 @@ public class ArtService {
 			return null;
 		}
 		return art;
+	}
+
+	public Long deleteArt(Long artSeq, Long userSeq) {
+
+		Art art = artRepository.findById(artSeq).orElse(null);
+		Long artistSeq = art.getArtist().getId();
+
+		if (userSeq == artistSeq) {
+			artRepository.deleteById(artSeq);
+			return artSeq;
+		}
+
+		return -1L;
 	}
 }
