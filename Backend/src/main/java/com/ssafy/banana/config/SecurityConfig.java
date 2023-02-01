@@ -58,8 +58,7 @@ public class SecurityConfig {
 			.antMatchers(
 				"/auth/login",
 				"/users/signup",
-				"/auth/verify",
-				"/users/verify/**"
+				"/auth/verify/**"
 			).permitAll()
 			.anyRequest().authenticated()
 

@@ -1,12 +1,17 @@
 package com.ssafy.banana.api.controller;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +40,7 @@ public class AuthController {
 		@ApiImplicitParam(name = "email", value = "로그인할 이메일", required = true),
 		@ApiImplicitParam(name = "password", value = "비밀번호", required = true)
 	})
-	public ResponseEntity<LoginResponse> authorize(@Valid LoginRequest loginRequest) {
+	public ResponseEntity<LoginResponse> authorize(@Valid @RequestBody LoginRequest loginRequest) {
 
 		LoginResponse loginResponse = authService.login(loginRequest);
 
@@ -46,8 +51,14 @@ public class AuthController {
 	}
 
 	@PostMapping("/verify")
-	public ResponseEntity verify(String email) {
-		authService.sendVerificationMail(email);
+	public ResponseEntity verify(@RequestBody Map<String, String> map) {
+		authService.sendVerificationMail(map.get("email"));
 		return ResponseEntity.ok("성공적으로 인증메일을 보냈습니다.");
+	}
+
+	@GetMapping("/verify/{key}")
+	public ResponseEntity getVerify(@PathVariable String key) {
+		authService.verifyEmail(key);
+		return ResponseEntity.ok("Successfully authenticated.");
 	}
 }
