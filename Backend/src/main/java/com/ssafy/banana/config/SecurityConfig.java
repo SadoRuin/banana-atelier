@@ -19,23 +19,16 @@ import com.ssafy.banana.security.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.banana.security.jwt.JwtSecurityConfig;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
+import lombok.RequiredArgsConstructor;
+
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-	public SecurityConfig(
-		TokenProvider tokenProvider,
-		JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-		JwtAccessDeniedHandler jwtAccessDeniedHandler
-	) {
-		this.tokenProvider = tokenProvider;
-		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-		this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -62,7 +55,12 @@ public class SecurityConfig {
 
 			.and()
 			.authorizeRequests()
-			.antMatchers("/auth/login", "/users/signup").permitAll()
+			.antMatchers(
+				"/auth/login",
+				"/users/signup",
+				"/auth/verify",
+				"/users/verify/**"
+			).permitAll()
 			.anyRequest().authenticated()
 
 			.and()

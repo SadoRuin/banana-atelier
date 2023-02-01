@@ -11,6 +11,7 @@ import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.exception.DuplicateUserException;
 import com.ssafy.banana.exception.NotFoundUserException;
+import com.ssafy.banana.util.RedisUtil;
 import com.ssafy.banana.util.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final RedisUtil redisUtil;
 
 	@Transactional
 	public void signup(SignupRequest signupRequest) {
@@ -55,5 +57,14 @@ public class UserService {
 				.flatMap(userRepository::findByEmail)
 				.orElseThrow(() -> new NotFoundUserException("User not found"))
 		);
+	}
+
+	public void verifyEmail(String key) {
+		String email = redisUtil.getData(key);
+		User user = userRepository.findByEmailAndIsAuthorized(email, false)
+			.orElseThrow(() -> new DuplicateUserException(email + " -> 이미 이메일 인증이 완료된 사용자입니다."));
+		user.setAuthorized(true);
+		userRepository.save(user);
+		redisUtil.deleteData(key);
 	}
 }

@@ -4,8 +4,9 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,8 +35,14 @@ public class UserController {
 		@ApiImplicitParam(name = "password", value = "비밀번호", required = true),
 		@ApiImplicitParam(name = "nickname", value = "닉네임", required = true)
 	})
-	public ResponseEntity signup(@ApiIgnore @Valid @RequestBody SignupRequest signupRequest) {
+	public ResponseEntity signup(@ApiIgnore @Valid SignupRequest signupRequest) {
 		userService.signup(signupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했습니다.");
+	}
+
+	@GetMapping("/verify/{key}")
+	public ResponseEntity getVerify(@PathVariable String key) {
+		userService.verifyEmail(key);
+		return ResponseEntity.ok("성공적으로 인증되었습니다.");
 	}
 }

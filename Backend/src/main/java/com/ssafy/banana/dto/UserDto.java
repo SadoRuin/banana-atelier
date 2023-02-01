@@ -21,7 +21,6 @@ import lombok.Setter;
 @Builder
 public class UserDto implements Serializable {
 	private String email;
-	private String password;
 	private String nickname;
 	private int artistLikeCount;
 	private Role role;
