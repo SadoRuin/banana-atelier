@@ -64,7 +64,13 @@ public class ArtResponse {
 		this.artLikeCount = art.getArtLikeCount();
 		this.artThumbnail = art.getArtThumbnail();
 		this.artImg = art.getArtImg();
-		this.artCategory = art.getArtCategory();
+
+		Long artCategorySeq = art.getArtCategory().getId();
+		String artCategoryName = art.getArtCategory().getArtCategoryName();
+		this.artCategory = ArtCategory.builder()
+			.id(artCategorySeq)
+			.artCategoryName(artCategoryName)
+			.build();
 
 		this.artistNickname = user.getNickname();
 		this.artistLikeCount = user.getArtistLikeCount();
