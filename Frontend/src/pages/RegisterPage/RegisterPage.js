@@ -15,9 +15,11 @@ import {
     const location = useLocation()
     const navigate = useNavigate()
   
-    const [Email, setEmail] = useState('')
-    const [Password, setPassword] = useState('')
+    const [content, setContent] = useState('')
     const [Nickname, setNickname] = useState('')
+    const [Email, setEmail] = useState('')
+    const [EmailAuth, setEmailAuth] = useState('')
+    const [Password, setPassword] = useState('')
     const [ConfirmPassword, setConfirmPassword] = useState('')
     
     const [check, setCheck] = useState(false)
@@ -70,24 +72,28 @@ import {
     //   dispatch(check_email(body))
     //     .then((response) => {
     //       if (response.payload.message !== 'fail') {
-    //         alert("이미 존재하는 이메일입니다.")
+    //         setContent('사용 가능한 이메일입니다.')
     //         setEmail('')
     //       } else {
-    //         alert("사용 가능한 이메일입니다.")
+    //         setContent('이미 사용중인 이메일입니다.')
     //         setCheckEmail(true)
     //       }
     //     })
     // }
   
     // Handlers
-    const onEmailHandler = event => {
-      setEmail(event.target.value)
-    }
-  
     const onNicknameHandler = event => {
       setNickname(event.target.value)
     }
     
+    const onEmailHandler = event => {
+      setEmail(event.target.value)
+    }
+    
+    const onEmailAuthHandler = event => {
+      setEmailAuth(event.target.value)
+    }
+
     const onPasswordHandler = event => {
       setPassword(event.target.value)
     }
@@ -155,29 +161,32 @@ import {
   
         <img src={logo} alt="/" />
   
-        <form style={{display: 'flex', flexDirection: 'column'}}
-          onSubmit = {onSubmitHandler}>
+        <form onSubmit = {onSubmitHandler}>
   
-          <label>Email</label>
-          <input type="email" value={Email} onChange = {onEmailHandler} />
-          {/* <button onClick={onCheckEmail}>중복확인</button> */}
-  
-          <label>Nickname</label>
+          <label>닉네임</label>
           <input type="text" value={Nickname} onChange = {onNicknameHandler} />
+          <button>중복확인</button>
           {/* <button onClick={onCheckNickname}>중복확인</button> */}
   
-          <label>Password</label>
+          <label>이메일</label>
+          <input type="email" value={Email} onChange = {onEmailHandler} />
+          <button>인증메일 발송</button>
+          {/* <button onClick={onCheckEmail}>인증메일 발송</button> */}
+          <p>인증번호 확인을 위해 사용 중인 이메일을 입력하세요.</p>
+          <p>{ content }</p>
+  
+          <input type="text" value={EmailAuth} onChange = {onEmailAuthHandler} />
+          <button>인증번호 확인</button>
+
+          <label>비밀번호</label>
           <input type="password" value={Password} onChange = {onPasswordHandler} />
   
-          <label>Confirm Password</label>
+          <label>비밀번호 확인</label>
           <input type="password" value={ConfirmPassword} onChange = {onConfirmPasswordHandler} />
   
           <br />
           <button>회원가입</button>
         </form>
-  
-        <hr />
-        <p>소셜 회원가입 구현할 위치</p>
         
       </div>
     )
