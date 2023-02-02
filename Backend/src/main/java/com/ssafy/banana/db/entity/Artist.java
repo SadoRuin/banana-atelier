@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +37,7 @@ public class Artist {
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
+	@JsonIgnore
 	private User user;
 
 	@Size(max = 100)
@@ -58,6 +61,6 @@ public class Artist {
 	private String artistIntro;
 
 	@Column(name = "artist_commission_avg", nullable = false)
-	private double artistCommissionAvg;
+	private Double artistCommissionAvg;
 
 }

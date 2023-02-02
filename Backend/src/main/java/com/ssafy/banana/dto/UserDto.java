@@ -39,7 +39,7 @@ public class UserDto implements Serializable {
 			.nickname(user.getNickname())
 			.artistLikeCount(user.getArtistLikeCount())
 			.role(user.getRole())
-			.isAuthorized(user.getIsAuthorized())
+			.isAuthorized(user.isAuthorized())
 			.build();
 	}
 }

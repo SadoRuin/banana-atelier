@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,7 +62,10 @@ public class SecurityConfig {
 
 			.and()
 			.authorizeRequests()
-			.antMatchers("/auth/login", "/users/signup").permitAll()
+			.antMatchers("/auth/login",
+				"/users/signup",
+				"/api/arts/**"
+			).permitAll()
 			.anyRequest().authenticated()
 
 			.and()
@@ -85,14 +89,12 @@ public class SecurityConfig {
 		return source;
 	}
 
-
-/*	@Bean
+	@Bean
 	public WebSecurityCustomizer configure() {
 		return (web) -> web.ignoring().antMatchers(
-			"/static/js/**",
-			"/static/css/**",
-			"/static/img/**",
-			"/static/frontend/**"
+			"/swagger-ui/**",
+			"/swagger-resources/**",
+			"/v3/api-docs"
 		);
-	}*/
+	}
 }
