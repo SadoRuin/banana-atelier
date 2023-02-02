@@ -18,12 +18,12 @@ function CommisionsApplyPage() {
           <div>
             <div>
               {/* 작가 프사 */}
-              <img src="CommisionsPage" alt="" />
+              <img src="CommissionsPage" alt="" />
               <p>작가 닉네임</p>
             </div>
             <div>
               {/* 바나나 */}
-              <img src="CommisionsPage" alt="" />
+              <img src="CommissionsPage" alt="" />
               <p>평점</p>
             </div>
           </div>

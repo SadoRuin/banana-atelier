@@ -1,6 +1,6 @@
 import React from 'react'
 
-function CommisionsOpenVidu() {
+function CommissionsOpenVidu() {
   return (
     <div>
       
@@ -8,4 +8,4 @@ function CommisionsOpenVidu() {
   )
 }
 
-export default CommisionsOpenVidu
+export default CommissionsOpenVidu

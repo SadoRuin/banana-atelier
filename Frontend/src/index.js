@@ -32,6 +32,8 @@ import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
 import CurationsDetailPage from "./routes/CurationsPage/CurationsDetailPage";
 
 // 커미션 페이지
+import CommissionsPage from "./routes/CommisionsPage/CommissionsPage";
+import CommissionsDetailPage from "./routes/CommisionsPage/CommissionsDetailPage";
 
 // 마이페이지
 import MyPageLayout from "./routes/MyPage/MyPageLayout";
@@ -92,6 +94,8 @@ const router = createBrowserRouter(
         <Route path="curations/detail" element={ <CurationsDetailPage /> } />
 
         {/* 커미션 페이지 */}
+        <Route path="commissions" element={ <CommissionsPage /> } />
+        <Route path="commissions/detail" element={ <CommissionsDetailPage /> } />
 
         {/*마이페이지*/}
         <Route
@@ -140,11 +144,7 @@ const router = createBrowserRouter(
             <Route path="bookmark" element={ <CurationsBookmark /> } />
           </Route>
 
-          <Route
-            path="commissions"
-            element={ <Commissions /> }
-          >
-          </Route>
+          <Route path="commissions" element={ <Commissions /> } />
           <Route path="commissions/detail" element={ <CommissionsDetail /> } />
 
           <Route path="edit_profile" element={ <EditProfile /> }></Route>
