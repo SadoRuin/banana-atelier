@@ -32,8 +32,8 @@ import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
 import CurationsDetailPage from "./routes/CurationsPage/CurationsDetailPage";
 
 // 커미션 페이지
-import CommissionsPage from "./routes/CommisionsPage/CommissionsPage";
-import CommissionsDetailPage from "./routes/CommisionsPage/CommissionsDetailPage";
+import CommissionsPage from "./routes/CommissionsPage/CommissionsPage";
+import CommissionsDetailPage from "./routes/CommissionsPage/CommissionsDetailPage";
 
 // 마이페이지
 import MyPageLayout from "./routes/MyPage/MyPageLayout";
