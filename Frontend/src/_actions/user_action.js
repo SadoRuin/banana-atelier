@@ -10,10 +10,10 @@ export function loginUser(dataTosubmit) {
 
     // const request = axios.post('https://i8a108.p.ssafy.io/api/users/login', dataTosubmit)
     const request = axios.post('http://localhost:8099/auth/login', dataTosubmit)
-        .then(response => response.data)
+        .then(response => response)
         .catch(error => console.log('error', error))
     console.log(request);
-    // action을 reducer에 넘겨주자
+
     return {
         type: LOGIN_USER,
         payload: request
@@ -28,7 +28,7 @@ export function signUpUser(dataTosubmit) {
     const request = axios.post('http://localhost:8099/users/signup', dataTosubmit)
         .then(response => response)
         .catch(error => console.log("error : ", error))
-    // action을 reducer에 넘겨주자
+
     return {
         type: SIGNUP_USER,
         payload: request
