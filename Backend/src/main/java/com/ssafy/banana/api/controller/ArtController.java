@@ -32,13 +32,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArtController {
 
+	private static final Long TEST_USER_SEQ = 60L;
+
 	private final ArtService artService;
 
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
 	public ResponseEntity uploadArt(@RequestBody ArtRequest artRequest) {
 
-		Art art = artService.uploadArt(artRequest);
+		Long userSeq = TEST_USER_SEQ;    // 수정 예정 (token으로 받아오기)
+		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
+		Art art = artService.uploadArt(artRequest, userSeq, artThumbnail);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
@@ -135,8 +139,9 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
-	@GetMapping("/{art_seq}")
+	@GetMapping("/detail/{art_seq}")
 	public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq) {
+
 		ArtDetailResponse artDetailResponse = artService.getArt(artSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artDetailResponse);
@@ -146,7 +151,7 @@ public class ArtController {
 	@PostMapping("/like")
 	public ResponseEntity addArtLike(@RequestBody MyArtRequest myArtRequest) {
 
-		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
+		Long userSeq = TEST_USER_SEQ;    // 수정 예정 (token으로 받아오기)
 		MyArt myArt = artService.addArtLike(myArtRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(myArt);
@@ -163,17 +168,18 @@ public class ArtController {
 	@PutMapping
 	public ResponseEntity modifyArt(@RequestBody ArtRequest artRequest) {
 
-		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
-		Art art = artService.updateArt(artRequest, userSeq);
+		Long userSeq = TEST_USER_SEQ;    // 수정 예정 (token으로 받아오기)
+		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
+		Art art = artService.updateArt(artRequest, userSeq, artThumbnail);
 
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
 	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
 	@DeleteMapping("art_seq")
 	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq) {
 
-		Long userSeq = 1L;    // 수정 예정 (token으로 받아오기)
+		Long userSeq = TEST_USER_SEQ;    // 수정 예정 (token으로 받아오기)
 		Long result = artService.deleteArt(artSeq, userSeq);
 
 		if (result == -1L) {
