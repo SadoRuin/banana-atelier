@@ -2,11 +2,12 @@ package com.ssafy.banana.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.exception.CustomException;
+import com.ssafy.banana.exception.CustomExceptionType;
 
 @Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,9 +20,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(final String email) {
-		return userRepository.findByEmailAndIsAuthorized(email, true)
+		return userRepository.findByEmail(email)
 			.map(user -> UserPrincipal.create(user))
-			.orElseThrow(() -> new UsernameNotFoundException(email + " -> 이메일 인증이 필요하거나 존재하지 않는 사용자입니다."));
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 	}
 
 }

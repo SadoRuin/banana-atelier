@@ -28,7 +28,7 @@ services:
     image: redis
     container_name: redis
     ports:
-      - 6380:6379
+      - 6379:6379
     command: redis-server --requirepass dnjftlrdl --port 6379
     environment:
       - REDIS_REPLICATION_MODE=master

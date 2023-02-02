@@ -22,7 +22,10 @@ import com.ssafy.banana.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(
+	securedEnabled = true,
+	jsr250Enabled = true
+)
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -58,7 +61,8 @@ public class SecurityConfig {
 			.antMatchers(
 				"/auth/login",
 				"/users/signup",
-				"/auth/verify/**"
+				"/auth/verify",
+				"/users/verify"
 			).permitAll()
 			.anyRequest().authenticated()
 
@@ -72,7 +76,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin("http://front:3126");
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.setAllowCredentials(true);
