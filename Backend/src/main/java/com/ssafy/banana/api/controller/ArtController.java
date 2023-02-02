@@ -28,11 +28,11 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @Api(tags = "작품관련 API")
-@RequestMapping("/api/arts")
+@RequestMapping("/arts")
 @RequiredArgsConstructor
 public class ArtController {
 
-	private static final Long TEST_USER_SEQ = 60L;
+	private static final Long TEST_USER_SEQ = 83L;
 
 	private final ArtService artService;
 
@@ -47,8 +47,8 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
-	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
-	@GetMapping
+	@ApiOperation(value = "전체 작품 리스트 (새로 나온 작품 리스트)", notes = "전체 작품 목록을 최신순으로 반환합니다")
+	@GetMapping(value = {"/", "/new"})
 	public ResponseEntity<List<ArtResponse>> getAllArtList() {
 
 		List<ArtResponse> artList = artService.getAllArtList();
@@ -56,9 +56,16 @@ public class ArtController {
 		if (artList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(artList);
 
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
+
+	// @ApiOperation(value = "새로 나온 작품 리스트", notes = "최근에 업로드 된 작품 목록을 반환합니다")
+	// @GetMapping("/new")
+	// public ResponseEntity<List<ArtResponse>> getNewArtList() {
+	//
+	// 	return null;
+	// }
 
 	@ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}")
@@ -115,13 +122,6 @@ public class ArtController {
 	// @ApiOperation(value = "트렌딩 작품 리스트", notes = "최근에 좋아요를 많이 받은 작품 목록을 반환합니다")
 	// @GetMapping("/trend")
 	// public ResponseEntity<List<ArtResponseDto>> getTrendArtList() {
-	//
-	// 	return null;
-	// }
-	//
-	// @ApiOperation(value = "새로 나온 작품 리스트", notes = "최근에 업로드 된 작품 목록을 반환합니다")
-	// @GetMapping("/new")
-	// public ResponseEntity<List<ArtResponseDto>> getNewArtList() {
 	//
 	// 	return null;
 	// }
