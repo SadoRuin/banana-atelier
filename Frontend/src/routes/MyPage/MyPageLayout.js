@@ -3,7 +3,7 @@ import { Outlet, NavLink, Form } from "react-router-dom";
 
 import ProfileImg from "../../components/ProfileImg";
 
-export default function Layout(props) {
+export default function MyPageLayout(props) {
   const user = {
     isArtist: false,
     isMyPage: true

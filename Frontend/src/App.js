@@ -1,7 +1,7 @@
 import './App.css';
-import NavBar from "./pages/NavBar/NavBar"
-import Footer from "./pages/Footer/Footer"
-import LandingPage from './pages/LandingPage/LandingPage'
+import NavBar from "./routes/LayoutPage/NavBar/NavBar"
+import Footer from "./routes/LayoutPage/Footer/Footer"
+import LandingPage from './routes/LandingPage/LandingPage'
 import LoginPage from './routes/LoginPage/LoginPage'
 import SignUpPage from './routes/SignUpPage/SignUpPage'
 
