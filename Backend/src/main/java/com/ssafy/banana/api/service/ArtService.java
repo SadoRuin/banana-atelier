@@ -1,16 +1,18 @@
 package com.ssafy.banana.api.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
+import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.MyArt;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
+import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtRepository;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.request.ArtRequest;
@@ -29,19 +31,24 @@ public class ArtService {
 	private final ArtCategoryRepository artCategoryRepository;
 	private final UserRepository userRepository;
 	private final MyArtRepository myArtRepository;
+	private final ArtistRepository artistRepository;
 
-	public Art uploadArt(ArtRequest artRequest) {
+	public Art uploadArt(ArtRequest artRequest, Long userSeq, String artThumbnail) {
 
-		Optional<ArtCategory> artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq());
+		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
+		Artist artist = artistRepository.findById(userSeq).orElse(null);
 		Art art = null;
 
 		if (artCategory != null) {
 
 			art = Art.builder()
 				.artImg(artRequest.getArtImg())
+				.artThumbnail(artThumbnail)
 				.artName(artRequest.getArtName())
 				.artDescription(artRequest.getArtDescription())
-				.artCategory(artCategory.orElse(null))
+				.artCategory(artCategory)
+				.artist(artist)
+				.artRegDate(LocalDateTime.now())
 				.build();
 
 			artRepository.save(art);
@@ -113,17 +120,19 @@ public class ArtService {
 				.build();
 			myArtRepository.save(myArt);
 		}
-		
+
 		return myArt;
 	}
 
-	public Art updateArt(ArtRequest artRequest, Long userSeq) {
+	public Art updateArt(ArtRequest artRequest, Long userSeq, String artThumbnail) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
 		Long artistSeq = art.getArtist().getId();
 
 		if (userSeq == artistSeq) {
+			art.setArtName(artRequest.getArtName());
 			art.setArtImg(artRequest.getArtImg());
+			art.setArtThumbnail(artThumbnail);
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
 			artRepository.save(art);
