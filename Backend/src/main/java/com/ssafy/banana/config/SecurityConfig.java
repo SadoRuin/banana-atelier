@@ -19,23 +19,19 @@ import com.ssafy.banana.security.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.banana.security.jwt.JwtSecurityConfig;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
+import lombok.RequiredArgsConstructor;
+
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(
+	securedEnabled = true,
+	jsr250Enabled = true
+)
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-	public SecurityConfig(
-		TokenProvider tokenProvider,
-		JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-		JwtAccessDeniedHandler jwtAccessDeniedHandler
-	) {
-		this.tokenProvider = tokenProvider;
-		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-		this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -62,10 +58,7 @@ public class SecurityConfig {
 
 			.and()
 			.authorizeRequests()
-			.antMatchers("/auth/login",
-				"/users/signup",
-				"/api/arts/**"
-			).permitAll()
+			.antMatchers("/auth/login", "/users/signup").permitAll()
 			.anyRequest().authenticated()
 
 			.and()
@@ -78,7 +71,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin("http://front:3126");
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.setAllowCredentials(true);

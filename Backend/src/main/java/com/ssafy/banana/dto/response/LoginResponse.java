@@ -1,4 +1,6 @@
-package com.ssafy.banana.dto;
+package com.ssafy.banana.dto.response;
+
+import com.ssafy.banana.db.entity.enums.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +13,10 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenDto {
+public class LoginResponse {
 
+	private String nickname;
+	private String profileImg;
+	private Role role;
 	private String token;
 }
