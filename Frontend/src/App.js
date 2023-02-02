@@ -2,8 +2,8 @@ import './App.css';
 import NavBar from "./pages/NavBar/NavBar"
 import Footer from "./pages/Footer/Footer"
 import LandingPage from './pages/LandingPage/LandingPage'
-import LoginPage from './pages/LoginPage/LoginPage'
-import RegisterPage from './pages/RegisterPage/RegisterPage'
+import LoginPage from './routes/LoginPage/LoginPage'
+import SignUpPage from './routes/SignUpPage/SignUpPage'
 
 import {
   BrowserRouter as Router,
@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<LandingPage />}></Route>
           <Route exact path="/login" element={<LoginPage />}></Route>
-          <Route exact path="/register" element={<RegisterPage />}></Route>
+          <Route exact path="/register" element={<SignUpPage />}></Route>
         </Routes>
       </div>
       <Footer></Footer>

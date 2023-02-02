@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux'
 import logo from '../../assets/글씨_250.png'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { 
-  registerUser,
+  signUpUser,
   check_email, 
   check_nickname } from '../../_actions/user_action'
 
 
-  function RegisterPage(props) {
+  function SignUpPage(props) {
 
     const dispatch = useDispatch()
     const location = useLocation()
@@ -134,7 +134,7 @@ import {
         password: Password,
       }
   
-      dispatch(registerUser(body))
+      dispatch(signUpUser(body))
         .then(response => {
           // console.log('response', response);
           // console.log('response.payload', response.payload);
@@ -192,4 +192,4 @@ import {
     )
   }
   
-  export default RegisterPage
+  export default SignUpPage

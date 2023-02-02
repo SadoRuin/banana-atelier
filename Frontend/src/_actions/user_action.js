@@ -1,7 +1,7 @@
 import axios from "axios";
 import {
     LOGIN_USER,
-    REGISTER_USER,
+    SIGNUP_USER,
     CHECK_EMAIL,
     CHECK_NICKNAME
 } from './types'
@@ -22,7 +22,7 @@ export function loginUser(dataTosubmit) {
 }
 
 
-export function registerUser(dataTosubmit) {
+export function signUpUser(dataTosubmit) {
 
     // const request = axios.post('https://i8a108.p.ssafy.io/api/users/signup', dataTosubmit)
     const request = axios.post('http://localhost:8099/users/signup', dataTosubmit)
@@ -30,7 +30,7 @@ export function registerUser(dataTosubmit) {
         .catch(error => console.log("error : ", error))
     // action을 reducer에 넘겨주자
     return {
-        type: REGISTER_USER,
+        type: SIGNUP_USER,
         payload: request
     }
 
