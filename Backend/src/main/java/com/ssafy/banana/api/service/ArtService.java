@@ -90,7 +90,7 @@ public class ArtService {
 		return artRepository.findLikedArt(userSeq);
 	}
 
-	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList) {
+	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList, Long userSeq) {
 
 		boolean isRepresent = false;
 		Art art = null;
@@ -99,6 +99,14 @@ public class ArtService {
 			MasterpieceRequest masterpieceRequest = masterpieceRequestList.get(i);
 			isRepresent = masterpieceRequest.isRepresent();
 			art = artRepository.findById(masterpieceRequest.getArtSeq()).orElse(null);
+
+			if (masterpieceRequest.getUserSeq() != userSeq) {
+				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+			}
+			if (art == null) {
+				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+			}
+
 			if (art != null) {
 				art.setRepresent(isRepresent);
 				artRepository.save(art);

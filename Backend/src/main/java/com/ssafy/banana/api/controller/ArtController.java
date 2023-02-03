@@ -50,7 +50,7 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "전체 작품 리스트 (새로 나온 작품 리스트)", notes = "전체 작품 목록을 최신순으로 반환합니다")
-	@GetMapping(value = {"/", "/new"})
+	@GetMapping(value = {"", "/new"})
 	public ResponseEntity<List<ArtResponse>> getAllArtList() {
 
 		List<ArtResponse> artList = artService.getAllArtList();
@@ -108,7 +108,9 @@ public class ArtController {
 	public ResponseEntity<?> setMasterpieceList(@RequestBody List<MasterpieceRequest> masterpieceRequestList,
 		@RequestHeader("Authorization") String token) {
 
-		artService.setMasterpieceList(masterpieceRequestList);
+		token = getToken(token);
+		Long userSeq = tokenProvider.getSubject(token);
+		artService.setMasterpieceList(masterpieceRequestList, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
@@ -187,6 +189,7 @@ public class ArtController {
 	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq,
 		@RequestHeader("Authorization") String token) {
 
+		//작품이 하나만 있다면 삭제 불가
 		token = getToken(token);
 		Long userSeq = tokenProvider.getSubject(token);
 		Long result = artService.deleteArt(artSeq, userSeq);
