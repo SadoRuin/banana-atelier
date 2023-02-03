@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @Api(tags = "작품관련 API")
-@RequestMapping("/api/arts")
+@RequestMapping("/arts")
 @RequiredArgsConstructor
 public class ArtController {
 
