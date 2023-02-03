@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
@@ -34,14 +35,25 @@ public class ArtService {
 	private final UserRepository userRepository;
 	private final MyArtRepository myArtRepository;
 	private final ArtistRepository artistRepository;
+	private final ArtistService artistService;
 
+	@Transactional
 	public Art uploadArt(ArtRequest artRequest, Long userSeq) {
+
+		artistService.checkArtist(userSeq);
 
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
 		Artist artist = artistRepository.findById(userSeq).orElse(null);
 		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
-		if (artCategory != null && artist != null) {
+		if (artCategory == null || artist == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
+		if (artRequest.getUserSeq() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+
+		if (artRequest.getUserSeq() == userSeq) {
 			Art art = Art.builder()
 				.artImg(artRequest.getArtImg())
 				.artThumbnail(artThumbnail)
