@@ -1,7 +1,5 @@
 package com.ssafy.banana.security.jwt;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,9 +15,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request,
 		HttpServletResponse response,
-		AuthenticationException authException) throws IOException {
+		AuthenticationException authException) {
 		// 유효한 자격증명을 제공하지 않고 접근하려 할때 401
+		// response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "액세스 토큰 오류입니다.");
 		throw new CustomException(CustomExceptionType.ACCESS_TOKEN_ERROR);
-		// response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	}
+
 }

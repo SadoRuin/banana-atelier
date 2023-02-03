@@ -98,4 +98,17 @@ public class TokenProvider implements InitializingBean {
 		}
 		return false;
 	}
+
+	public Long getSubject(String token) {
+
+		String userSeq = Jwts
+			.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.getSubject();
+
+		return Long.parseLong(userSeq);
+	}
 }

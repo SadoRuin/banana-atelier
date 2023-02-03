@@ -22,7 +22,10 @@ import com.ssafy.banana.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity(
+	securedEnabled = true,
+	jsr250Enabled = true
+)
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -38,20 +41,20 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
-				// 기본 REST API만 사용
-				.httpBasic().disable()
-				.cors().and()
-				// token을 사용하는 방식이기 때문에 csrf를 disable합니다.
-				.csrf().disable()
+			// 기본 REST API만 사용
+			.httpBasic().disable()
+			.cors().and()
+			// token을 사용하는 방식이기 때문에 csrf를 disable합니다.
+			.csrf().disable()
 
-				.exceptionHandling()
-				.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-				.accessDeniedHandler(jwtAccessDeniedHandler)
+			.exceptionHandling()
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+			.accessDeniedHandler(jwtAccessDeniedHandler)
 
-				// 세션을 사용하지 않기 때문에 STATELESS로 설정
-				.and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			// 세션을 사용하지 않기 때문에 STATELESS로 설정
+			.and()
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
 				.and()
 				.authorizeRequests()
@@ -64,8 +67,8 @@ public class SecurityConfig {
 				.permitAll()
 				.anyRequest().authenticated()
 
-				.and()
-				.apply(new JwtSecurityConfig(tokenProvider));
+			.and()
+			.apply(new JwtSecurityConfig(tokenProvider));
 
 		return httpSecurity.build();
 	}
@@ -88,8 +91,9 @@ public class SecurityConfig {
 	@Bean
 	public WebSecurityCustomizer configure() {
 		return (web) -> web.ignoring().antMatchers(
-				"/swagger-ui/**",
-				"/swagger-resources/**",
-				"/v3/api-docs");
+			"/swagger-ui/**",
+			"/swagger-resources/**",
+			"/v3/api-docs"
+		);
 	}
 }
