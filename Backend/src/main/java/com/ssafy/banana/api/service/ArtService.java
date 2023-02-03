@@ -20,6 +20,8 @@ import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
+import com.ssafy.banana.exception.CustomException;
+import com.ssafy.banana.exception.CustomExceptionType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,9 +41,8 @@ public class ArtService {
 		Artist artist = artistRepository.findById(userSeq).orElse(null);
 		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
-		if (artCategory != null) {
-
-			art = Art.builder()
+		if (artCategory != null && artist != null) {
+			Art art = Art.builder()
 				.artImg(artRequest.getArtImg())
 				.artThumbnail(artThumbnail)
 				.artName(artRequest.getArtName())
@@ -52,8 +53,9 @@ public class ArtService {
 				.build();
 
 			artRepository.save(art);
+			return art;
 		}
-		return art;
+		throw new CustomException(CustomExceptionType.NO_CONTENT);
 	}
 
 	public List<ArtResponse> getAllArtList() {
