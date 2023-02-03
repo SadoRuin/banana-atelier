@@ -7,7 +7,7 @@ pipeline {
                     sh 'ls -la'
                     sh 'chmod +x gradlew'
                     sh 'ls -la'
-                    sh './gradlew clean build -x test'
+                    sh 'gradlew clean build -x test'
                 }
             }
         }
