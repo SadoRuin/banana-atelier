@@ -66,6 +66,11 @@ public class ArtService {
 		return artRepository.findMyArts(userSeq);
 	}
 
+	public List<ArtResponse> getMasterpieceList(Long userSeq) {
+
+		return artRepository.findMasterpieces(userSeq);
+	}
+
 	public List<ArtResponse> getLikedArtList(Long userSeq) {
 
 		return artRepository.findLikedArt(userSeq);
@@ -154,4 +159,5 @@ public class ArtService {
 
 		return -1L;
 	}
+
 }

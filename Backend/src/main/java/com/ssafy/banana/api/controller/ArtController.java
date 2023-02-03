@@ -80,13 +80,17 @@ public class ArtController {
 
 	}
 
-	//    // 보류
-	//    @ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
-	//    @GetMapping("/{user_seq}/masterpiece")
-	//    public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq){
-	//
-	//        return null;
-	//    }
+	@ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
+	@GetMapping("/{user_seq}/masterpiece")
+	public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq) {
+
+		List<ArtResponse> artList = artService.getMasterpieceList(userSeq);
+
+		if (artList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
+	}
 
 	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}/like")
