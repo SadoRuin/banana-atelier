@@ -44,8 +44,7 @@ public class ArtController {
 
 		token = getToken(token);
 		Long userSeq = tokenProvider.getSubject(token);
-		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
-		Art art = artService.uploadArt(artRequest, userSeq, artThumbnail);
+		Art art = artService.uploadArt(artRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
@@ -178,8 +177,7 @@ public class ArtController {
 
 		token = getToken(token);
 		Long userSeq = tokenProvider.getSubject(token);
-		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
-		Art art = artService.updateArt(artRequest, userSeq, artThumbnail);
+		Art art = artService.updateArt(artRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}

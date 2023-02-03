@@ -33,11 +33,11 @@ public class ArtService {
 	private final MyArtRepository myArtRepository;
 	private final ArtistRepository artistRepository;
 
-	public Art uploadArt(ArtRequest artRequest, Long userSeq, String artThumbnail) {
+	public Art uploadArt(ArtRequest artRequest, Long userSeq) {
 
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
 		Artist artist = artistRepository.findById(userSeq).orElse(null);
-		Art art = null;
+		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
 		if (artCategory != null) {
 
@@ -129,10 +129,11 @@ public class ArtService {
 		return myArt;
 	}
 
-	public Art updateArt(ArtRequest artRequest, Long userSeq, String artThumbnail) {
+	public Art updateArt(ArtRequest artRequest, Long userSeq) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
 		Long artistSeq = art.getArtist().getId();
+		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
 		if (userSeq == artistSeq) {
 			art.setArtName(artRequest.getArtName());
