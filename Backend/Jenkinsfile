@@ -4,7 +4,9 @@ pipeline {
         stage('Gradle Build') {
             steps {
                 dir('Backend') {
+                    sh 'ls -la'
                     sh 'chmod +x gradlew'
+                    sh 'ls -la'
                     sh './gradlew clean build -x test'
                 }
             }
