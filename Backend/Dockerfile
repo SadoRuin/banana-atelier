@@ -6,4 +6,4 @@ COPY ${JAR_FILE} app.jar
 
 EXPOSE 8099
 
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.name=application", "--spring.config.location=file:/back/"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dspring.config.location=/back/application.yml", "-jar", "app.jar"]
