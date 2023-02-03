@@ -30,6 +30,7 @@ import CurationsOnAir from "./routes/CurationsPage/CurationsOnAir"
 import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
 import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
 import CurationsDetailPage from "./routes/CurationsPage/CurationsDetailPage";
+import CurationsRegister from "./routes/CurationsPage/CurationsRegister";
 
 // 커미션 페이지
 import CommissionsPage from "./routes/CommissionsPage/CommissionsPage";
@@ -92,10 +93,12 @@ const router = createBrowserRouter(
         <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
         <Route path="curations/finish" element={ <CurationsFinish /> } />
         <Route path="curations/detail" element={ <CurationsDetailPage /> } />
+        <Route path="curations/register" element={ <CurationsRegister /> } />
 
         {/* 커미션 페이지 */}
         <Route path="commissions" element={ <CommissionsPage /> } />
         <Route path="commissions/detail" element={ <CommissionsDetailPage /> } />
+        {/*<Route path="commissions/"*/}
 
         {/*마이페이지*/}
         <Route
@@ -147,9 +150,9 @@ const router = createBrowserRouter(
           <Route path="commissions" element={ <Commissions /> } />
           <Route path="commissions/detail" element={ <CommissionsDetail /> } />
 
-          <Route path="edit_profile" element={ <EditProfile /> }></Route>
-          <Route path="upload" element={ <Upload /> }></Route>
-          <Route path="set_masterpiece" element={ <SetMasterpiece /> }></Route>
+          <Route path="arts/edit_profile" element={ <EditProfile /> }></Route>
+          <Route path="arts/upload" element={ <Upload /> }></Route>
+          <Route path="arts/set_masterpiece" element={ <SetMasterpiece /> }></Route>
 
         </Route>
       </Route>
