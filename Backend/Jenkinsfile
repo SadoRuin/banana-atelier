@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Gradle Build') {
             steps {
-                sh './Backend/gradlew clean build -x test'
+                sh 'sudo ./Backend/gradlew clean build -x test'
             }
         }
 
