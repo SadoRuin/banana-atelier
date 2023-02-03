@@ -5,10 +5,9 @@ pipeline {
             steps {
                 dir('Backend') {
                     sh 'ls -la'
-                    sh './gradlew clean build -x test'
                     sh 'chmod +x gradlew'
                     sh 'ls -la'
-                    sh './gradlew clean build -x test'
+                    sh './gradlew build'
                 }
             }
         }
