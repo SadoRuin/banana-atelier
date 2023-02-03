@@ -1,5 +1,5 @@
 import {
-    LOGIN_USER, SIGNUP_USER, CHECK_EMAIL, CHECK_NICKNAME
+    LOGIN_USER, SIGNUP_USER, CHECK_EMAIL, CHECK_EMAIL_CODE, CHECK_NICKNAME
 } from '../_actions/types'
 
 
@@ -13,6 +13,9 @@ export default function (state = {}, action) {
             return { ...state, register: action.payload }
 
         case CHECK_EMAIL:
+            return { ...state, emailValid: action.payload}
+
+            case CHECK_EMAIL_CODE:
             return { ...state, emailValid: action.payload}
 
         case CHECK_NICKNAME:
