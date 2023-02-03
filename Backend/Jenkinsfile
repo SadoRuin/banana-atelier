@@ -3,11 +3,11 @@ pipeline {
     stages {
         stage('Gradle Build') {
             steps {
-                sh 'sudo ./Backend/gradlew clean build -x test'
+                sh '/Backend/gradlew clean build -x test'
             }
         }
 
-        stage('Build') {
+        stage('Docker Image Build') {
             steps {
                 sh 'docker build -t banana-back:latest .'
             }
