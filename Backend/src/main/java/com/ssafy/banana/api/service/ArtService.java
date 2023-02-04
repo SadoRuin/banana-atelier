@@ -151,13 +151,14 @@ public class ArtService {
 		return myArt;
 	}
 
+	@Transactional
 	public Art updateArt(ArtRequest artRequest, Long userSeq) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
 		Long artistSeq = art.getArtist().getId();
 		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
-		if (userSeq == artistSeq) {
+		if (artRequest.getUserSeq() == artistSeq && artistSeq == userSeq) {
 			art.setArtName(artRequest.getArtName());
 			art.setArtImg(artRequest.getArtImg());
 			art.setArtThumbnail(artThumbnail);
@@ -165,7 +166,7 @@ public class ArtService {
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
 			artRepository.save(art);
 		} else {
-			return null;
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		return art;
 	}

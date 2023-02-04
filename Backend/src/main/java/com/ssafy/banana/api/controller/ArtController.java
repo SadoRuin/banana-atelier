@@ -22,6 +22,8 @@ import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
+import com.ssafy.banana.exception.CustomException;
+import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
@@ -174,10 +176,13 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
 	@PutMapping
-	public ResponseEntity modifyArt(@RequestBody ArtRequest artRequest,
+	public ResponseEntity updateArt(@RequestBody ArtRequest artRequest,
 		@RequestHeader("Authorization") String token) {
 
 		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		Long userSeq = tokenProvider.getSubject(token);
 		Art art = artService.updateArt(artRequest, userSeq);
 
