@@ -1,15 +1,64 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useNavigate, Form } from "react-router-dom";
 
+
 function CurationsRegister(props) {
+  const masterpieces = [
+    {
+      id: 1,
+      title: '작품1'
+    },
+    {
+      id: 2,
+      title: '작품2'
+    },
+    {
+      id: 3,
+      title: '작품3'
+    },
+    {
+      id: 4,
+      title: '작품4'
+    },
+    {
+      id: 5,
+      title: '작품5'
+    },
+    {
+      id: 6,
+      title: '작품6'
+    },
+    {
+      id: 7,
+      title: '작품7'
+    },
+  ]
+
   const navigate = useNavigate();
 
+  const [selectedPieces, setSelectedPieces] = useState([]);
+
+  const handleSelected = (e) => {
+    let pieceId = Number(e.target.value);
+    console.log(pieceId);
+    if (e.target.checked) {
+      if (selectedPieces.length === 10) {
+        alert('최대 10개의 작품만 선택할 수 있습니다');
+        e.target.checked = false;
+      }
+      else {
+        setSelectedPieces((prev) => [...prev, masterpieces.find((masterpiece)=>masterpiece.id === pieceId)]);
+      }
+    }
+    else {
+      setSelectedPieces(prev => prev.filter((piece)=>piece.id !== pieceId));
+    }
+  }
 
   const getDateToString = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
     const day = date.getDate();
-
     return `${String(year)}-${String(month+1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
   }
 
@@ -49,8 +98,19 @@ function CurationsRegister(props) {
 
         <button type="submit">등록하기</button>
         <div>선택된 작품
-        여기는 대표작품 설정이랑 비슷해서, 거기 해결되면 될듯</div>
-        <div>전체 작품</div>
+          { selectedPieces.map(piece => <div key={piece.id}>{piece?.title}</div>) }
+        </div>
+        <div>전체 작품
+          { masterpieces.map((masterpiece)=>{
+            return (
+              <label key={`masterpiece-${masterpiece.id}`}>
+                {/*<img src="작품img" alt="작품 이미지"/> */}
+                <input type="checkbox" name="selected" value={masterpiece.id} onChange={handleSelected} />
+                {masterpiece.title}
+              </label>
+            )
+          }) }
+        </div>
       </Form>
     </div>
   );

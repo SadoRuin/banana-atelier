@@ -63,6 +63,7 @@ import EditProfile from "./routes/MyPage/EditProfile";
 import Upload from "./routes/MyPage/Upload"
 // 대표작품 설정
 import SetMasterpiece from "./routes/MyPage/SetMasterpiece"
+import CommissionsRegister from "./routes/CommissionsPage/CommissionsRegister";
 
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
@@ -98,7 +99,7 @@ const router = createBrowserRouter(
         {/* 커미션 페이지 */}
         <Route path="commissions" element={ <CommissionsPage /> } />
         <Route path="commissions/detail" element={ <CommissionsDetailPage /> } />
-        {/*<Route path="commissions/"*/}
+        <Route path="commissions/detail/register" element={ <CommissionsRegister/> } />
 
         {/*마이페이지*/}
         <Route

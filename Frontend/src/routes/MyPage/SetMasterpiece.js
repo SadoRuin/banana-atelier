@@ -36,8 +36,21 @@ function SetMasterpiece() {
   const navigate = useNavigate();
   const [selectedPieces, setSelectedPieces] = useState([]);
 
-  const handleSelected = () => {
-  //   힘들어서... 좀이따 할게
+  const handleSelected = (e) => {
+    let pieceId = Number(e.target.value);
+    console.log(pieceId);
+    if (e.target.checked) {
+      if (selectedPieces.length === 3) {
+        alert('최대 3개의 작품만 선택할 수 있습니다');
+        e.target.checked = false;
+      }
+      else {
+        setSelectedPieces((prev) => [...prev, masterpieces.find((masterpiece)=>masterpiece.id === pieceId)]);
+      }
+    }
+    else {
+      setSelectedPieces(prev => prev.filter((piece)=>piece.id !== pieceId));
+    }
   }
 
 
@@ -53,28 +66,27 @@ function SetMasterpiece() {
       <Form method="post">
         <div className="selected_masterpiece">
           <h4>현재 작품</h4>
-          { console.log(selectedPieces) }
-          { selectedPieces.map((piece) => {
-            return (
-              piece?.title
-            )
-          }) }
+
+          { selectedPieces.map(piece => <div key={piece.id}>{piece?.title}</div>) }
+
         </div>
         <div className="all_masterpiece">
-          <h4>전체 작품</h4>
-          {/* 여기는 나의 작품목록 map 돌기 */}
-          { masterpieces.map((masterpiece)=>{
-            return (
-              <label key={`masterpiece-${masterpiece.id}`}>
-                {/*<img src="작품img" alt="작품 이미지"/> */}
-                <input type="checkbox" name="selected" value={masterpiece.id} onChange={handleSelected} />
-                {masterpiece.title}
-              </label>
-            )
-          }) }
+          <Form >
+            <h4>전체 작품</h4>
+            {/* 여기는 나의 작품목록 map 돌기 */}
+            { masterpieces.map((masterpiece)=>{
+              return (
+                <label key={`masterpiece-${masterpiece.id}`}>
+                  {/*<img src="작품img" alt="작품 이미지"/> */}
+                  <input type="checkbox" name="selected" value={masterpiece.id} onChange={handleSelected} />
+                  {masterpiece.title}
+                </label>
+              )
+            }) }
+            <button type="submit">저장하기</button>
+            <button onClick={()=>{ navigate(-1) }}>취소</button>
+          </Form>
         </div>
-        <button type="submit">저장하기</button>
-        <button onClick={()=>{ navigate(-1) }}>취소</button>
       </Form>
     </div>
   )
