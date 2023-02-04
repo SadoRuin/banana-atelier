@@ -45,6 +45,9 @@ public class ArtController {
 		@RequestHeader("Authorization") String token) {
 
 		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		Long userSeq = tokenProvider.getSubject(token);
 		Art art = artService.uploadArt(artRequest, userSeq);
 

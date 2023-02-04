@@ -41,20 +41,17 @@ public class ArtService {
 	@Transactional
 	public Art uploadArt(ArtRequest artRequest, Long userSeq) {
 
-		artistService.checkArtist(userSeq);
-
-		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
-		Artist artist = artistRepository.findById(userSeq).orElse(null);
-		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
-
-		if (artCategory == null || artist == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
-		if (artRequest.getUserSeq() != userSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-
 		if (artRequest.getUserSeq() == userSeq) {
+			artistService.checkArtist(userSeq);
+
+			ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
+			Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
+			String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
+
+			if (artCategory == null || artist == null) {
+				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+			}
+
 			Art art = Art.builder()
 				.artImg(artRequest.getArtImg())
 				.artThumbnail(artThumbnail)
@@ -67,8 +64,9 @@ public class ArtService {
 
 			artRepository.save(art);
 			return art;
+		} else {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		throw new CustomException(CustomExceptionType.NO_CONTENT);
 	}
 
 	public List<ArtResponse> getAllArtList() {
