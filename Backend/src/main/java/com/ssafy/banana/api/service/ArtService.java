@@ -165,23 +165,30 @@ public class ArtService {
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
 			artRepository.save(art);
+			return art;
 		} else {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		return art;
 	}
 
+	@Transactional
 	public Long deleteArt(Long artSeq, Long userSeq) {
 
 		Art art = artRepository.findById(artSeq).orElse(null);
 		Long artistSeq = art.getArtist().getId();
 
 		if (userSeq == artistSeq) {
-			artRepository.deleteById(artSeq);
-			return artSeq;
+			//작품이 하나만 있다면 삭제 불가
+			int myArtCount = artRepository.countArtByArtistSeq(userSeq);
+			if (myArtCount > 1) {
+				artRepository.deleteById(artSeq);
+				return artSeq;
+			} else {
+				throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
+			}
+		} else {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-
-		return -1L;
 	}
 
 }

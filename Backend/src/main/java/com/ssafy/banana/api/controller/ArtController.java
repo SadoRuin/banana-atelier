@@ -190,19 +190,18 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
-	@DeleteMapping("art_seq")
+	@DeleteMapping("/{art_seq}")
 	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq,
 		@RequestHeader("Authorization") String token) {
 
-		//작품이 하나만 있다면 삭제 불가
 		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		Long userSeq = tokenProvider.getSubject(token);
 		Long result = artService.deleteArt(artSeq, userSeq);
-		if (result == -1L) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
 	private static String getToken(String token) {
