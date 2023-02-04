@@ -1,19 +1,20 @@
 import React from 'react'
 import { useNavigate, NavLink, Link } from 'react-router-dom'
-import logo from '../../../assets/글씨X_130.png'
+import './NavBar.css'
+import logo from '../../../assets/글씨X_470.png'
 import ProfileImg from "../../../components/ProfileImg";
 
 function NavBar() {
   const navigate = useNavigate();
 
   return (
-    <nav>
-      <img src={logo} alt="logo" onClick={event => { navigate("/")} }/>
+    <nav id="nav_bar">
+      <img src={logo} alt="logo" style={{cursor: 'pointer'}} onClick={event => { navigate("/")}} height='60px'/>
 
       <div className="menu_bar">
-        <NavLink to="/arts">작품</NavLink>
-        <NavLink to="/curations">큐레이션</NavLink>
-        <NavLink to="/commissions">커미션</NavLink>
+        <NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/arts">작품</NavLink>
+        <NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/curations">큐레이션</NavLink>
+        <NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/commissions">커미션</NavLink>
       </div>
 
       <div className="search_bar">
@@ -29,8 +30,8 @@ function NavBar() {
 
       {/* 로그인 안했을 시*/}
       <div>
-        <NavLink to="/login">로그인</NavLink>
-        <NavLink to="/signup">회원가입</NavLink>
+        <Link to="/login">로그인</Link>
+        <Link to="/signup">회원가입</Link>
       </div>
     </nav>
   )

@@ -37,7 +37,7 @@ import CommissionsPage from "./routes/CommissionsPage/CommissionsPage";
 import CommissionsDetailPage from "./routes/CommissionsPage/CommissionsDetailPage";
 
 // 마이페이지
-import MyPageLayout from "./routes/MyPage/MyPageLayout";
+import MyPageLayout from "./routes/MyPage/Layout";
 // 작품탭
 import ArtsRoot from "./routes/MyPage/ArtsRoot"
 import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
