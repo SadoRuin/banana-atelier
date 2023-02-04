@@ -101,16 +101,15 @@ public class ArtService {
 			isRepresent = masterpieceRequest.isRepresent();
 			art = artRepository.findById(masterpieceRequest.getArtSeq()).orElse(null);
 
-			if (masterpieceRequest.getUserSeq() != userSeq) {
-				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-			}
 			if (art == null) {
-				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+				throw new CustomException(CustomExceptionType.NO_CONTENT);
 			}
 
-			if (art != null) {
+			if (masterpieceRequest.getUserSeq() == userSeq) {
 				art.setRepresent(isRepresent);
 				artRepository.save(art);
+			} else {
+				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 			}
 		}
 	}
