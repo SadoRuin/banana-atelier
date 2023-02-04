@@ -10,6 +10,7 @@ import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
 import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.MyArt;
+import com.ssafy.banana.db.entity.MyArtId;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.repository.ArtCategoryRepository;
 import com.ssafy.banana.db.repository.ArtRepository;
@@ -135,20 +136,31 @@ public class ArtService {
 
 	public MyArt addArtLike(MyArtRequest myArtRequest, Long userSeq) {
 
-		User user = userRepository.findById(userSeq).orElse(null);
 		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
+		User user = userRepository.findById(myArtRequest.getUserSeq()).orElse(null);
 
-		MyArt myArt = null;
-
-		if (user != null && art != null) {
-			myArt = MyArt.builder()
-				.user(userRepository.findById(myArtRequest.getUserSeq()).orElse(null))
-				.art(artRepository.findById(myArtRequest.getArtSeq()).orElse(null))
-				.build();
-			myArtRepository.save(myArt);
+		if (art == null) {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		} else if (user == null) {
+			throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
 		}
 
-		return myArt;
+		if (user.getId() == userSeq) {
+			MyArtId myArtId = MyArtId.builder()
+				.userSeq(user.getId())
+				.artSeq(art.getId())
+				.build();
+
+			MyArt myArt = MyArt.builder()
+				.id(myArtId)
+				.user(user)
+				.art(art)
+				.build();
+			myArtRepository.save(myArt);
+			return myArt;
+		} else {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 	}
 
 	@Transactional
