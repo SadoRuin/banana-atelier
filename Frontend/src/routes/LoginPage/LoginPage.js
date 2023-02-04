@@ -2,15 +2,14 @@ import React from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../../_actions/user_action'
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
 
 
 export default function LoginPage(props) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const params = useParams()
-  const location = useLocation()
+
 
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')

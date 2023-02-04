@@ -1,9 +1,8 @@
 import React from 'react';
-import {NavLink, Outlet, useLoaderData, useParams} from "react-router-dom";
+import {NavLink, useLoaderData } from "react-router-dom";
 
 function NoticesFollowing(props) {
   const noticesData = useLoaderData();
-  const params = useParams();
 
   return (
     <div>

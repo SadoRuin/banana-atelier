@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Form, useLoaderData, NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
+import { Form, useLoaderData, NavLink, useParams } from 'react-router-dom'
 
 
 // 작가가 아니면 접근 금지
@@ -9,7 +9,6 @@ function NoticesMine(props) {
   // const [isNoticeOpen, setIsNoticeOpen] = useState(false);
 
   const noticesData = useLoaderData();
-  const location = useLocation();
   const params = useParams();
   console.log(params.notice_id)
 

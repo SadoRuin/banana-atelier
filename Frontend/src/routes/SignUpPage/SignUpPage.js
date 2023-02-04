@@ -2,15 +2,19 @@ import React from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import logo from '../../assets/글씨_250.png'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { 
+// import {
+//   signUpUser,
+//   check_email,
+//   check_email_code,
+//   check_nickname } from '../../_actions/user_action'
+import {
   signUpUser,
-  check_email, 
-  check_email_code,
-  check_nickname } from '../../_actions/user_action'
+  check_email,
+  check_email_code } from '../../_actions/user_action'
 
   function SignUpPage(props) {
     
@@ -24,7 +28,7 @@ import {
     const [emailCodeValidMessage, SetEmailCodeValidMessage] = useState('')
     
     // 닉네임 중복체크 완료라면? true로
-    const [nicknameCheck, setNicknameCheck] = useState(false)
+    // const [nicknameCheck, setNicknameCheck] = useState(false)
 
     // 이메일 인증 완료라면? true로
     const [emailCheck, SetEmailCheck] = useState(false)
@@ -54,10 +58,18 @@ import {
     })
     
 
+    // const {
+    //   register,
+    //   handleSubmit,
+    //   watch,
+    //   formState: { errors },
+    // } = useForm({
+    //   mode: 'onChange',
+    //   resolver: yupResolver(formSchema),
+    // });
     const {
       register,
       handleSubmit,
-      watch,
       formState: { errors },
     } = useForm({
       mode: 'onChange',
