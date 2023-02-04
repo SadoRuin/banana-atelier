@@ -1,50 +1,52 @@
 import React from 'react'
 
-function CommisionDetailPage() {
+function CommisionsApplyPage() {
   return (
     <div>
       
       <div>
-        본문 내용 주절주절... 쓰는 곳
+        본문내용 주절주절 쓰는 곳
       </div>
 
       <div>
         <div>
           <div>
-            <h2>커미션 제목</h2>
+            <h2>
+              신청하는 커미션 제목
+            </h2>
           </div>
           <div>
             <div>
-              {/* 프로필 사진 */}
-              <img src="" alt="" />
+              {/* 작가 프사 */}
+              <img src="CommissionsPage" alt="" />
               <p>작가 닉네임</p>
             </div>
             <div>
               {/* 바나나 */}
-              <img src="" alt="" />
+              <img src="CommissionsPage" alt="" />
               <p>평점</p>
             </div>
+          </div>
+          <div>
             <div>
-              <div>
-                <p>미팅 1회당 소요 시간</p>
-                <p>시간 적기</p>
-              </div>
-              <div>
-                <p>미팅 횟수</p>
-                <p>실제 횟수</p>
-              </div>
+              <p>미팅 1회당 소요 시간</p>
+              <p>시간 적기</p>
             </div>
             <div>
-              카테고리
+              <p>미팅 횟수</p>
+              <p>실제 횟수</p>
             </div>
+          </div>
+          <div>
+            카테고리
           </div>
         </div>
         <div>
           <div>
-            <p>커미션 가격</p>
-            <p>50,000~ 이런 식으로 적기</p>
+            신청하는 양식 작성하는 곳
           </div>
           <button>커미션 신청하기</button>
+          <button>취소하기</button>
         </div>
       </div>
 
@@ -61,4 +63,4 @@ function CommisionDetailPage() {
   )
 }
 
-export default CommisionDetailPage
+export default CommisionsApplyPage

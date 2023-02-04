@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 function ArtsIndex(props) {
   return (
@@ -6,7 +7,7 @@ function ArtsIndex(props) {
       {/* 여기는 작가인 경우에만 활성화 해야 함*/}
       <div className='masterpiece'>
         <h3>대표 작품</h3>
-        <button className='edit_masterpiece'>대표작품 설정하기</button>
+        <button className='edit_masterpiece'><Link to="set_masterpiece">대표작품 설정하기</Link></button>
         <div>대표작품 있으면 렌더링, 없으면 설정하라는 문구 출력하자</div>
       </div>
 

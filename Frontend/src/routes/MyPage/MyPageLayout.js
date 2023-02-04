@@ -3,7 +3,7 @@ import { Outlet, NavLink, Form } from "react-router-dom";
 
 import ProfileImg from "../../components/ProfileImg";
 
-export default function Layout(props) {
+export default function MyPageLayout(props) {
   const user = {
     isArtist: false,
     isMyPage: true
@@ -35,8 +35,8 @@ export default function Layout(props) {
             <div className="profile_buttons">
               {/*<Link to='edit_profile'><button className='edit_profile'>정보 수정하기</button></Link>*/}
               {/*<Link to='upload'><button className='upload_art'>작품 업로드</button></Link>*/}
-              <Form action='edit_profile'><button type="submit">정보 수정하기</button></Form>
-              <Form action="upload"><button type="submit">작품 업로드</button></Form>
+              <Form action='arts/edit_profile'><button type="submit">정보 수정하기</button></Form>
+              <Form action="arts/upload"><button type="submit">작품 업로드</button></Form>
             </div>
             :
             <div className="profile_buttons">
