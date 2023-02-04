@@ -62,7 +62,6 @@ public class ArtController {
 		if (artList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
@@ -75,14 +74,17 @@ public class ArtController {
 
 	@ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}")
-	public ResponseEntity<List<ArtResponse>> getMyArtList(@PathVariable("user_seq") Long userSeq) {
+	public ResponseEntity<List<ArtResponse>> getMyArtList(@PathVariable("user_seq") Long userSeq,
+		@RequestHeader("Authorization") String token) {
 
-		List<ArtResponse> artList = artService.getMyArtList(userSeq);
-		if (artList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(artList);
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		List<ArtResponse> artList = artService.getMyArtList(userSeq, tokenUserSeq);
 
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
 	@ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
@@ -104,7 +106,6 @@ public class ArtController {
 		if (artList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
@@ -148,7 +149,6 @@ public class ArtController {
 		if (artList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
-
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
