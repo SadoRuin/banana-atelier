@@ -68,7 +68,7 @@ export default function LoginPage(props) {
         <button>로그인</button>
         <button onClick={event => {
           event.preventDefault()
-          navigate("/register")
+          navigate("/signup")
         }}>회원가입</button>
       </form>
       <hr />
