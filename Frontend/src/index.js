@@ -21,20 +21,20 @@ import Layout from "./routes/LayoutPage/Layout"
 import LandingPage from "./routes/LandingPage/LandingPage";
 
 // 작품 페이지
-import ArtsPage from "./routes/ArtsPage/ArtsPage";
-import ArtsDetailPage from "./routes/ArtsPage/ArtsDetailPage";
+import ArtsMain from "./routes/ArtsPage/ArtsMain";
+import ArtsDetail from "./routes/ArtsPage/ArtsDetail";
 
 // 큐레이션 페이지
-import CurationsPage from "./routes/CurationsPage/CurationsPage";
+import CurationsMain from "./routes/CurationsPage/CurationsMain";
 import CurationsOnAir from "./routes/CurationsPage/CurationsOnAir"
 import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
 import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
-import CurationsDetailPage from "./routes/CurationsPage/CurationsDetailPage";
+import CurationsDetail from "./routes/CurationsPage/CurationsDetail";
 import CurationsRegister from "./routes/CurationsPage/CurationsRegister";
 
 // 커미션 페이지
-import CommissionsPage from "./routes/CommissionsPage/CommissionsPage";
-import CommissionsDetailPage from "./routes/CommissionsPage/CommissionsDetailPage";
+import CommissionsMain from "./routes/CommissionsPage/CommissionsMain";
+import CommissionsDetail from "./routes/CommissionsPage/CommissionsDetail";
 
 // 마이페이지
 import MyPageLayout from "./routes/MyPage/Layout";
@@ -56,7 +56,7 @@ import CurationsFollowing from "./routes/MyPage/CurationsFollowing";
 import CurationsBookmark from "./routes/MyPage/CurationsBookmark";
 // 커미션탭
 import Commissions from "./routes/MyPage/Commissions"
-import CommissionsDetail from "./routes/MyPage/CommissionsDetail"
+import MyPageCommissionsDetail from "./routes/MyPage/CommissionsDetail"
 // 모달(프로필 수정, 작품 업로드, 대표작품 설정)
 import EditProfile from "./routes/MyPage/EditProfile";
 // 작품 업로드
@@ -85,20 +85,20 @@ const router = createBrowserRouter(
         <Route index element={ <LandingPage /> } />
 
         {/* 작품 페이지 */}
-        <Route path="arts" element={ <ArtsPage /> } />
-        <Route path="arts/detail" element={ <ArtsDetailPage /> } />
+        <Route path="arts" element={ <ArtsMain /> } />
+        <Route path="arts/detail" element={ <ArtsDetail /> } />
 
         {/* 큐레이션 페이지 */}
-        <Route path="curations" element={ <CurationsPage /> } />
+        <Route path="curations" element={ <CurationsMain /> } />
         <Route path="curations/on_air" element={ <CurationsOnAir /> } />
         <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
         <Route path="curations/finish" element={ <CurationsFinish /> } />
-        <Route path="curations/detail" element={ <CurationsDetailPage /> } />
+        <Route path="curations/detail" element={ <CurationsDetail /> } />
         <Route path="curations/register" element={ <CurationsRegister /> } />
 
         {/* 커미션 페이지 */}
-        <Route path="commissions" element={ <CommissionsPage /> } />
-        <Route path="commissions/detail" element={ <CommissionsDetailPage /> } />
+        <Route path="commissions" element={ <CommissionsMain /> } />
+        <Route path="commissions/detail" element={ <CommissionsDetail /> } />
         <Route path="commissions/detail/register" element={ <CommissionsRegister/> } />
 
         {/*마이페이지*/}
@@ -149,7 +149,7 @@ const router = createBrowserRouter(
           </Route>
 
           <Route path="commissions" element={ <Commissions /> } />
-          <Route path="commissions/detail" element={ <CommissionsDetail /> } />
+          <Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />
 
           <Route path="arts/edit_profile" element={ <EditProfile /> }></Route>
           <Route path="arts/upload" element={ <Upload /> }></Route>

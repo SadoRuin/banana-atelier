@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 
-function CurationsPage() {
+function CurationsMain() {
   return (
     <div>
 
@@ -62,4 +62,4 @@ function CurationsPage() {
   )
 }
 
-export default CurationsPage
+export default CurationsMain

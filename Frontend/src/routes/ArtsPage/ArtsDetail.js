@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import ProfileImg from "../../components/ProfileImg";
 
-function ArtsDetailPage() {
+function ArtsDetail() {
   return (
     <div>
 
@@ -29,15 +29,15 @@ function ArtsDetailPage() {
           <div>
             <div>
               <div className="views">
-                <img src="ArtsPage" alt="" />
+                <img src="ArtsMain" alt="" />
                 작품 본 사람 숫자
               </div>
               <div className="downloaded">
-                <img src="ArtsPage" alt="" />
+                <img src="ArtsMain" alt="" />
                 다운로드한 사람 숫자
               </div>
               <div className="likes">
-                <img src="ArtsPage" alt="" />
+                <img src="ArtsMain" alt="" />
                 좋아요 숫자
               </div>
             </div>
@@ -61,4 +61,4 @@ function ArtsDetailPage() {
   )
 }
 
-export default ArtsDetailPage
+export default ArtsDetail
