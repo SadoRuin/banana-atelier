@@ -89,12 +89,16 @@ public class ArtController {
 
 	@ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
 	@GetMapping("/{user_seq}/masterpiece")
-	public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq) {
+	public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq,
+		@RequestHeader("Authorization") String token) {
 
-		List<ArtResponse> artList = artService.getMasterpieceList(userSeq);
-		if (artList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		List<ArtResponse> artList = artService.getMasterpieceList(userSeq, tokenUserSeq);
+		
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
