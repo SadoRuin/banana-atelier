@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@ApiModel("LoginRequest DTO")
+@ApiModel("로그인요청 DTO")
 public class LoginRequest implements Serializable {
 	@ApiModelProperty(name = "유저 email", example = "banana@gmail.com")
 	@NotNull(message = "email may not be empty")

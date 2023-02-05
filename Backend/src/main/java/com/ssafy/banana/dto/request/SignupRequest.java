@@ -21,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@ApiModel("SignupRequest DTO")
+@ApiModel("회원가입요청 DTO")
 public class SignupRequest implements Serializable {
 	@ApiModelProperty(name = "유저 email", example = "banana@gmail.com")
 	@NotNull(message = "email may not be empty")

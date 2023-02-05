@@ -77,6 +77,13 @@ public class UserService {
 		redisUtil.setDataExpire(key, value, 5);
 	}
 
+	@Transactional(readOnly = true)
+	public void checkNickname(String nickname) {
+		if (userRepository.findByNickname(nickname).orElse(null) != null) {
+			throw new CustomException(CustomExceptionType.USER_CONFLICT);
+		}
+	}
+
 	public static String createCode() {
 		StringBuffer key = new StringBuffer();
 		Random rnd = new Random();
@@ -101,5 +108,4 @@ public class UserService {
 		}
 		return key.toString();
 	}
-
 }

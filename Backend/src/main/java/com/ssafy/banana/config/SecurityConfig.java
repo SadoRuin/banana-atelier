@@ -60,9 +60,10 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers(
 				"/auth/login",
-				"/users/signup",
 				"/auth/verify",
+				"/users/signup",
 				"/users/verify",
+				"/users/nickname-check/**",
 				"/arts/**"
 			).permitAll()
 			.anyRequest().authenticated()
