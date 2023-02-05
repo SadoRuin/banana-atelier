@@ -2,14 +2,12 @@ package com.ssafy.banana.api.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.request.LoginRequest;
 import com.ssafy.banana.dto.request.VerifyRequest;
 import com.ssafy.banana.dto.response.LoginResponse;
@@ -30,11 +28,6 @@ public class AuthService {
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final RedisUtil redisUtil;
-	@Value("${jwt.access-token-valid-time}")
-	private long accessTokenValidTime;
-	@Value("${jwt.refresh-token-valid-time}")
-	private long refreshTokenValidTime;
-	private final UserRepository userRepository;
 
 	public LoginResponse login(LoginRequest loginRequest) {
 
@@ -43,10 +36,8 @@ public class AuthService {
 
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-		String accessToken = tokenProvider.createToken(authentication, accessTokenValidTime);
-		String refreshToken = tokenProvider.createToken(authentication, refreshTokenValidTime);
-		String key = "RT:" + Encoders.BASE64.encode(loginRequest.getEmail().getBytes());
-		redisUtil.setDataExpire(key, refreshToken, refreshTokenValidTime);
+		String accessToken = tokenProvider.createAccessToken(authentication);
+		tokenProvider.createRefreshToken(authentication);
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 		userPrincipal.setPassword("");
 		SecurityContextHolder.getContext()

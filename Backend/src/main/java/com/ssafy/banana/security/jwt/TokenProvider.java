@@ -20,6 +20,7 @@ import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.UserPrincipal;
+import com.ssafy.banana.util.RedisUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -27,6 +28,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -34,14 +36,20 @@ public class TokenProvider implements InitializingBean {
 
 	private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 	private static final String AUTHORITIES_KEY = "auth";
+	@Value("${jwt.access-token-valid-time}")
+	private long accessTokenValidTime;
+	@Value("${jwt.refresh-token-valid-time}")
+	private long refreshTokenValidTime;
 	private String secret;
 	private Key key;
 	private UserRepository userRepository;
+	private RedisUtil redisUtil;
 
 	public TokenProvider(
-		@Value("${jwt.secret}") String secret, UserRepository userRepository) {
+		@Value("${jwt.secret}") String secret, UserRepository userRepository, RedisUtil redisUtil) {
 		this.secret = secret;
 		this.userRepository = userRepository;
+		this.redisUtil = redisUtil;
 	}
 
 	@Override
@@ -50,11 +58,11 @@ public class TokenProvider implements InitializingBean {
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String createToken(Authentication authentication, long validTime) {
+	public String createAccessToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
 		Date now = new Date();
-		Date expriyDate = new Date(now.getTime() + validTime * 1000);
+		Date expriyDate = new Date(now.getTime() + accessTokenValidTime * 1000);
 
 		return Jwts.builder()
 			.setSubject(userPrincipal.getName())
@@ -63,6 +71,24 @@ public class TokenProvider implements InitializingBean {
 			.claim(AUTHORITIES_KEY, userPrincipal.getRole())
 			.signWith(key, SignatureAlgorithm.HS512)
 			.compact();
+	}
+
+	public void createRefreshToken(Authentication authentication) {
+		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+
+		Date now = new Date();
+		Date expriyDate = new Date(now.getTime() + refreshTokenValidTime * 1000);
+
+		String refreshToken = Jwts.builder()
+			.setSubject(userPrincipal.getName())
+			.setIssuedAt(now)
+			.setExpiration(expriyDate)
+			.claim(AUTHORITIES_KEY, userPrincipal.getRole())
+			.signWith(key, SignatureAlgorithm.HS512)
+			.compact();
+
+		String key = "RT:" + Encoders.BASE64.encode(userPrincipal.getUsername().getBytes());
+		redisUtil.setDataExpire(key, refreshToken, refreshTokenValidTime);
 	}
 
 	public Authentication getAuthentication(String token) {
@@ -98,26 +124,35 @@ public class TokenProvider implements InitializingBean {
 		return false;
 	}
 
-	public Long getSubject(String token) {
-		String userSeq = Jwts
-			.parserBuilder()
-			.setSigningKey(key)
-			.build()
-			.parseClaimsJws(token)
-			.getBody()
-			.getSubject();
-		return Long.parseLong(userSeq);
+	public long getSubject(String token) {
+		try {
+			String userSeq = Jwts
+				.parserBuilder()
+				.setSigningKey(key)
+				.build()
+				.parseClaimsJws(token)
+				.getBody()
+				.getSubject();
+			return Long.parseLong(userSeq);
+		} catch (ExpiredJwtException e) {
+			return Long.parseLong(e.getClaims().getSubject());
+		}
 	}
 
 	public long getExpiration(String token) {
-		Date expiration = Jwts
-			.parserBuilder()
-			.setSigningKey(key)
-			.build()
-			.parseClaimsJws(token)
-			.getBody()
-			.getExpiration();
-		Date now = new Date();
-		return expiration.getTime() - now.getTime();
+		try {
+			Date expiration = Jwts
+				.parserBuilder()
+				.setSigningKey(key)
+				.build()
+				.parseClaimsJws(token)
+				.getBody()
+				.getExpiration();
+			Date now = new Date();
+			return expiration.getTime() - now.getTime();
+		} catch (ExpiredJwtException e) {
+			Date now = new Date();
+			return e.getClaims().getExpiration().getTime() - now.getTime();
+		}
 	}
 }

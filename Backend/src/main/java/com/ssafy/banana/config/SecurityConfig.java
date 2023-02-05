@@ -65,7 +65,7 @@ public class SecurityConfig {
 				"/auth/verify",
 				"/users/signup",
 				"/users/verify",
-				"/users/nickname-check/**",
+				// "/users/nickname-check/**",
 				"/arts/**"
 			).permitAll()
 			.anyRequest().authenticated()
