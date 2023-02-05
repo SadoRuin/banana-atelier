@@ -98,18 +98,22 @@ public class ArtController {
 		}
 		Long tokenUserSeq = tokenProvider.getSubject(token);
 		List<ArtResponse> artList = artService.getMasterpieceList(userSeq, tokenUserSeq);
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
 	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}/like")
-	public ResponseEntity<List<ArtResponse>> getLikedArtList(@PathVariable("user_seq") Long userSeq) {
+	public ResponseEntity<List<ArtResponse>> getLikedArtList(@PathVariable("user_seq") Long userSeq,
+		@RequestHeader("Authorization") String token) {
 
-		List<ArtResponse> artList = artService.getLikedArtList(userSeq);
-		if (artList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		List<ArtResponse> artList = artService.getLikedArtList(userSeq, tokenUserSeq);
+
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 

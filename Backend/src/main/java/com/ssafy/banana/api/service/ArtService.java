@@ -102,9 +102,18 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getLikedArtList(Long userSeq) {
+	public List<ArtResponse> getLikedArtList(Long userSeq, Long tokenUserSeq) {
 
-		return artRepository.findLikedArt(userSeq);
+		if (userSeq == tokenUserSeq) {
+			List<ArtResponse> likedArtList = artRepository.findLikedArt(userSeq);
+			if (likedArtList != null) {
+				return likedArtList;
+			} else {
+				throw new CustomException(CustomExceptionType.NO_CONTENT);
+			}
+		} else {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 	}
 
 	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList, Long userSeq) {
