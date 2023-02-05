@@ -12,4 +12,9 @@ public interface MyArtRepository extends JpaRepository<MyArt, Long> {
 		+ "from MyArt ma "
 		+ "where ma.art.id = :artSeq and ma.user.id = :userSeq")
 	MyArt findMyArt(@Param("artSeq") Long artSeq, @Param("userSeq") Long userSeq);
+
+	@Query("select count(ma.art.id) "
+		+ "from MyArt ma "
+		+ "where ma.art.id = :artSeq")
+	int countArtLike(@Param("artSeq") Long artSeq);
 }

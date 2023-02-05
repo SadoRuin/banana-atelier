@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.db.entity.Art;
-import com.ssafy.banana.db.entity.MyArt;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
@@ -187,9 +186,9 @@ public class ArtController {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		Long userSeq = tokenProvider.getSubject(token);
-		MyArt myArt = artService.addArtLike(myArtRequest, userSeq);
+		Art art = artService.addArtLike(myArtRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(myArt);
+		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
 	@ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
@@ -202,9 +201,9 @@ public class ArtController {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		Long userSeq = tokenProvider.getSubject(token);
-		MyArt myArt = artService.deleteArtLike(myArtRequest, userSeq);
+		Art art = artService.deleteArtLike(myArtRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(myArt);
+		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
 	// @ApiOperation(value = "작품 다운로드", notes = "작품을 다운로드합니다")

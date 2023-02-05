@@ -172,7 +172,7 @@ public class ArtService {
 	}
 
 	@Transactional
-	public MyArt addArtLike(MyArtRequest myArtRequest, Long userSeq) {
+	public Art addArtLike(MyArtRequest myArtRequest, Long userSeq) {
 
 		if (myArtRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
@@ -189,29 +189,41 @@ public class ArtService {
 			.userSeq(user.getId())
 			.artSeq(art.getId())
 			.build();
-
 		MyArt myArt = MyArt.builder()
 			.id(myArtId)
 			.user(user)
 			.art(art)
 			.build();
 		myArtRepository.save(myArt);
-		return myArt;
+
+		int artLikeCount = myArtRepository.countArtLike(art.getId());
+		art.setArtLikeCount(artLikeCount);
+		artRepository.save(art);
+
+		return art;
 	}
 
 	@Transactional
-	public MyArt deleteArtLike(MyArtRequest myArtRequest, Long userSeq) {
+	public Art deleteArtLike(MyArtRequest myArtRequest, Long userSeq) {
 
 		if (myArtRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		MyArt myArt = myArtRepository.findMyArt(myArtRequest.getArtSeq(), myArtRequest.getUserSeq());
-
 		if (myArt == null) {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
 		myArtRepository.delete(myArt);
-		return myArt;
+
+		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
+		if (art == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
+		int artLikeCount = myArtRepository.countArtLike(art.getId());
+		art.setArtLikeCount(artLikeCount);
+		artRepository.save(art);
+
+		return art;
 	}
 
 	@Transactional
