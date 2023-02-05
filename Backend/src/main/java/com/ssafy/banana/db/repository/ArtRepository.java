@@ -39,7 +39,10 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 		+ "where u.id = :userSeq")
 	List<ArtResponse> findLikedArt(@Param("userSeq") Long userSeq);
 
-	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) from Art a, User u where a.artCategory.id = :artCategorySeq")
+	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) "
+		+ "from Art a join User u "
+		+ "on a.artist.id = u.id "
+		+ "where a.artCategory.id = :artCategorySeq")
 	List<ArtResponse> findArtsbyCategory(@Param("artCategorySeq") Long artCategorySeq);
 
 	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) from Art a join User u on a.artist.id = u.id order by a.artLikeCount desc")

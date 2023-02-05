@@ -147,14 +147,18 @@ public class ArtService {
 
 	public List<ArtResponse> getArtListbyCategory(Long artCategorySeq) {
 
-		return artRepository.findArtsbyCategory(artCategorySeq);
-
+		List<ArtResponse> artListbyCategory = artRepository.findArtsbyCategory(artCategorySeq);
+		if (!CollectionUtils.isEmpty(artListbyCategory)) {
+			return artListbyCategory;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
 	}
 
 	public List<ArtResponse> getPopularArtList() {
 
 		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtLikeCount();
-		if (CollectionUtils.isEmpty(popularArtList)) {
+		if (!CollectionUtils.isEmpty(popularArtList)) {
 			return popularArtList;
 		} else {
 			throw new CustomException(CustomExceptionType.NO_CONTENT);
@@ -164,6 +168,9 @@ public class ArtService {
 	public ArtDetailResponse getArt(Long artSeq) {
 
 		Art art = artRepository.findById(artSeq).orElse(null);
+		if (art == null) {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
 		User artist = art.getArtist().getUser();
 
 		return new ArtDetailResponse(art, artist);
