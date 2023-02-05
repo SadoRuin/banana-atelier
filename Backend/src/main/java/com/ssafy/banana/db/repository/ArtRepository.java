@@ -21,6 +21,12 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) "
 		+ "from Art a join User u "
 		+ "on a.artist.id = u.id "
+		+ "order by a.artRegDate desc ")
+	List<ArtResponse> findNewArts();
+
+	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) "
+		+ "from Art a join User u "
+		+ "on a.artist.id = u.id "
 		+ "where a.artist.id = :userSeq")
 	List<ArtResponse> findMyArts(@Param("userSeq") Long userSeq);
 
@@ -52,4 +58,5 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 		+ "from Art a "
 		+ "where a.artist.id = :userSeq")
 	int countArtByArtistSeq(@Param("userSeq") Long userSeq);
+
 }

@@ -55,11 +55,20 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
-	@ApiOperation(value = "전체 작품 리스트 (새로 나온 작품 리스트)", notes = "전체 작품 목록을 최신순으로 반환합니다")
-	@GetMapping(value = {"", "/new"})
+	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
+	@GetMapping
 	public ResponseEntity<List<ArtResponse>> getAllArtList() {
 
 		List<ArtResponse> artList = artService.getAllArtList();
+
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
+	}
+
+	@ApiOperation(value = "신규 작품 리스트", notes = "신규 작품 목록을 반환합니다")
+	@GetMapping("/new")
+	public ResponseEntity<List<ArtResponse>> getNewArtList() {
+
+		List<ArtResponse> artList = artService.getNewArtList();
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}

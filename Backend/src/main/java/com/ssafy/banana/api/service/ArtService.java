@@ -79,6 +79,16 @@ public class ArtService {
 		}
 	}
 
+	public List<ArtResponse> getNewArtList() {
+
+		List<ArtResponse> newArtList = artRepository.findNewArts();
+		if (!CollectionUtils.isEmpty(newArtList)) {
+			return newArtList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+	}
+
 	public List<ArtResponse> getMyArtList(Long userSeq, Long tokenUserSeq) {
 
 		if (userSeq != tokenUserSeq) {
