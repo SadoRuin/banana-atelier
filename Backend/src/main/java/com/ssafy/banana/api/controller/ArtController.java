@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -160,8 +161,18 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
 	@GetMapping("/detail/{art_seq}")
-	public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq) {
-
+	@PreAuthorize("hasRole(USER)")
+	public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq,
+		@RequestHeader(AUTHORIZATION) String token) {
+		// @RequestHeader(value = AUTHORIZATION, required = false) String token) {
+		//
+		// if (StringUtils.isBlank(token)) {
+		// 	throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		// }
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		ArtDetailResponse artDetailResponse = artService.getArt(artSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artDetailResponse);
