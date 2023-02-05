@@ -19,10 +19,15 @@ public class RedisUtil {
 		return valueOperations.get(key);
 	}
 
-	public void setDataExpire(String key, String value, int minutes) {
+	public void setDataExpire(String key, String value, long milliseconds) {
 		//  duration 동안 (key, value)를 저장한다.
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-		valueOperations.set(key, value, minutes, TimeUnit.MINUTES);
+		valueOperations.set(key, value, milliseconds, TimeUnit.MILLISECONDS);
+	}
+
+	public void setDate(String key, String value) {
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		valueOperations.set(key, value);
 	}
 
 	public void deleteData(String key) {

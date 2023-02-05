@@ -18,6 +18,7 @@ import com.ssafy.banana.security.jwt.JwtAccessDeniedHandler;
 import com.ssafy.banana.security.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.banana.security.jwt.JwtSecurityConfig;
 import com.ssafy.banana.security.jwt.TokenProvider;
+import com.ssafy.banana.util.RedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +33,7 @@ public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+	private final RedisUtil redisUtil;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -69,7 +71,7 @@ public class SecurityConfig {
 			.anyRequest().authenticated()
 
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider));
+			.apply(new JwtSecurityConfig(tokenProvider, redisUtil));
 
 		return httpSecurity.build();
 	}

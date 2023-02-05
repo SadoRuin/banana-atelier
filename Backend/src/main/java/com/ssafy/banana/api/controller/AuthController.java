@@ -6,15 +6,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.AuthService;
 import com.ssafy.banana.dto.request.LoginRequest;
 import com.ssafy.banana.dto.request.VerifyRequest;
+import com.ssafy.banana.dto.response.ExceptionResponse;
 import com.ssafy.banana.dto.response.LoginResponse;
+import com.ssafy.banana.dto.response.SuccessResponse;
 import com.ssafy.banana.security.jwt.JwtFilter;
 
 import io.swagger.annotations.Api;
@@ -56,12 +60,27 @@ public class AuthController {
 		@ApiImplicitParam(name = "code", value = "인증코드", required = true)
 	})
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "이메일 인증 성공"),
-		@ApiResponse(code = 401, message = "저장된 인증코드와 일치하지 않음", response = Exception.class),
-		@ApiResponse(code = 404, message = "저장된 인증코드가 없음 = 만료", response = Exception.class)
+		@ApiResponse(code = 200, message = "이메일 인증 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 401, message = "저장된 인증코드와 일치하지 않음", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "저장된 인증코드가 없음 = 만료", response = ExceptionResponse.class)
 	})
 	public ResponseEntity getVerify(@RequestBody VerifyRequest verifyRequest) {
 		authService.verifyEmail(verifyRequest);
-		return ResponseEntity.ok().body("인증되었습니다.");
+		return ResponseEntity.ok().body(new SuccessResponse("인증되었습니다."));
+	}
+
+	@PostMapping("/logout")
+	@ApiOperation(value = "로그아웃", notes = "토큰을 redis에 저장. 이제 해당 토큰은 더이상 사용할 수 없다.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "로그아웃 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 401, message = "인증 실패(없는 사용자 or 비밀번호 오류 or 이메일 미인증 or 로그아웃된 사용자)", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class),
+		@ApiResponse(code = 500, message = "서버 오류", response = ExceptionResponse.class)
+	})
+	@Transactional
+	public ResponseEntity logout(@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		authService.logout(token);
+		return ResponseEntity.ok().body(new SuccessResponse("로그아웃 되었습니다."));
 	}
 }

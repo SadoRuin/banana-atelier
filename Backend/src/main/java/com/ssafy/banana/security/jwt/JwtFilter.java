@@ -15,14 +15,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.ssafy.banana.util.RedisUtil;
+
 public class JwtFilter extends GenericFilterBean {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 	private TokenProvider tokenProvider;
+	private RedisUtil redisUtil;
 
-	public JwtFilter(TokenProvider tokenProvider) {
+	public JwtFilter(TokenProvider tokenProvider, RedisUtil redisUtil) {
 		this.tokenProvider = tokenProvider;
+		this.redisUtil = redisUtil;
 	}
 
 	@Override
@@ -33,7 +37,7 @@ public class JwtFilter extends GenericFilterBean {
 		String jwt = resolveToken(httpServletRequest);
 		String requestURI = httpServletRequest.getRequestURI();
 
-		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt) && redisUtil.getData(jwt) == null) {
 			Authentication authentication = tokenProvider.getAuthentication(jwt);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);

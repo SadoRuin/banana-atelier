@@ -14,12 +14,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.exception.CustomException;
+import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.UserPrincipal;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -33,15 +34,14 @@ public class TokenProvider implements InitializingBean {
 
 	private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 	private static final String AUTHORITIES_KEY = "auth";
-	private final String secret;
-	private final long tokenValidityInMilliseconds;
+	private String secret;
 	private Key key;
+	private UserRepository userRepository;
 
 	public TokenProvider(
-		@Value("${jwt.secret}") String secret,
-		@Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
+		@Value("${jwt.secret}") String secret, UserRepository userRepository) {
 		this.secret = secret;
-		this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -50,11 +50,11 @@ public class TokenProvider implements InitializingBean {
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String createToken(Authentication authentication) {
+	public String createToken(Authentication authentication, long validTime) {
 		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
 
 		Date now = new Date();
-		Date expriyDate = new Date(now.getTime() + this.tokenValidityInMilliseconds);
+		Date expriyDate = new Date(now.getTime() + validTime * 1000);
 
 		return Jwts.builder()
 			.setSubject(userPrincipal.getName())
@@ -66,21 +66,20 @@ public class TokenProvider implements InitializingBean {
 	}
 
 	public Authentication getAuthentication(String token) {
-		Claims claims = Jwts
-			.parserBuilder()
-			.setSigningKey(key)
-			.build()
-			.parseClaimsJws(token)
-			.getBody();
+		Long id = getSubject(token);
+
+		UserPrincipal userPrincipal = userRepository.findById(id)
+			.map(user -> UserPrincipal.create(user))
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
 		Collection<? extends GrantedAuthority> authorities =
-			Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+			Arrays.stream(userPrincipal.getRole().toString().split(","))
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 
-		User principal = new User(claims.getSubject(), "", authorities);
+		userPrincipal.setPassword("");
 
-		return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+		return new UsernamePasswordAuthenticationToken(userPrincipal, token, authorities);
 	}
 
 	public boolean validateToken(String token) {
@@ -100,7 +99,6 @@ public class TokenProvider implements InitializingBean {
 	}
 
 	public Long getSubject(String token) {
-
 		String userSeq = Jwts
 			.parserBuilder()
 			.setSigningKey(key)
@@ -108,7 +106,18 @@ public class TokenProvider implements InitializingBean {
 			.parseClaimsJws(token)
 			.getBody()
 			.getSubject();
-
 		return Long.parseLong(userSeq);
+	}
+
+	public long getExpiration(String token) {
+		Date expiration = Jwts
+			.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.getExpiration();
+		Date now = new Date();
+		return expiration.getTime() - now.getTime();
 	}
 }
