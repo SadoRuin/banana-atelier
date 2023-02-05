@@ -3,16 +3,15 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import './SignUpPage.css'
 import logo from '../../assets/글씨_250.png'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import '../../components/commons/commons.css'
 import { 
   signUpUser,
-  check_email, 
-  check_email_code,
-  check_nickname } from '../../_actions/user_action'
+  check_email,
+  check_email_code } from '../../_actions/user_action'
 
 function SignUpPage(props) {
   
