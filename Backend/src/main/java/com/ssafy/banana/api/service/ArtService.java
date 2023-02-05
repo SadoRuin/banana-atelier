@@ -186,28 +186,41 @@ public class ArtService {
 		} else if (user == null) {
 			throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
 		}
+		MyArtId myArtId = MyArtId.builder()
+			.userSeq(user.getId())
+			.artSeq(art.getId())
+			.build();
 
-		if (user.getId() == userSeq) {
-			MyArtId myArtId = MyArtId.builder()
-				.userSeq(user.getId())
-				.artSeq(art.getId())
-				.build();
+		MyArt myArt = MyArt.builder()
+			.id(myArtId)
+			.user(user)
+			.art(art)
+			.build();
+		myArtRepository.save(myArt);
+		return myArt;
+	}
 
-			MyArt myArt = MyArt.builder()
-				.id(myArtId)
-				.user(user)
-				.art(art)
-				.build();
-			myArtRepository.save(myArt);
-			return myArt;
-		} else {
+	@Transactional
+	public MyArt deleteArtLike(MyArtRequest myArtRequest, Long userSeq) {
+
+		if (myArtRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
+		MyArt myArt = myArtRepository.findMyArt(myArtRequest.getArtSeq(), myArtRequest.getUserSeq());
+
+		if (myArt == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
+		myArtRepository.delete(myArt);
+		return myArt;
 	}
 
 	@Transactional
 	public Art updateArt(ArtRequest artRequest, Long userSeq) {
 
+		if (artRequest.getUserSeq() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
 		if (art == null) {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);

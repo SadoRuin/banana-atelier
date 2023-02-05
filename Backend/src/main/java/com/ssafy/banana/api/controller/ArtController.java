@@ -192,6 +192,21 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(myArt);
 	}
 
+	@ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
+	@DeleteMapping("/like")
+	public ResponseEntity deleteArtLike(@RequestBody MyArtRequest myArtRequest,
+		@RequestHeader(AUTHORIZATION) String token) {
+
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Long userSeq = tokenProvider.getSubject(token);
+		MyArt myArt = artService.deleteArtLike(myArtRequest, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(myArt);
+	}
+
 	// @ApiOperation(value = "작품 다운로드", notes = "작품을 다운로드합니다")
 	// @GetMapping("/download/{art_seq}")
 	// public ResponseEntity downloadArt(@PathVariable("art_seq") Long artSeq) {
