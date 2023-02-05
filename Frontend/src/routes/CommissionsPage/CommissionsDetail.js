@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import ProfileImg from "../../components/ProfileImg";
 import {Link, Form} from "react-router-dom";
 
-function CommissionsDetailPage() {
+function CommissionsDetail() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   return (
     <div>
@@ -65,4 +65,4 @@ function CommissionsDetailPage() {
   )
 }
 
-export default CommissionsDetailPage
+export default CommissionsDetail

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ArtsPage() {
+function ArtsMain() {
   return (
     <div>
 
@@ -28,4 +28,4 @@ function ArtsPage() {
   )
 }
 
-export default ArtsPage
+export default ArtsMain

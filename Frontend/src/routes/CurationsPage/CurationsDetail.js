@@ -2,7 +2,7 @@ import React from 'react'
 import ProfileImg from "../../components/ProfileImg";
 import {Link} from "react-router-dom";
 
-function CurationsDetailPage() {
+function CurationsDetail() {
   return (
     <div>
 
@@ -67,4 +67,4 @@ function CurationsDetailPage() {
   )
 }
 
-export default CurationsDetailPage
+export default CurationsDetail
