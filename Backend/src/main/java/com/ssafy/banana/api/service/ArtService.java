@@ -42,32 +42,31 @@ public class ArtService {
 	@Transactional
 	public Art uploadArt(ArtRequest artRequest, Long userSeq) {
 
-		if (artRequest.getUserSeq() == userSeq) {
-			artistService.checkArtist(userSeq);
-
-			ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
-			Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
-			String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
-
-			if (artCategory == null || artist == null) {
-				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-			}
-
-			Art art = Art.builder()
-				.artImg(artRequest.getArtImg())
-				.artThumbnail(artThumbnail)
-				.artName(artRequest.getArtName())
-				.artDescription(artRequest.getArtDescription())
-				.artCategory(artCategory)
-				.artist(artist)
-				.artRegDate(LocalDateTime.now())
-				.build();
-
-			artRepository.save(art);
-			return art;
-		} else {
+		if (artRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
+		artistService.checkArtist(userSeq);
+
+		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
+		Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
+		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
+
+		if (artCategory == null || artist == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
+
+		Art art = Art.builder()
+			.artImg(artRequest.getArtImg())
+			.artThumbnail(artThumbnail)
+			.artName(artRequest.getArtName())
+			.artDescription(artRequest.getArtDescription())
+			.artCategory(artCategory)
+			.artist(artist)
+			.artRegDate(LocalDateTime.now())
+			.build();
+
+		artRepository.save(art);
+		return art;
 	}
 
 	public List<ArtResponse> getAllArtList() {
@@ -82,46 +81,44 @@ public class ArtService {
 
 	public List<ArtResponse> getMyArtList(Long userSeq, Long tokenUserSeq) {
 
-		if (userSeq == tokenUserSeq) {
-			List<ArtResponse> myArtList = artRepository.findMyArts(userSeq);
-			if (!CollectionUtils.isEmpty(myArtList)) {
-				return myArtList;
-			} else {
-				throw new CustomException(CustomExceptionType.NO_CONTENT);
-			}
-		} else {
+		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<ArtResponse> myArtList = artRepository.findMyArts(userSeq);
+		if (!CollectionUtils.isEmpty(myArtList)) {
+			return myArtList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
 		}
 	}
 
 	public List<ArtResponse> getMasterpieceList(Long userSeq, Long tokenUserSeq) {
 
-		if (userSeq == tokenUserSeq) {
-			List<ArtResponse> masterpieceList = artRepository.findMasterpieces(userSeq);
-			if (!CollectionUtils.isEmpty(masterpieceList)) {
-				return masterpieceList;
-			} else {
-				throw new CustomException(CustomExceptionType.NO_CONTENT);
-			}
-		} else {
+		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<ArtResponse> masterpieceList = artRepository.findMasterpieces(userSeq);
+		if (!CollectionUtils.isEmpty(masterpieceList)) {
+			return masterpieceList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
 		}
 	}
 
 	public List<ArtResponse> getLikedArtList(Long userSeq, Long tokenUserSeq) {
 
-		if (userSeq == tokenUserSeq) {
-			List<ArtResponse> likedArtList = artRepository.findLikedArt(userSeq);
-			if (!CollectionUtils.isEmpty(likedArtList)) {
-				return likedArtList;
-			} else {
-				throw new CustomException(CustomExceptionType.NO_CONTENT);
-			}
-		} else {
+		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<ArtResponse> likedArtList = artRepository.findLikedArt(userSeq);
+		if (!CollectionUtils.isEmpty(likedArtList)) {
+			return likedArtList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
 		}
 	}
 
+	@Transactional
 	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList, Long userSeq) {
 
 		boolean isRepresent = false;
@@ -129,19 +126,17 @@ public class ArtService {
 
 		for (int i = 0; i < masterpieceRequestList.size(); i++) {
 			MasterpieceRequest masterpieceRequest = masterpieceRequestList.get(i);
+			if (masterpieceRequest.getUserSeq() != userSeq) {
+				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+			}
 			isRepresent = masterpieceRequest.isRepresent();
 			art = artRepository.findById(masterpieceRequest.getArtSeq()).orElse(null);
 
 			if (art == null) {
 				throw new CustomException(CustomExceptionType.NO_CONTENT);
 			}
-
-			if (masterpieceRequest.getUserSeq() == userSeq) {
-				art.setRepresent(isRepresent);
-				artRepository.save(art);
-			} else {
-				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-			}
+			art.setRepresent(isRepresent);
+			artRepository.save(art);
 		}
 	}
 
@@ -176,8 +171,12 @@ public class ArtService {
 		return new ArtDetailResponse(art, artist);
 	}
 
+	@Transactional
 	public MyArt addArtLike(MyArtRequest myArtRequest, Long userSeq) {
 
+		if (myArtRequest.getUserSeq() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
 		User user = userRepository.findById(myArtRequest.getUserSeq()).orElse(null);
 
@@ -228,7 +227,7 @@ public class ArtService {
 		Long artistSeq = art.getArtist().getId();
 		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
-		if (artRequest.getUserSeq() == artistSeq && artistSeq == userSeq) {
+		if (artistSeq == userSeq) {
 			art.setArtName(artRequest.getArtName());
 			art.setArtImg(artRequest.getArtImg());
 			art.setArtThumbnail(artThumbnail);
@@ -250,17 +249,16 @@ public class ArtService {
 		}
 		Long artistSeq = art.getArtist().getId();
 
-		if (userSeq == artistSeq) {
-			//작품이 하나만 있다면 삭제 불가
-			int myArtCount = artRepository.countArtByArtistSeq(userSeq);
-			if (myArtCount > 1) {
-				artRepository.deleteById(artSeq);
-				return artSeq;
-			} else {
-				throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
-			}
-		} else {
+		if (userSeq != artistSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		//작품이 하나만 있다면 삭제 불가
+		int myArtCount = artRepository.countArtByArtistSeq(userSeq);
+		if (myArtCount > 1) {
+			artRepository.deleteById(artSeq);
+			return artSeq;
+		} else {
+			throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
 		}
 	}
 
