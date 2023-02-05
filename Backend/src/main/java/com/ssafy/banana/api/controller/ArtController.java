@@ -59,9 +59,7 @@ public class ArtController {
 	public ResponseEntity<List<ArtResponse>> getAllArtList() {
 
 		List<ArtResponse> artList = artService.getAllArtList();
-		if (artList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
@@ -154,9 +152,7 @@ public class ArtController {
 	public ResponseEntity<List<ArtResponse>> getPopularArtList() {
 
 		List<ArtResponse> artList = artService.getPopularArtList();
-		if (artList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 

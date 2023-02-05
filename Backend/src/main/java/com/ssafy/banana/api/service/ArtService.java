@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
@@ -71,14 +72,19 @@ public class ArtService {
 
 	public List<ArtResponse> getAllArtList() {
 
-		return artRepository.findAllArts();
+		List<ArtResponse> allArtList = artRepository.findAllArts();
+		if (!CollectionUtils.isEmpty(allArtList)) {
+			return allArtList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
 	}
 
 	public List<ArtResponse> getMyArtList(Long userSeq, Long tokenUserSeq) {
 
 		if (userSeq == tokenUserSeq) {
 			List<ArtResponse> myArtList = artRepository.findMyArts(userSeq);
-			if (myArtList != null) {
+			if (!CollectionUtils.isEmpty(myArtList)) {
 				return myArtList;
 			} else {
 				throw new CustomException(CustomExceptionType.NO_CONTENT);
@@ -92,7 +98,7 @@ public class ArtService {
 
 		if (userSeq == tokenUserSeq) {
 			List<ArtResponse> masterpieceList = artRepository.findMasterpieces(userSeq);
-			if (masterpieceList != null) {
+			if (!CollectionUtils.isEmpty(masterpieceList)) {
 				return masterpieceList;
 			} else {
 				throw new CustomException(CustomExceptionType.NO_CONTENT);
@@ -106,7 +112,7 @@ public class ArtService {
 
 		if (userSeq == tokenUserSeq) {
 			List<ArtResponse> likedArtList = artRepository.findLikedArt(userSeq);
-			if (likedArtList != null) {
+			if (!CollectionUtils.isEmpty(likedArtList)) {
 				return likedArtList;
 			} else {
 				throw new CustomException(CustomExceptionType.NO_CONTENT);
@@ -147,7 +153,12 @@ public class ArtService {
 
 	public List<ArtResponse> getPopularArtList() {
 
-		return artRepository.findAllOrderByArtLikeCount();
+		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtLikeCount();
+		if (CollectionUtils.isEmpty(popularArtList)) {
+			return popularArtList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
 	}
 
 	public ArtDetailResponse getArt(Long artSeq) {
@@ -191,6 +202,9 @@ public class ArtService {
 	public Art updateArt(ArtRequest artRequest, Long userSeq) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
+		if (art == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
 		Long artistSeq = art.getArtist().getId();
 		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
@@ -211,6 +225,9 @@ public class ArtService {
 	public Long deleteArt(Long artSeq, Long userSeq) {
 
 		Art art = artRepository.findById(artSeq).orElse(null);
+		if (art == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
 		Long artistSeq = art.getArtist().getId();
 
 		if (userSeq == artistSeq) {
