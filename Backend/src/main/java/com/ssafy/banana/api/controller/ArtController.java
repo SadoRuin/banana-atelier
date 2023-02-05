@@ -36,13 +36,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArtController {
 
+	private static final String AUTHORIZATION = "Authorization";
 	private final TokenProvider tokenProvider;
 	private final ArtService artService;
 
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
 	public ResponseEntity uploadArt(@RequestBody ArtRequest artRequest,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -68,12 +69,13 @@ public class ArtController {
 	// public ResponseEntity<List<ArtResponse>> getNewArtList() {
 	//
 	// 	return null;
+
 	// }
 
 	@ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}")
 	public ResponseEntity<List<ArtResponse>> getMyArtList(@PathVariable("user_seq") Long userSeq,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -88,7 +90,7 @@ public class ArtController {
 	@ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
 	@GetMapping("/{user_seq}/masterpiece")
 	public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -103,7 +105,7 @@ public class ArtController {
 	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}/like")
 	public ResponseEntity<List<ArtResponse>> getLikedArtList(@PathVariable("user_seq") Long userSeq,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -118,7 +120,7 @@ public class ArtController {
 	@ApiOperation(value = "대표 작품 설정", notes = "작가 본인의 대표작을 설정합니다")
 	@PutMapping("/masterpiece")
 	public ResponseEntity<?> setMasterpieceList(@RequestBody List<MasterpieceRequest> masterpieceRequestList,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -168,7 +170,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
 	@PostMapping("/like")
 	public ResponseEntity addArtLike(@RequestBody MyArtRequest myArtRequest,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -190,7 +192,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
 	@PutMapping
 	public ResponseEntity updateArt(@RequestBody ArtRequest artRequest,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
@@ -205,7 +207,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
 	@DeleteMapping("/{art_seq}")
 	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq,
-		@RequestHeader("Authorization") String token) {
+		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
