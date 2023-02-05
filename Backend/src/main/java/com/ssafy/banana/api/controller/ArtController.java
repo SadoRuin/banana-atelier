@@ -73,14 +73,6 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
-	// @ApiOperation(value = "새로 나온 작품 리스트", notes = "최근에 업로드 된 작품 목록을 반환합니다")
-	// @GetMapping("/new")
-	// public ResponseEntity<List<ArtResponse>> getNewArtList() {
-	//
-	// 	return null;
-
-	// }
-
 	@ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
 	@GetMapping("/{user_seq}")
 	public ResponseEntity<List<ArtResponse>> getMyArtList(@PathVariable("user_seq") Long userSeq,
@@ -151,12 +143,14 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
-	// @ApiOperation(value = "트렌딩 작품 리스트", notes = "최근에 좋아요를 많이 받은 작품 목록을 반환합니다")
-	// @GetMapping("/trend")
-	// public ResponseEntity<List<ArtResponseDto>> getTrendArtList() {
-	//
-	// 	return null;
-	// }
+	@ApiOperation(value = "트렌딩 작품 리스트", notes = "최근 2주 동안에 좋아요를 많이 받은 작품 목록을 반환합니다")
+	@GetMapping("/trend")
+	public ResponseEntity<List<ArtResponse>> getTrendArtList() {
+
+		List<ArtResponse> artList = artService.getTrendArtList();
+
+		return ResponseEntity.status(HttpStatus.OK).body(artList);
+	}
 
 	@ApiOperation(value = "인기 작품 리스트", notes = "좋아요를 많이 받은 작품 목록을 반환합니다")
 	@GetMapping("/popular")

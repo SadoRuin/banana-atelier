@@ -160,6 +160,17 @@ public class ArtService {
 		}
 	}
 
+	public List<ArtResponse> getTrendArtList() {
+
+		LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
+		List<ArtResponse> trendArtList = artRepository.findAllOrderByArtLikeCountAndArtRegDate(twoWeeksAgo);
+		if (!CollectionUtils.isEmpty(trendArtList)) {
+			return trendArtList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+	}
+
 	public List<ArtResponse> getPopularArtList() {
 
 		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtLikeCount();
