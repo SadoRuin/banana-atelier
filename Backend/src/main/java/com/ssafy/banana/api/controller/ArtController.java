@@ -31,6 +31,7 @@ import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -47,7 +48,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
 	public ResponseEntity uploadArt(@RequestBody ArtRequest artRequest,
-		@RequestPart(value = "art_file", required = false) MultipartFile artFile,
+		@ApiParam(value = "art_file") @RequestPart(value = "art_file", required = false) MultipartFile artFile,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
