@@ -70,7 +70,6 @@ public class UserService {
 	}
 
 	public void sendVerificationMail(String email) {
-		checkEmail(email);
 		String key = "AC:" + Encoders.BASE64.encode(email.getBytes());
 		String value = createCode();
 		emailUtil.sendEmail(email, "[바나나공방] 회원가입 인증메일입니다.", value);

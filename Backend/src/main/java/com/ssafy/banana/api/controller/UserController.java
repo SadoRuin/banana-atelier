@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.UserService;
-import com.ssafy.banana.dto.request.EmailRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.dto.response.ExceptionResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
@@ -45,19 +44,31 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("회원가입이 완료되었습니다."));
 	}
 
-	@PostMapping("/verify")
-	@ApiOperation(value = "이메일 중복체크 및 인증메일 발송")
+	@GetMapping("/check/email/{email}")
+	@ApiOperation(value = "이메일 중복체크")
 	@ApiImplicitParam(name = "email", value = "유저 이메일", required = true)
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "중복체크 통과 및 인증코드 발송"),
+		@ApiResponse(code = 200, message = "중복체크 통과"),
 		@ApiResponse(code = 409, message = "이미 가입된 이메일 존재", response = ExceptionResponse.class)
 	})
-	public ResponseEntity verify(@RequestBody EmailRequest emailRequest) {
-		userService.sendVerificationMail(emailRequest.getEmail());
+	public ResponseEntity checkEmail(@PathVariable String email) {
+		userService.checkEmail(email);
 		return ResponseEntity.ok(new SuccessResponse("사용가능한 이메일입니다."));
 	}
 
-	@GetMapping("/nickname-check/{nickname}")
+	@GetMapping("/verify/{email}")
+	@ApiOperation(value = "인증메일 발송")
+	@ApiImplicitParam(name = "email", value = "유저 이메일", required = true)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "인증코드 발송"),
+		@ApiResponse(code = 400, message = "메일 발송 오류", response = ExceptionResponse.class)
+	})
+	public ResponseEntity verify(@PathVariable String email) {
+		userService.sendVerificationMail(email);
+		return ResponseEntity.ok(new SuccessResponse("인증 메일이 발송되었습니다."));
+	}
+
+	@GetMapping("/check/nickname/{nickname}")
 	@ApiOperation(value = "닉네임 중복체크")
 	@ApiImplicitParam(name = "nickname", value = "유저 닉네임", required = true)
 	@ApiResponses({
