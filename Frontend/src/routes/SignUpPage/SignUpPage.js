@@ -12,7 +12,9 @@ import {
   signUpUser,
   check_email,
   check_email_code,
-  check_nickname } from '../../_actions/user_action'
+  check_nickname,
+  send_code } from '../../_actions/user_action'
+
 
 function SignUpPage(props) {
   
@@ -104,8 +106,14 @@ function SignUpPage(props) {
     dispatch(check_email(body))
       .then((response) => {
         console.log('response는', response);
-        
-        SetEmailValidMessage('인증번호가 발송되었습니다.')
+        SetEmailValidMessage('사용 가능한 이메일입니다.')
+        console.log(body)
+        dispatch(send_code(body))
+        .then(response => {
+          console.log(body)
+          console.log(response)
+          SetEmailValidMessage('인증번호가 발송되었습니다.')
+        })
 
       })
       .catch((error) => { 
