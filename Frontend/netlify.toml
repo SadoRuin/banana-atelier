@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/api/*"
+  to = 'http://i8a108.p.ssafy.io/:splat"
+  status = 200
