@@ -26,7 +26,7 @@ pipeline {
         stage('Deploy') {
             steps{
                 sh 'docker rm -f front'
-                sh 'docker run -d --name front -p 3126:3126 -u root --network banana banana-front:latest'
+                sh 'docker run -d --name front -p 3126:3126 -u root banana-front:latest'
             }
         }
 
