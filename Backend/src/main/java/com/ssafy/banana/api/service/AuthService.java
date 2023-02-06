@@ -1,5 +1,7 @@
 package com.ssafy.banana.api.service;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.banana.dto.TokenDto;
 import com.ssafy.banana.dto.request.LoginRequest;
 import com.ssafy.banana.dto.request.VerifyRequest;
 import com.ssafy.banana.dto.response.LoginResponse;
@@ -48,6 +51,7 @@ public class AuthService {
 			.profileImg(userPrincipal.getProfileImg())
 			.role(userPrincipal.getRole())
 			.token(accessToken)
+			.expiration(tokenProvider.getExpiration(accessToken))
 			.build();
 	}
 
@@ -65,9 +69,7 @@ public class AuthService {
 
 	public void logout(String token) {
 		logger.info(token);
-		UserPrincipal userPrincipal = (UserPrincipal)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
+		UserPrincipal userPrincipal = (UserPrincipal)tokenProvider.getAuthentication(token).getPrincipal();
 		String email = userPrincipal.getUsername();
 		String key = "RT:" + Encoders.BASE64.encode(email.getBytes());
 		if (redisUtil.getData(key) != null) {
@@ -75,9 +77,29 @@ public class AuthService {
 		}
 
 		long expiration = tokenProvider.getExpiration(token);
-		redisUtil.setDataExpire(token, token, expiration);
+		Date now = new Date();
+		redisUtil.setDataExpire(token, token, expiration - now.getTime());
 
 		SecurityContextHolder.getContext().setAuthentication(null);
 		logger.info("로그아웃 유저 이메일 : '{}' , 유저 권한 : '{}'", userPrincipal.getUsername(), userPrincipal.getRole());
+	}
+
+	public TokenDto reissue(String token) {
+		Authentication authentication = tokenProvider.getAuthentication(token);
+		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+		String email = userPrincipal.getUsername();
+		String key = "RT:" + Encoders.BASE64.encode(email.getBytes());
+		String refreshToken = redisUtil.getData(key);
+		if (refreshToken == null) {
+			throw new CustomException(CustomExceptionType.REFRESH_TOKEN_ERROR);
+		}
+
+		String accessToken = tokenProvider.createAccessToken(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		return TokenDto.builder()
+			.token(accessToken)
+			.expiration(tokenProvider.getExpiration(accessToken))
+			.build();
 	}
 }

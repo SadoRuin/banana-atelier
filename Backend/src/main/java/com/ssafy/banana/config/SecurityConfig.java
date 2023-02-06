@@ -63,9 +63,10 @@ public class SecurityConfig {
 			.antMatchers(
 				"/auth/login",
 				"/auth/verify",
+				"/auth/reissue",
 				"/users/signup",
 				"/users/verify",
-				// "/users/nickname-check/**",
+				"/users/nickname-check/**",
 				"/arts/**"
 			).permitAll()
 			.anyRequest().authenticated()
@@ -80,7 +81,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.addAllowedOrigin("http://front:3126");
+		configuration.addAllowedOrigin("http://i8a108.p.ssafy.io:3126");
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.setAllowCredentials(true);

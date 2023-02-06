@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.AuthService;
+import com.ssafy.banana.dto.TokenDto;
 import com.ssafy.banana.dto.request.LoginRequest;
 import com.ssafy.banana.dto.request.VerifyRequest;
 import com.ssafy.banana.dto.response.ExceptionResponse;
@@ -82,5 +83,24 @@ public class AuthController {
 		String token = Authorization.split(" ")[1];
 		authService.logout(token);
 		return ResponseEntity.ok().body(new SuccessResponse("로그아웃 되었습니다."));
+	}
+
+	@PostMapping("/reissue")
+	@ApiOperation(value = "액세스토큰 재발급", notes = "저장된 리프레시 토큰이 유효하다면 액세스토큰 재발급")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "액세스토큰 재발급 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 401, message = "인증 실패(없는 사용자 or 비밀번호 오류 or 이메일 미인증 or 로그아웃된 사용자)", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class),
+		@ApiResponse(code = 500, message = "서버 오류", response = ExceptionResponse.class)
+	})
+	@Transactional
+	public ResponseEntity reissue(@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		TokenDto tokenDto = authService.reissue(token);
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getToken());
+
+		return ResponseEntity.ok().headers(httpHeaders).body(tokenDto);
 	}
 }

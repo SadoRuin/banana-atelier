@@ -148,11 +148,9 @@ public class TokenProvider implements InitializingBean {
 				.parseClaimsJws(token)
 				.getBody()
 				.getExpiration();
-			Date now = new Date();
-			return expiration.getTime() - now.getTime();
+			return expiration.getTime();
 		} catch (ExpiredJwtException e) {
-			Date now = new Date();
-			return e.getClaims().getExpiration().getTime() - now.getTime();
+			return e.getClaims().getExpiration().getTime();
 		}
 	}
 }
