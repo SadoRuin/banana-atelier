@@ -46,6 +46,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+//    // Thumbnailator
+//    compile group: 'com.twelvemonkeys.imageio', name: 'imageio', version: '3.6', ext: 'pom'
+//    compile group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+//    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.11'
 }
 
 tasks.named('test') {

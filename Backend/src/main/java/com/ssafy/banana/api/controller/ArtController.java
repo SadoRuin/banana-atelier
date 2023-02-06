@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
+import com.ssafy.banana.api.service.ArtistService;
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
@@ -39,10 +42,12 @@ public class ArtController {
 	private static final String AUTHORIZATION = "Authorization";
 	private final TokenProvider tokenProvider;
 	private final ArtService artService;
+	private final ArtistService artistService;
 
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
 	public ResponseEntity uploadArt(@RequestBody ArtRequest artRequest,
+		@RequestPart(value = "art_file", required = false) MultipartFile artFile,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -50,10 +55,13 @@ public class ArtController {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		Long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.uploadArt(artRequest, userSeq);
+
+		Art art = artService.uploadArt(artRequest, userSeq, artFile);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
+
+	// public ResponseEntity<? extends BaseResponseBody> save(@RequestPart("art") MultipartFile art,{	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
 	@GetMapping
