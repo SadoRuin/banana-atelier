@@ -7,8 +7,9 @@ footer {
     padding: 10px 100px;
 
     color: #656565;
+
 }
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     footer {
         padding: 10px 30px;
     }
