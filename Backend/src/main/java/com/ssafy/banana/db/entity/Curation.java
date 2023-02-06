@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,8 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.ssafy.banana.db.entity.enums.CurationStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,6 +56,11 @@ public class Curation {
 	@Size(max = 1000)
 	@Column(name = "curation_summary", length = 1000)
 	private String curationSummary;
+
+	@Size(max = 10)
+	@Enumerated(EnumType.STRING)
+	@Column(name = "curation_status", length = 10)
+	private CurationStatus curationStatus;
 
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

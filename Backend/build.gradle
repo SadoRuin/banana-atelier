@@ -39,6 +39,14 @@ dependencies {
     // swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
+//    //openvidu
+//    implementation files("libs/openvidu-java-client-2.25.0.jar")
+//
+//    implementation 'org.apache.httpcomponents:httpclient:4.5'
+//    implementation 'com.google.code.gson:gson:2.8.5'
+//
+//   // compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+
     compileOnly 'org.projectlombok:lombok'
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
