@@ -54,6 +54,9 @@ public class ArtResponse {
 	@JsonProperty(value = "user_seq")
 	private Long artistSeq;
 
+	@JsonProperty(value = "profile_img")
+	private String profileImg;
+
 	@JsonProperty(value = "nickname")
 	private String artistNickname;
 
@@ -76,6 +79,7 @@ public class ArtResponse {
 			.build();
 
 		this.artistSeq = user.getId();
+		this.profileImg = user.getProfileImg();
 		this.artistNickname = user.getNickname();
 		this.artistLikeCount = user.getArtistLikeCount();
 	}

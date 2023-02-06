@@ -31,11 +31,16 @@ public class ArtDetailResponse {
 	@JsonProperty(value = "art_description")
 	private String artDescription;
 
+	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonProperty(value = "art_reg_date")
 	private LocalDateTime artRegDate;
 
 	@JsonProperty(value = "art_hit")
 	private int artHit;
+
+	@JsonProperty(value = "art_download_count")
+	private int artDownloadCount;
 
 	@JsonProperty(value = "art_like_count")
 	private int artLikeCount;
@@ -55,6 +60,12 @@ public class ArtDetailResponse {
 	@JsonProperty(value = "art_category")
 	private ArtCategory artCategory;
 
+	@JsonProperty(value = "user_seq")
+	private Long userSeq;
+
+	@JsonProperty(value = "profile_img")
+	private String profileImg;
+
 	@JsonProperty(value = "nickname")
 	private String artistNickname;
 
@@ -67,6 +78,7 @@ public class ArtDetailResponse {
 		this.artDescription = art.getArtDescription();
 		this.artRegDate = art.getArtRegDate();
 		this.artHit = art.getArtHit();
+		this.artDownloadCount = art.getArtDownloadCount();
 		this.artLikeCount = art.getArtLikeCount();
 		this.artThumbnail = art.getArtThumbnail();
 		this.artImg = art.getArtImg();
@@ -78,6 +90,8 @@ public class ArtDetailResponse {
 			.artCategoryName(artCategoryName)
 			.build();
 
+		this.userSeq = user.getId();
+		this.profileImg = user.getProfileImg();
 		this.artistNickname = user.getNickname();
 		this.artistLikeCount = user.getArtistLikeCount();
 	}
