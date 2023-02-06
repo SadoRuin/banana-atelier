@@ -6,7 +6,11 @@ import ProfileImg from "../../components/ProfileImg";
 export async function loader ({params}) {
   let artSeq = params.art_seq;
 
-  const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`)
+  const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`, {
+    headers: {
+      Authorization : 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDgiLCJpYXQiOjE2NzU2NjkxMzgsImV4cCI6MTY3NTY3MDkzOCwiYXV0aCI6IlVTRVIifQ.h4UiO8lVZBq2IBFpIUTHoYs_gj51RJ5W_OsFwV_hXfKEdntPOBt1MJ436maXrq7R3Cn493jfKVzJyncW7BSDDA'
+    }
+  })
     .then(response => response)
     .catch(error => error)
 
