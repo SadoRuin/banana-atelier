@@ -18,6 +18,7 @@ import com.ssafy.banana.security.jwt.JwtAccessDeniedHandler;
 import com.ssafy.banana.security.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.banana.security.jwt.JwtSecurityConfig;
 import com.ssafy.banana.security.jwt.TokenProvider;
+import com.ssafy.banana.util.RedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +33,7 @@ public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+	private final RedisUtil redisUtil;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -56,19 +58,21 @@ public class SecurityConfig {
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-				.and()
-				.authorizeRequests()
-				.antMatchers(
-						"/auth/login",
-						"/users/signup",
-						"/auth/verify",
-						"/users/verify",
-						"/arts/**")
-				.permitAll()
-				.anyRequest().authenticated()
+			.and()
+			.authorizeRequests()
+			.antMatchers(
+				"/auth/login",
+				"/auth/verify",
+				"/auth/reissue",
+				"/users/signup",
+				"/users/verify",
+				"/users/nickname-check/**",
+				"/arts/**"
+			).permitAll()
+			.anyRequest().authenticated()
 
 			.and()
-			.apply(new JwtSecurityConfig(tokenProvider));
+			.apply(new JwtSecurityConfig(tokenProvider, redisUtil));
 
 		return httpSecurity.build();
 	}
@@ -78,7 +82,7 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		configuration.addAllowedOrigin("http://localhost:3000");
-		configuration.addAllowedOrigin("https://i8a108.p.ssafy.io");
+		configuration.addAllowedOrigin("http://i8a108.p.ssafy.io:3126");
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.setAllowCredentials(true);

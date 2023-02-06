@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@ApiModel("VerifyRequest DTO")
+@ApiModel("이메일 인증 코드 인증요청 DTO")
 public class VerifyRequest implements Serializable {
 	@ApiModelProperty(name = "유저 email", example = "banana@gmail.com")
 	@NotNull(message = "email may not be empty")

@@ -49,8 +49,8 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserDto getUserInfo(String email) {
-		return UserDto.from(userRepository.findByEmail(email).orElse(null));
+	public UserDto getUserInfo(long id) {
+		return UserDto.from(userRepository.findById(id).orElse(null));
 	}
 
 	@Transactional(readOnly = true)
@@ -71,10 +71,17 @@ public class UserService {
 
 	public void sendVerificationMail(String email) {
 		checkEmail(email);
-		String key = Encoders.BASE64.encode(email.getBytes());
+		String key = "AC:" + Encoders.BASE64.encode(email.getBytes());
 		String value = createCode();
 		emailUtil.sendEmail(email, "[바나나공방] 회원가입 인증메일입니다.", value);
-		redisUtil.setDataExpire(key, value, 5);
+		redisUtil.setDataExpire(key, value, 5 * 60 * 1000);
+	}
+
+	@Transactional(readOnly = true)
+	public void checkNickname(String nickname) {
+		if (userRepository.findByNickname(nickname).orElse(null) != null) {
+			throw new CustomException(CustomExceptionType.USER_CONFLICT);
+		}
 	}
 
 	public static String createCode() {
@@ -101,5 +108,4 @@ public class UserService {
 		}
 		return key.toString();
 	}
-
 }
