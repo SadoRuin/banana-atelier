@@ -32,8 +32,9 @@ export default function LoginPage(props) {
 
     dispatch(loginUser(body))
       .then(response => {
-        console.log('response는 어떤 모습일까?', response.payload);
-        localStorage.setItem("token", response.payload.token)
+        console.log('response는 어떤 모습일까?', response);
+        console.log('response.payload는 어떤 모습일까?', response.payload.data.token);
+        localStorage.setItem("token", response.payload.data.token)
         })
 
     // 이거 token 잘 가져와짐
