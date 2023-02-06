@@ -32,6 +32,9 @@ import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
 import CurationsDetailPage from "./routes/CurationsPage/CurationsDetailPage";
 import CurationsRegister from "./routes/CurationsPage/CurationsRegister";
 
+import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
+
+
 // 커미션 페이지
 import CommissionsPage from "./routes/CommissionsPage/CommissionsPage";
 import CommissionsDetailPage from "./routes/CommissionsPage/CommissionsDetailPage";
@@ -91,6 +94,9 @@ const router = createBrowserRouter(
         {/* 큐레이션 페이지 */}
         <Route path="curations" element={ <CurationsPage /> } />
         <Route path="curations/on_air" element={ <CurationsOnAir /> } />
+        
+        <Route path="curations/on_air/CurationsOpenVidu" element={<CurationsOpenVidu/>}/>
+
         <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
         <Route path="curations/finish" element={ <CurationsFinish /> } />
         <Route path="curations/detail" element={ <CurationsDetailPage /> } />
