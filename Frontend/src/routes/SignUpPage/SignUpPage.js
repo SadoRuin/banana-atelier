@@ -11,7 +11,8 @@ import '../../components/commons/commons.css'
 import { 
   signUpUser,
   check_email,
-  check_email_code } from '../../_actions/user_action'
+  check_email_code,
+  check_nickname } from '../../_actions/user_action'
 
 function SignUpPage(props) {
   
@@ -25,12 +26,17 @@ function SignUpPage(props) {
   const [emailCodeValidMessage, SetEmailCodeValidMessage] = useState('')
   
   // 닉네임 중복체크 완료라면? true로
-  // const [nicknameCheck, setNicknameCheck] = useState(false)
+  const [nicknameCheck, setNicknameCheck] = useState('')
 
   // 이메일 인증 완료라면? true로
   const [emailCheck, SetEmailCheck] = useState(false)
 
+  // 닉네임 인증 완료라면? true
+  const [nicknameValidCheck, SetNicknameValidCheck] = useState(false)
+
   const [verifyMessage, SetVerifyMessage] = useState('인증번호 발송')
+
+  const [alertMessage, SetAlertMessage] = useState('')
 
   const formSchema = yup.object({
     nickname: yup
@@ -66,20 +72,26 @@ function SignUpPage(props) {
   });
 
 
-  // const onCheckNickname = () => {
-  //   const nickname = document.querySelector('#nickname');
-  //   let body = {
-  //     nickname: nickname.value
-  //   }
-  //   console.log(body)
+  const onCheckNickname = () => {
+    const nickname = document.querySelector('#nickname');
+    let body = {
+      nickname: nickname.value
+    }
+    console.log(body)
 
-  //   dispatch(check_nickname(body))
-  //   .then((response) => {
-  //     console.log(response);
-  //     setNicknameCheck(true)
-  //   })
-    
-  // }
+    dispatch(check_nickname(body))
+    .then((response) => {
+      console.log(response);
+      if (response.payload.message === "사용가능한 닉네임입니다.") {
+        setNicknameCheck('사용가능한 닉네임입니다.')
+        SetNicknameValidCheck(true)
+      }
+    })
+    .catch((error) => {
+      setNicknameCheck('중복된 닉네임입니다.')
+      SetNicknameValidCheck(false)
+    })
+  }
 
   const emailVerify = () => {
     SetVerifyMessage('인증번호 재발송')
@@ -92,11 +104,9 @@ function SignUpPage(props) {
     dispatch(check_email(body))
       .then((response) => {
         console.log('response는', response);
-        if (response.payload === '사용가능한 이메일입니다.') {
+        
         SetEmailValidMessage('인증번호가 발송되었습니다.')
-        } else {
-          SetEmailValidMessage('중복된 이메일입니다.')
-        }
+
       })
       .catch((error) => { 
         console.log(error) 
@@ -114,15 +124,17 @@ function SignUpPage(props) {
     dispatch(check_email_code(body))
       .then(response => {
         console.log(response);
-        if (response.payload === '인증되었습니다.') {
+        if (response.payload.code === 'success') {
           SetEmailCodeValidMessage('인증이 완료되었습니다.')
           SetEmailCheck(true)
         } else {
           SetEmailCodeValidMessage('잘못된 인증코드입니다.')
+          SetEmailCheck(false)
         }
       })
       .catch(error => {
         SetEmailCodeValidMessage('잘못된 인증코드입니다.')
+        SetEmailCheck(false)
       })
   }
 
@@ -133,18 +145,26 @@ function SignUpPage(props) {
       nickname: data.nickname,
       password: data.password
     }
-    dispatch(signUpUser(body))
-      .then(response => {
-        console.log('response : ', response);
-        alert(response.payload.data)
-        navigate("/login")
-      })
-      .catch(error => {
-        console.log(error);
-        alert(error)
-        console.log('signUp dispatch 실패');
-      })
+    if (!nicknameValidCheck) {
+      SetAlertMessage('닉네임 중복체크를 하세요.')
+    } else if (!emailCheck) {
+      SetAlertMessage('인증코드 확인을 하세요.')
+    } else {
+      dispatch(signUpUser(body))
+        .then(response => {
+          console.log('response : ', response);
+          alert('회원가입이 완료되었습니다.')
+          navigate("/login")
+        })
+        .catch(error => {
+          console.log(error);
+          alert(error)
+          console.log('signUp dispatch 실패');
+      navigate('/login')
+    })}
+    
   }
+
 
 
   return (
@@ -159,9 +179,14 @@ function SignUpPage(props) {
             <label htmlFor="nickname">닉네임</label> <br/>
           </div>
           <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '8px'}}>
-            <input className='input_box' name="nickname" placeholder="nickname" {...register('nickname')} style={{width: '60%'}} />
-            {/* <button htmlFor="nickname" onClick={onCheckNickname}>중복확인</button> */}
-            <button className='yellow_button'>중복확인</button>
+            <input className='input_box' name="nickname" placeholder="nickname" {...register('nickname')} style={{width: '60%'}} id="nickname"/>
+            <button className='yellow_button' onClick={onCheckNickname}>중복확인</button>
+          </div>
+          <div style={{
+          width: '100%',
+          fontSize: '13px'
+        }}>
+            {nicknameCheck}
           </div>
         </div>
 
@@ -186,7 +211,7 @@ function SignUpPage(props) {
         </div>
 
         <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: '10px', width: '100%'}}>
-          <input className='input_box' type="text" placeholder='인증번호를 입력해주세요' style={{width: '60%'}}/>
+          <input className='input_box' type="text" placeholder='인증번호를 입력해주세요' style={{width: '60%'}} id="verifycheck"/>
           <button onClick={VerifyCheck} className='yellow_button'>인증번호 확인</button>
         </div>
         <div style={{fontSize: '10px'}}>
@@ -225,8 +250,12 @@ function SignUpPage(props) {
 
         <div>
           {/* <input type="submit" vaule="회원가입하기" disabled={errors || watch()} /> */}
-          <button disabled={!emailCheck} className='yellow_button' style={{width: '100%', marginTop: '15px'}} >회원가입</button>
+          <button className='yellow_button' style={{width: '100%', marginTop: '15px'}}>회원가입</button>
+          {/* <button disabled={!emailCheck || !nicknameValidCheck} className='yellow_button' style={{width: '100%', marginTop: '15px'}}>회원가입</button> */}
           {/* <button disabled={!emailCheck || !nicknameCheck} >회원가입</button> */}
+          <div>
+            {alertMessage}
+          </div>
         </div>
       </form>
     </div>

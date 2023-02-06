@@ -41,7 +41,8 @@ export function signUpUser(dataTosubmit) {
 export function check_email(dataTosubmit) {
 
     const request = axios
-        .post('http://localhost:8099/users/verify', dataTosubmit)
+        .post('https://i8a108.p.ssafy.io/api/users/verify', dataTosubmit)
+        // .post('http://localhost:8099/users/verify', dataTosubmit)
         .then(response => response.data)
 
     return {
@@ -53,7 +54,8 @@ export function check_email(dataTosubmit) {
 export function check_email_code(dataTosubmit) {
 
     const request = axios
-        .post('http://localhost:8099/auth/verify', dataTosubmit)
+        .post('https://i8a108.p.ssafy.io/api/auth/verify', dataTosubmit)
+        // .post('http://localhost:8099/auth/verify', dataTosubmit)
         .then(response => response.data)
 
     return {
@@ -66,7 +68,8 @@ export function check_email_code(dataTosubmit) {
 export function check_nickname(dataTosubmit) {
 
     const request = axios
-        .post("https://i8a108.p.ssafy.io/api/users/nickname-check/" + dataTosubmit.nickname, dataTosubmit)
+        // .get("https://i8a108.p.ssafy.io/api/users/nickname-check/" + dataTosubmit.nickname, dataTosubmit)
+        .get(`https://i8a108.p.ssafy.io/api/users/nickname-check/${dataTosubmit.nickname}`)
         .then(response => response.data)
 
     return {
