@@ -29,7 +29,7 @@ function LandingPage() {
         <h1><Link to="arts">트렌딩🔥</Link></h1>
         <p>이 곳에는 요즘 인기가 많아진 작품들이 들어간다.</p>
         <div>
-          {arts.data.map((art) => <div key={art.art_seq}><Link to={`../${art.nickname}/${art.art_seq}`}>{art.art_title}</Link></div>)}
+          {arts.data.map((art) => <div key={art.art_seq}><Link to={`../${art.nickname}/${art.art_seq}`}>{art.art_name}</Link></div>)}
         </div>
       </div>
       
