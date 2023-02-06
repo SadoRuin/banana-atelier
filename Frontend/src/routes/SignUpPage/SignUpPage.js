@@ -25,7 +25,7 @@ function SignUpPage(props) {
   const [emailCodeValidMessage, SetEmailCodeValidMessage] = useState('')
   
   // 닉네임 중복체크 완료라면? true로
-  const [nicknameCheck, setNicknameCheck] = useState(false)
+  // const [nicknameCheck, setNicknameCheck] = useState(false)
 
   // 이메일 인증 완료라면? true로
   const [emailCheck, SetEmailCheck] = useState(false)
@@ -58,7 +58,7 @@ function SignUpPage(props) {
   const {
     register,
     handleSubmit,
-    watch,
+    // watch,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
