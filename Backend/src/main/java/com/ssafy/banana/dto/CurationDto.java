@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.ssafy.banana.db.entity.Artist;
-import com.ssafy.banana.db.entity.Curation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,18 +22,19 @@ public class CurationDto implements Serializable {
 	private LocalDateTime curationEndTime;
 	private String curationName;
 	private String curationSummary;
+	private String curation_status;
 	private Artist artist;
 
-	public static CurationDto from(Curation curation){
-		if(curation == null)
-			return null;
-		return CurationDto.builder()
-			.id(curation.getId())
-			.curationStartTime(curation.getCurationStartTime())
-			.curationEndTime(curation.getCurationEndTime())
-			.curationName(curation.getCurationName())
-			.curationSummary(curation.getCurationSummary())
-			.artist(curation.getArtist())
-			.build();
-	}
+	// public static CurationDto from(Curation curation){
+	// 	if(curation == null)
+	// 		return null;
+	// 	return CurationDto.builder()
+	// 		.id(curation.getId())
+	// 		.curationStartTime(curation.getCurationStartTime())
+	// 		.curationEndTime(curation.getCurationEndTime())
+	// 		.curationName(curation.getCurationName())
+	// 		.curationSummary(curation.getCurationSummary())
+	// 		.artist(curation.getArtist())
+	// 		.build();
+	// }
 }

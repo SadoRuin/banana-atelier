@@ -1,12 +1,11 @@
 package com.ssafy.banana.dto.response;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.ssafy.banana.api.service.CurationService;
-import com.ssafy.banana.db.entity.Art;
+
 import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.Curation;
+import com.ssafy.banana.db.entity.enums.CurationStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,8 @@ public class CurationResponse {
 	private LocalDateTime curationEndTime;
 	private String curationName;
 	private String curationSummary;
-	private Artist artist;
+	private CurationStatus curationStatus;
+	private String user_nickName;
 
 	public CurationResponse(Curation curation, Artist artist){
 		this.id = curation.getId();
@@ -34,9 +34,8 @@ public class CurationResponse {
 		this.curationEndTime = curation.getCurationEndTime();
 		this.curationName = curation.getCurationName();
 		this.curationSummary = curation.getCurationSummary();
-		this.artist = Artist.builder()
-			.id(artist.getUser().getId())
-			.build();
+		this.curationStatus = curation.getCurationStatus();
+		this.user_nickName = artist.getUser().getNickname();
 	}
 }
 
