@@ -1,44 +1,58 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link, useLoaderData} from 'react-router-dom'
+import axios from 'axios'
 import ProfileImg from "../../components/ProfileImg";
 
-function ArtsDetailPage() {
+export async function loader ({params}) {
+  let artSeq = params.art_seq;
+
+  const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`)
+    .then(response => response)
+    .catch(error => error)
+
+  return artData;
+}
+
+function ArtsDetail() {
+  const art = useLoaderData().data;
+  console.log(art)
   return (
     <div>
 
       <div className="arts_detail_container">
         {/* 작품 사진 */}
-        <img src="https://img1.daumcdn.net/thumb/R1280x0.fjpg/?fname=http://t1.daumcdn.net/brunch/service/user/byFa/image/QAxZeu0rXS7f_v8lzOWLDp15jfo" alt="작품 이미지" />
+        <img src={art.art_img} alt="작품 이미지" />
 
         {/* 작품 상세 정보 */}
         <div className="arts_detail_content">
           <div>
-            <h1>작품 제목</h1>
+            <h1>{art.art_name}</h1>
             <div className="artist_profile">
               <ProfileImg src="https://item.kakaocdn.net/do/b9df681f72876cbace33e39bb375f0ea8f324a0b9c48f77dbce3a43bd11ce785" height="30px" />
-              <Link to="/mypage/arts">신석호 <span>작가</span></Link>
+              <Link to="/mypage/arts">{art.nickname} <span>작가</span></Link>
             </div>
-            <div className="upload_date">2023.01.19</div>
+            <div className="upload_date">{`${art.art_reg_date[0]}.${art.art_reg_date[1]}.${art.art_reg_date[2]}.`}</div>
             <div className="arts_description">
-              작품 설명
+              {art.art_description}
             </div>
             <div>
-              카테고리 칸은 이 작품의 카테고리 number 보면 됨
+              {art.art_category.artCategoryName}
             </div>
           </div>
           <div>
             <div>
               <div className="views">
-                <img src="ArtsPage" alt="" />
-                작품 본 사람 숫자
+                <img src="ArtsMain" alt="" />
+                viewers:
+                {art.art_hit}
               </div>
               <div className="downloaded">
-                <img src="ArtsPage" alt="" />
-                다운로드한 사람 숫자
+                <img src="ArtsMain" alt="" />
+                downloaded:이 값이 없다!
               </div>
               <div className="likes">
-                <img src="ArtsPage" alt="" />
-                좋아요 숫자
+                <img src="ArtsMain" alt="" />
+                좋아요 : {art.art_like_count}
               </div>
             </div>
             <div>
@@ -61,4 +75,4 @@ function ArtsDetailPage() {
   )
 }
 
-export default ArtsDetailPage
+export default ArtsDetail

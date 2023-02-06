@@ -1,6 +1,6 @@
 import React from 'react'
 
-function CommissionsPage() {
+function CommissionsMain() {
   return (
     <div>
 
@@ -40,4 +40,4 @@ function CommissionsPage() {
   )
 }
 
-export default CommissionsPage
+export default CommissionsMain
