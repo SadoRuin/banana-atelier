@@ -65,7 +65,7 @@ public class SecurityConfig {
 				"/auth/verify",
 				"/auth/reissue",
 				"/users/signup",
-				"/users/verify",
+				"/users/verify/**",
 				"/users/check/**",
 				"/arts/**"
 			).permitAll()
