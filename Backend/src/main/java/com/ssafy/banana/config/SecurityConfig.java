@@ -56,16 +56,16 @@ public class SecurityConfig {
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-			.and()
-			.authorizeRequests()
-			.antMatchers(
-				"/auth/login",
-				"/users/signup",
-				"/auth/verify",
-				"/users/verify",
-				"/arts/**"
-			).permitAll()
-			.anyRequest().authenticated()
+				.and()
+				.authorizeRequests()
+				.antMatchers(
+						"/auth/login",
+						"/users/signup",
+						"/auth/verify",
+						"/users/verify",
+						"/arts/**")
+				.permitAll()
+				.anyRequest().authenticated()
 
 			.and()
 			.apply(new JwtSecurityConfig(tokenProvider));
