@@ -19,6 +19,7 @@ import Layout from "./routes/LayoutPage/Layout"
 
 // 랜딩 페이지
 import LandingPage from "./routes/LandingPage/LandingPage";
+import { loader as LandingLoader } from './routes/LandingPage/LandingPage'
 
 // 작품 페이지
 import ArtsMain from "./routes/ArtsPage/ArtsMain";
@@ -82,11 +83,11 @@ const router = createBrowserRouter(
         element={ <Layout /> }
       >
         {/* 랜딩 페이지 */}
-        <Route index element={ <LandingPage /> } />
+        <Route index element={ <LandingPage /> } loader={LandingLoader} />
 
         {/* 작품 페이지 */}
         <Route path="arts" element={ <ArtsMain /> } />
-        <Route path="arts/detail" element={ <ArtsDetail /> } />
+        <Route path=":nickname/:art_seq" element={ <ArtsDetail /> } />
 
         {/* 큐레이션 페이지 */}
         <Route path="curations" element={ <CurationsMain /> } />
