@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function CurationsOnAir(props) {
   const navigate = useNavigate();
@@ -7,6 +7,11 @@ function CurationsOnAir(props) {
     <div>
       <div onClick={()=>{navigate(-1)}}>{`<`}</div>
       <h2>진행중인 큐레이션</h2>
+    
+      <Link to="CurationsOpenVidu">
+        <h3>Openvidu</h3>
+      </Link>
+
       <div className="sort_tab">
         <div>북마크를 많이 받은 순</div>
         <div>시작한지 오래된 순</div>
