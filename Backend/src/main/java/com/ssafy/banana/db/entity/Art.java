@@ -59,6 +59,10 @@ public class Art {
 	private int artHit;
 
 	@NotNull
+	@Column(name = "art_download_count", nullable = false)
+	private int artDownloadCount;
+
+	@NotNull
 	@Column(name = "art_like_count", nullable = false)
 	private int artLikeCount;
 
