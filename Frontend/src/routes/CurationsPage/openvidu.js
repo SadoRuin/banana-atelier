@@ -10,7 +10,7 @@ import UserVideoComponent from './UserVideoComponent';
 // const APPLICATION_SERVER_URL = "http://localhost:4443/";
 // const APPLICATION_SERVER_URL = "http://localhost:5000/";
 // const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447/";
-const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io/openvidu/";
+const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io/webrtc/";
 
 
 
