@@ -47,8 +47,9 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
-	public ResponseEntity uploadArt(@RequestBody ArtRequest artRequest,
+	public ResponseEntity uploadArt(
 		@ApiParam(value = "art_file") @RequestPart(value = "art_file", required = false) MultipartFile artFile,
+		@RequestPart ArtRequest artRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
