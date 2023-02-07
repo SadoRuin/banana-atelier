@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { loginUser } from '../../_actions/user_action'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
+import axios from 'axios'
 
 
 export default function LoginPage(props) {
@@ -33,6 +34,12 @@ export default function LoginPage(props) {
     dispatch(loginUser(body))
       .then(response => {
         localStorage.setItem("token", response.payload.data.token)
+        localStorage.setItem("expiration", response.payload.data.expiration)
+        localStorage.setItem("nickname", response.payload.data.nickname)
+        localStorage.setItem("role", response.payload.data.role)
+        localStorage.setItem("profileImg", response.payload.data.profileImg)
+        let token = localStorage.getItem("token")
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         })
   }
   return (
