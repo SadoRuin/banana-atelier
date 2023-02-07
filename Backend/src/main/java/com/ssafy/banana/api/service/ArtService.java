@@ -20,6 +20,7 @@ import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtRepository;
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
@@ -43,7 +44,10 @@ public class ArtService {
 	private final FileService fileService;
 
 	@Transactional
-	public Art uploadArt(ArtRequest artRequest, Long userSeq, MultipartFile artFile) {
+	public Art uploadArt(ArtRequest artRequest, FileDto fileDto) {
+
+		Long userSeq = fileDto.getUserSeq();
+		MultipartFile artFile = fileDto.getArtFile();
 
 		if (artRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
@@ -51,17 +55,15 @@ public class ArtService {
 		// 작가 체크
 		artistService.checkArtist(userSeq);
 
-		final LocalDateTime artRegDate = LocalDateTime.now();
-		String newFileName = null;
+		LocalDateTime artRegDate = LocalDateTime.now();
 		// 이미지 파일 저장
 		if (!ObjectUtils.isEmpty(artFile)) {
-			newFileName = fileService.saveFile(artFile, userSeq, artRegDate);
+			fileDto = fileService.saveFile(fileDto, artRegDate);
 		} else {
 			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
 		}
 		// 썸네일 생성
-		// String artThumbnail = makeThumbnail(artFile);
-		String artThumbnail = "썸네일";
+		fileDto = fileService.makeAndSaveThumbnail(fileDto);
 
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
 		Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
@@ -70,8 +72,8 @@ public class ArtService {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
 		Art art = Art.builder()
-			.artImg(newFileName)
-			.artThumbnail(artThumbnail)
+			.artImg(fileDto.getNewArtName())
+			.artThumbnail(fileDto.getNewThumbnailName())
 			.artName(artRequest.getArtName())
 			.artDescription(artRequest.getArtDescription())
 			.artCategory(artCategory)

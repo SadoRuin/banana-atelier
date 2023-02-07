@@ -1,4 +1,8 @@
-package com.ssafy.banana.dto.request;
+package com.ssafy.banana.dto;
+
+import java.io.File;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +19,13 @@ import lombok.experimental.Accessors;
 @ToString
 @Builder
 @Accessors(chain = true)
-public class ArtRequest {
-	private Long artSeq;
-	private String artName;
-	private String artDescription;
-	private Long artCategorySeq;
-	private Long userSeq;
+public class FileDto {
+	Long userSeq;
+	MultipartFile artFile;
+	String originalArtName;
+	String extension;
+	String newArtName;
+	File artImg;
+	String newThumbnailName;
+	File artThumbnail;
 }

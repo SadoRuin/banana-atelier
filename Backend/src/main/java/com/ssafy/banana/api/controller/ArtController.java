@@ -20,6 +20,7 @@ import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.api.service.ArtistService;
 import com.ssafy.banana.db.entity.Art;
+import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
@@ -41,6 +42,10 @@ import lombok.RequiredArgsConstructor;
 public class ArtController {
 
 	private static final String AUTHORIZATION = "Authorization";
+	private static final String DOT = ".";
+	private static final String EXTENSION_JPG = "jpg";
+	private static final String EXTENSION_PNG = "png";
+	private static final String EXTENSION_JPEG = "jpeg";
 	private final TokenProvider tokenProvider;
 	private final ArtService artService;
 	private final ArtistService artistService;
@@ -58,12 +63,27 @@ public class ArtController {
 		}
 		Long userSeq = tokenProvider.getSubject(token);
 
-		Art art = artService.uploadArt(artRequest, userSeq, artFile);
+		String originalFilename = artFile.getOriginalFilename();
+		int dotIndex = originalFilename.lastIndexOf(DOT);
+		String originalArtName = originalFilename.substring(0, dotIndex);
+		String extension = originalFilename.substring(dotIndex + 1);
+
+		if (!extension.equalsIgnoreCase(EXTENSION_JPG)
+			&& !extension.equalsIgnoreCase(EXTENSION_JPEG)
+			&& !extension.equalsIgnoreCase(EXTENSION_PNG)) {
+			throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
+		}
+
+		FileDto fileDto = FileDto.builder()
+			.userSeq(userSeq)
+			.artFile(artFile)
+			.originalArtName(originalArtName)
+			.extension(extension)
+			.build();
+		Art art = artService.uploadArt(artRequest, fileDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
-
-	// public ResponseEntity<? extends BaseResponseBody> save(@RequestPart("art") MultipartFile art,{	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
 	@GetMapping
