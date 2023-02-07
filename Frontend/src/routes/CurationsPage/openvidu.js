@@ -10,7 +10,7 @@ import UserVideoComponent from './UserVideoComponent';
 // const APPLICATION_SERVER_URL = "http://localhost:4443/";
 // const APPLICATION_SERVER_URL = "http://localhost:5000/";
 // const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447/";
-const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io/webrtc/";
+// const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io/openvidu/";
 
 
 
@@ -229,6 +229,47 @@ class App extends Component {
         }
     }
 
+
+    async toggleScreenShare() {
+		// Disabling screenShare
+		if (this.oVSessionService.areBothConnected()) {
+			this.removeScreen();
+			return;
+		}
+
+		// Enabling screenShare
+		if (this.oVSessionService.isOnlyWebcamConnected()) {
+			const screenPublisher = this.initScreenPublisher();
+
+			screenPublisher.once('accessAllowed', (event) => {
+				this.log.d('ACCESS ALOWED screenPublisher');
+				this.oVSessionService.enableScreenUser(screenPublisher);
+				this.oVSessionService.publishScreen();
+				if (!this.oVSessionService.hasWebcamVideoActive()) {
+					// Disabling webcam
+					this.oVSessionService.disableWebcamUser();
+					this.oVSessionService.unpublishWebcam();
+				}
+			});
+
+			screenPublisher.once('accessDenied', (event) => {
+				this.log.w('ScreenShare: Access Denied');
+			});
+			return;
+		}
+
+		// Disabling screnShare and enabling webcam
+		const hasAudio = this.oVSessionService.hasScreenAudioActive();
+		await this.oVSessionService.publishWebcam();
+		this.oVSessionService.publishScreenAudio(false);
+		this.oVSessionService.publishWebcamAudio(hasAudio);
+		this.oVSessionService.enableWebcamUser();
+		this.removeScreen();
+	}
+
+
+
+
     render() {
         const mySessionId = this.state.mySessionId;
         const myUserName = this.state.myUserName;
@@ -343,14 +384,14 @@ class App extends Component {
     }
 
     async createSession(sessionId) {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
+        const response = await axios.post('api/sessions', { customSessionId: sessionId }, {
             headers: { 'Content-Type': 'application/json', },
         });
         return response.data; // The sessionId
     }
 
     async createToken(sessionId) {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
+        const response = await axios.post('api/sessions/' + sessionId + '/connections', {}, {
             headers: { 'Content-Type': 'application/json', },
         });
         return response.data; // The token
