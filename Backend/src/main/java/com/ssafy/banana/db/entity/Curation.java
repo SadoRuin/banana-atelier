@@ -63,6 +63,19 @@ public class Curation {
 	private CurationStatus curationStatus;
 
 	@NotNull
+	@Column(name = "curation_hit", nullable = false)
+	private String curationHit;
+
+	@NotNull
+	@Column(name = "curation_bm_count", nullable = false)
+	private int curationBmCount;
+
+	@Size(max = 100)
+	@NotNull
+	@Column(name = "curation_thumbnail", nullable = false, length = 100)
+	private String curationThumbnail;
+
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)

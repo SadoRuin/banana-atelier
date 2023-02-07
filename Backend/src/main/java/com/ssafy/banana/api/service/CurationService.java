@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
+import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.db.repository.CurationRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
+import com.ssafy.banana.dto.response.CurationAllListResponse;
 import com.ssafy.banana.dto.response.CurationResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +24,8 @@ public class CurationService {
 	CurationRepository curationRepository;
 
 	//큐레이션 전체조회
-	public List<CurationResponse> getCurationList() {
-		return curationRepository.findAllCurations();
+	public List<CurationAllListResponse> getCurationList() {
+		return curationRepository.findAllCuration();
 	}
 
 	//큐레이션 등록
@@ -55,7 +57,11 @@ public class CurationService {
 	public CurationResponse getCuration(long curation_seq){
 		Curation curation = curationRepository.findById(curation_seq).orElse(null);
 		Artist artist = curation.getArtist();
-		return new CurationResponse(curation,artist);
+		if(artist==null){
+			return null;
+		}else {
+			return new CurationResponse(curation, artist);
+		}
 	}
 
 	//큐레이션 수정
@@ -86,4 +92,5 @@ public class CurationService {
 	public void deleteCuration(long curation_seq){
 		curationRepository.deleteById(curation_seq);
 	}
+
 }
