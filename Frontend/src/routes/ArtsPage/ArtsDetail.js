@@ -1,16 +1,18 @@
 import React from 'react'
 import {Link, useLoaderData} from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
 import ProfileImg from "../../components/ProfileImg";
+import customAxios from '../../_actions/customAxios';
 
 export async function loader ({params}) {
   let artSeq = params.art_seq;
 
-  const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`, {
-    headers: {
-      Authorization : 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDgiLCJpYXQiOjE2NzU2NjkxMzgsImV4cCI6MTY3NTY3MDkzOCwiYXV0aCI6IlVTRVIifQ.h4UiO8lVZBq2IBFpIUTHoYs_gj51RJ5W_OsFwV_hXfKEdntPOBt1MJ436maXrq7R3Cn493jfKVzJyncW7BSDDA'
-    }
-  })
+  // const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`, {
+  //   headers: {
+  //     Authorization : 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMDgiLCJpYXQiOjE2NzU2NjkxMzgsImV4cCI6MTY3NTY3MDkzOCwiYXV0aCI6IlVTRVIifQ.h4UiO8lVZBq2IBFpIUTHoYs_gj51RJ5W_OsFwV_hXfKEdntPOBt1MJ436maXrq7R3Cn493jfKVzJyncW7BSDDA'
+  //   }
+  // })
+  const artData = await customAxios().get(`arts/detail/${artSeq}`)
     .then(response => response)
     .catch(error => error)
 
@@ -19,7 +21,7 @@ export async function loader ({params}) {
 
 function ArtsDetail() {
   const art = useLoaderData().data;
-  console.log(art)
+  // console.log(art)
   return (
     <div>
 
