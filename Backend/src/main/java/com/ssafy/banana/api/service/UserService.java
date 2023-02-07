@@ -25,8 +25,10 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final SecurityUtil securityUtil;
 	private final RedisUtil redisUtil;
 	private final EmailUtil emailUtil;
+	private final char[] specialChars = {'!', '@', '$', '%', '(', ')'};
 
 	@Transactional
 	public void signup(SignupRequest signupRequest) {
@@ -56,7 +58,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public UserDto getMyUserInfo() {
 		return UserDto.from(
-			SecurityUtil.getCurrentUsername()
+			securityUtil.getCurrentUsername()
 				.flatMap(userRepository::findByEmail)
 				.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND))
 		);
@@ -64,39 +66,79 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public void checkEmail(String email) {
-		if (userRepository.findByEmail(email).orElse(null) != null) {
+		if (userRepository.findByEmail(email).isPresent()) {
 			throw new CustomException(CustomExceptionType.USER_CONFLICT);
 		}
 	}
 
 	public void sendVerificationMail(String email) {
 		String key = "AC:" + Encoders.BASE64.encode(email.getBytes());
-		String value = createCode();
-		emailUtil.sendEmail(email, "[바나나공방] 회원가입 인증메일입니다.", value);
+		String value = createCode(8);
+		String content = "";
+		content += "<div style='margin:20px;'>";
+		content += "<h1> 안녕하세요 바나나공방입니다. </h1>";
+		content += "<br>";
+		content += "<p>아래 코드를 복사해 입력해주세요</p>";
+		content += "<br>";
+		content += "<p>감사합니다.</p>";
+		content += "<br>";
+		content += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+		content += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
+		content += "<div style='font-size:130%'>";
+		content += "CODE : <strong>";
+		content += value + "</strong><div><br/> ";
+		content += "</div>";
+		emailUtil.sendEmail(email, "[바나나공방] 회원가입 인증메일입니다.", content);
 		redisUtil.setDataExpire(key, value, 5 * 60 * 1000);
 	}
 
 	@Transactional(readOnly = true)
 	public void checkNickname(String nickname) {
-		if (userRepository.findByNickname(nickname).orElse(null) != null) {
+		if (userRepository.findByNickname(nickname).isPresent()) {
 			throw new CustomException(CustomExceptionType.USER_CONFLICT);
 		}
 	}
 
-	public static String createCode() {
+	public void findPassword(String email) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+		Random rand = new Random();
+		String newPassword = specialChars[rand.nextInt(6)] + createCode(14) + specialChars[rand.nextInt(6)];
+		String content = "";
+		content += "<div style='margin:20px;'>";
+		content += "<h1> 안녕하세요 바나나공방입니다. </h1>";
+		content += "<br>";
+		content += "<p>회원님의 임시비밀번호를 발송해드립니다.</p>";
+		content += "<br>";
+		content += "<p>임시비밀번호로 로그인 후 비밀번호를 꼭 변경해주세요.</p>";
+		content += "<br>";
+		content += "<p>감사합니다.</p>";
+		content += "<br>";
+		content += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+		content += "<h3 style='color:blue;'>회원님의 임시비밀번호입니다.</h3>";
+		content += "<div style='font-size:130%'>";
+		content += "CODE : <strong>";
+		content += newPassword + "</strong><div><br/> ";
+		content += "</div>";
+		emailUtil.sendEmail(email, "[바나나공방] 비밀번호 찾기 입니다.", content);
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
+	}
+
+	public static String createCode(int digit) {
 		StringBuffer key = new StringBuffer();
 		Random rnd = new Random();
 
-		for (int i = 0; i < 8; i++) { // 인증코드 8자리
+		for (int i = 0; i < digit; i++) { // 인증코드 8자리
 			int index = rnd.nextInt(3); // 0~2 까지 랜덤
 
 			switch (index) {
 				case 0:
-					key.append((char)((int)(rnd.nextInt(26)) + 97));
+					key.append((char)(rnd.nextInt(26) + 97));
 					//  a~z  (ex. 1+97=98 => (char)98 = 'b')
 					break;
 				case 1:
-					key.append((char)((int)(rnd.nextInt(26)) + 65));
+					key.append((char)(rnd.nextInt(26) + 65));
 					//  A~Z
 					break;
 				case 2:

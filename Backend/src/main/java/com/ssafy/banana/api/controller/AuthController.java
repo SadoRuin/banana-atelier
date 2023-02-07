@@ -88,7 +88,7 @@ public class AuthController {
 	@PostMapping("/reissue")
 	@ApiOperation(value = "액세스토큰 재발급", notes = "저장된 리프레시 토큰이 유효하다면 액세스토큰 재발급")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "액세스토큰 재발급 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 200, message = "액세스토큰 재발급 성공", response = TokenDto.class),
 		@ApiResponse(code = 401, message = "인증 실패(없는 사용자 or 비밀번호 오류 or 이메일 미인증 or 로그아웃된 사용자)", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class),
 		@ApiResponse(code = 500, message = "서버 오류", response = ExceptionResponse.class)

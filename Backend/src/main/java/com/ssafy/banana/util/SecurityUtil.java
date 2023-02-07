@@ -6,17 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import com.ssafy.banana.security.UserPrincipal;
 
+@Component
 public class SecurityUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
-	private SecurityUtil() {
-	}
-
-	public static Optional<String> getCurrentUsername() {
+	public Optional<String> getCurrentUsername() {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication == null) {

@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.UserService;
+import com.ssafy.banana.dto.request.EmailRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.dto.response.ExceptionResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
@@ -78,5 +80,18 @@ public class UserController {
 	public ResponseEntity checkNickname(@PathVariable String nickname) {
 		userService.checkNickname(nickname);
 		return ResponseEntity.ok(new SuccessResponse("사용가능한 닉네임입니다."));
+	}
+
+	@PatchMapping("/find-password")
+	@ApiOperation(value = "비밀번호 찾기")
+	@ApiImplicitParam(name = "email", value = "유저 이메일", required = true)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "이메일로 임시비밀번호 발송", response = SuccessResponse.class),
+		@ApiResponse(code = 400, message = "이메일 발송 오류 발생", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
+	})
+	public ResponseEntity findPassword(@RequestBody EmailRequest emailRequest) {
+		userService.findPassword(emailRequest.getEmail());
+		return ResponseEntity.ok(new SuccessResponse("임시비밀번호가 발송되었습니다."));
 	}
 }
