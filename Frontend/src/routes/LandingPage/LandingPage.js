@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, useLoaderData} from 'react-router-dom';
 import axios from 'axios'
 
-import ArtsThumbnail from "../../components/commons/artsThumbnail";
+import ArtItem from "../../components/commons/artItem";
 
 export async function loader () {
   const arts = await axios.get('https://i8a108.p.ssafy.io/api/arts' )
@@ -31,8 +31,8 @@ function LandingPage() {
         <h1><Link to="arts">트렌딩🔥</Link></h1>
         <p>이 곳에는 요즘 인기가 많아진 작품들이 들어간다.</p>
         <div>
-          {arts.data.map((art) => <div key={art.art_seq}><Link className="Link" to={`../${art.nickname}/${art.art_seq}`}>
-            <ArtsThumbnail
+          {arts.data.map((art) => <div key={art.art_seq}>
+            <ArtItem
               nickname={art.nickname}
               art_seq={art.art_seq}
               art_hit={art.art_hit}
@@ -40,7 +40,7 @@ function LandingPage() {
               art_thumbnail={art.art_thumbnail}
               art_like_count={art.art_like_count}
             />
-          </Link></div>)}
+          </div>)}
         </div>
       </div>
       
