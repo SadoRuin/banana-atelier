@@ -9,11 +9,41 @@
 body {
   margin: 0;
   color: #333333;
+  font-size: 15px;
   font-family: 'Pretendard-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+}
+
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.contentWrapper{
+  flex: 1;
+}
+
+.navActive {
+  font-weight: bold !important;
+}
+
+.navLink, .Link {
+  text-decoration: none;
+  color: #333333;
+}
+
+.navLink:visited, .Link:visited {
+  text-decoration: none;
+  color: #333333;
+}
+
+.Link:hover {
+  font-weight: bold
 }
 
 code {

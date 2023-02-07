@@ -6,11 +6,11 @@ import Footer from "./Footer/Footer";
 
 function Layout(props) {
   return (
-    <div>
-      <NavBar />
-
-      <Outlet />
-
+    <div className="wrapper">
+      <div className="contentWrapper">
+        <NavBar />
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );
