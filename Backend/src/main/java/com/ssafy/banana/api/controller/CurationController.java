@@ -17,6 +17,7 @@ import com.ssafy.banana.api.service.CurationArtService;
 import com.ssafy.banana.api.service.CurationService;
 import com.ssafy.banana.db.entity.CurationArt;
 import com.ssafy.banana.dto.request.CurationRequest;
+import com.ssafy.banana.dto.response.CurationAllListResponse;
 import com.ssafy.banana.dto.response.CurationDetailResponse;
 import com.ssafy.banana.dto.response.CurationResponse;
 
@@ -35,8 +36,8 @@ public class CurationController {
 
 	@GetMapping
 	@ApiOperation(value = "큐레이션 리스트")
-	public ResponseEntity<List<CurationResponse>> getList() {
-		List<CurationResponse> curationList =  curationService.getCurationList();
+	public ResponseEntity<List<CurationAllListResponse>> getList() {
+		List<CurationAllListResponse> curationList =  curationService.getCurationList();
 		if (curationList.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
 		}
@@ -73,5 +74,13 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 삭제 성공");
 	}
 
-
+	// @GetMapping("/details/{curation_seq}")
+	// @ApiOperation(value = "큐레이션 작품 정보 리스트")
+	// public ResponseEntity<List<CurationArtResponse>> getCurationArtList(@PathVariable long curation_seq) {
+	// 	List<CurationArtResponse> curationArtList =  curationService.getCurationArtList(curation_seq);
+	// 	if (curationArtList.isEmpty()) {
+	// 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	// 	}
+	// 	return ResponseEntity.status(HttpStatus.OK).body(curationArtList);
+	// }
 }
