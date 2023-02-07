@@ -5,93 +5,65 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "curation_notification")
 public class CurationNotification {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "notification_seq", nullable = false)
 	private Long id;
 
+	@Size(max = 100)
 	@Column(name = "notification_content", length = 100)
 	private String notificationContent;
 
+	@NotNull
 	@Column(name = "notification_time", nullable = false)
 	private LocalDateTime notificationTime;
 
+	@NotNull
 	@Column(name = "notification_is_read", nullable = false)
 	private boolean notificationIsRead;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private User user;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "artist_seq", nullable = false)
 	private Artist artist;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "curation_seq", nullable = false)
 	private Curation curation;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNotificationContent() {
-		return notificationContent;
-	}
-
-	public void setNotificationContent(String notificationContent) {
-		this.notificationContent = notificationContent;
-	}
-
-	public LocalDateTime getNotificationTime() {
-		return notificationTime;
-	}
-
-	public void setNotificationTime(LocalDateTime notificationTime) {
-		this.notificationTime = notificationTime;
-	}
-
-	public boolean getNotificationIsRead() {
-		return notificationIsRead;
-	}
-
-	public void setNotificationIsRead(boolean notificationIsRead) {
-		this.notificationIsRead = notificationIsRead;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Artist getArtist() {
-		return artist;
-	}
-
-	public void setArtist(Artist artist) {
-		this.artist = artist;
-	}
-
-	public Curation getCuration() {
-		return curation;
-	}
-
-	public void setCuration(Curation curation) {
-		this.curation = curation;
-	}
 
 }

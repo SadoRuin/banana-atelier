@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Gradle Build') {
+            steps {
+                dir('Backend') {
+                    sh 'chmod +x gradlew'
+                    sh './gradlew clean build -x test'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('Backend') {
+                    sh 'docker build -t banana-back:latest .'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps{
+                sh 'docker rm -f back'
+                sh 'docker run -d --name back -p 8099:8099 -u root -v /back:/back banana-back:latest'
+            }
+        }
+
+       stage('Finish') {
+            steps{
+                sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
+            }
+        }
+    }
+}
