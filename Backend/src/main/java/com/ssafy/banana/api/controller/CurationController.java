@@ -44,7 +44,7 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 등록 성공");
 	}
 
-	@GetMapping("/{curation_seq}")
+	@GetMapping("/details/{curation_seq}")
 	@ApiOperation(value = "큐레이션 디테일 조회")
 	public ResponseEntity<CurationDataResponse.Curation> getCuration(@PathVariable("curation_seq") long curation_seq){
 		return ResponseEntity.status(HttpStatus.OK).body(curationService.getCuration(curation_seq));

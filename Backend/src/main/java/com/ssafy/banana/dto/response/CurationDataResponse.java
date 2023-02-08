@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 
 import com.ssafy.banana.db.entity.Artist;
+import com.ssafy.banana.db.entity.enums.CurationStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,21 +20,24 @@ public class CurationDataResponse {
 	@Data
 	@NoArgsConstructor
 	public static class CurationSimple {
-		private String userNickName;
-		private String curationName;
-		private String curationThumbnail;
-		private int curationBmCount;
-		private String curationHit;
-		private LocalDateTime curationStartTime;
+		private String user_nickname;
+		private String curation_name;
+		private String curation_thumbnail;
+		private int curation_bm_count;
+		private String curation_hit;
+		private LocalDateTime curation_start_time;
+
+		private CurationStatus curation_status;
 
 
 		public CurationSimple(com.ssafy.banana.db.entity.Curation c){
-			this.userNickName = c.getArtist().getUser().getNickname();
-			this.curationName = c.getCurationName();
-			this.curationThumbnail = c.getCurationThumbnail();
-			this.curationBmCount = c.getCurationBmCount();
-			this.curationHit = c.getCurationHit();
-			this.curationStartTime = c.getCurationStartTime();
+			this.user_nickname = c.getArtist().getUser().getNickname();
+			this.curation_name = c.getCurationName();
+			this.curation_thumbnail = c.getCurationThumbnail();
+			this.curation_bm_count = c.getCurationBmCount();
+			this.curation_hit = c.getCurationHit();
+			this.curation_start_time = c.getCurationStartTime();
+			this.curation_status = c.getCurationStatus();
 		}
 	}
 

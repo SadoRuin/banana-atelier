@@ -70,6 +70,7 @@ public class SecurityConfig {
 				"/users/find-password",
 				"/arts/**",
 				"/curations/main",
+				"/curations/details/**",
 				"/notices/**"
 			).permitAll()
 			.anyRequest().authenticated()
