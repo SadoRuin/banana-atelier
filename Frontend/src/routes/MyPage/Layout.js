@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, NavLink, Form } from "react-router-dom";
 
-import ProfileImg from "../../components/ProfileImg";
+import ProfileImg from "../../components/commons/ProfileImg";
 import './Layout.css'
 
 export default function Layout(props) {

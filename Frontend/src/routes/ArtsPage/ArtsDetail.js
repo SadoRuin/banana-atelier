@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link, useLoaderData} from 'react-router-dom'
-import ProfileImg from "../../components/ProfileImg";
+import ProfileImg from "../../components/commons/ProfileImg";
 import customAxios from '../../_actions/customAxios';
 
 export async function loader ({params}) {
