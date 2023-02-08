@@ -22,9 +22,9 @@ import lombok.Setter;
 public class UserDto implements Serializable {
 	private String email;
 	private String nickname;
+	private String profileImg;
 	private int artistLikeCount;
 	private Role role;
-	private boolean isAuthorized;
 
 	public static UserDto from(User user) {
 		if (user == null)
@@ -33,9 +33,9 @@ public class UserDto implements Serializable {
 		return UserDto.builder()
 			.email(user.getEmail())
 			.nickname(user.getNickname())
+			.profileImg(user.getProfileImg())
 			.artistLikeCount(user.getArtistLikeCount())
 			.role(user.getRole())
-			.isAuthorized(user.isAuthorized())
 			.build();
 	}
 }
