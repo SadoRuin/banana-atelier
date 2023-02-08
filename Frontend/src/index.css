@@ -5,7 +5,6 @@
   font-size: 15px;
   font-style: normal;
 }
-
 body {
   margin: 0;
   color: #333333;
@@ -15,36 +14,58 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 
+/* Nav바를 바닥에 고정하기 위함 */
 .wrapper{
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
-
 .contentWrapper{
   flex: 1;
 }
 
+.content__container {
+  padding-left: 100px;
+  padding-right: 100px;
+}
+@media (max-width: 992px) {
+  .content__container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+/* 현재 페이지에 있을 때 active 활성화 */
 .navActive {
   font-weight: bold !important;
 }
 
+/* 링크 보라색 되는거 꼴뵈기 싫어서 */
 .navLink, .Link {
   text-decoration: none;
   color: #333333;
 }
-
 .navLink:visited, .Link:visited {
   text-decoration: none;
   color: #333333;
 }
 
-.Link:hover {
+/* 링크에 마우스를 올렸을 때 굵어지면 좋겠다 싶은 것만 */
+.LinkHoverBold:hover {
   font-weight: bold
 }
+
+/* OOO 작가 할 때 작가 이름 작게 보이게 할 것 */
+.jakka {
+  color: #656565;
+  font-size: 13px;
+  margin-left: 2px;
+}
+
+
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

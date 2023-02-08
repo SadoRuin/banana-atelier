@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import ProfileImg from "../../components/ProfileImg";
+import ProfileImg from "../../components/commons/ProfileImg";
 import {Link, Form} from "react-router-dom";
 
 function CommissionsDetail() {

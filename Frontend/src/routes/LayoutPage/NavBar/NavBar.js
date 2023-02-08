@@ -3,7 +3,7 @@ import { useNavigate, NavLink, Link } from 'react-router-dom'
 import './NavBar.css'
 import '../../../index.css'
 import logo from '../../../assets/글씨X_470.png'
-import ProfileImg from "../../../components/ProfileImg";
+import ProfileImg from "../../../components/commons/ProfileImg";
 
 import { YellowBtn, WhiteBtn } from '../../../components/commons/buttons'
 
@@ -28,7 +28,7 @@ function NavBar() {
       <div>
         <Link className="Link" to="mypage/arts">나의 아뜰리에</Link>
         <button>공지사항 아이콘</button>
-        <ProfileImg src="https://mindlogic-metaverse-face.s3.ap-northeast-2.amazonaws.com/custom/22592-1634653713945.jpeg" height="30px" />
+        <ProfileImg height="30px" width="30px" />
       </div>
 
       {/* 로그인 안했을 시*/}
