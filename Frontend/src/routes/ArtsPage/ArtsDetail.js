@@ -6,35 +6,44 @@ import customAxios from '../../_actions/customAxios';
 export async function loader ({params}) {
   let artSeq = params.art_seq;
   const artData = await customAxios().get(`arts/detail/${artSeq}`)
-    .then(response => response)
+    .then(response => response.data)
     .catch(error => error)
 
+  console.log(artData)
+  if (!artData) {
+    throw new Response("", {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
   return artData;
 }
 
 function ArtsDetail() {
-  const art = useLoaderData().data;
+  const artData = useLoaderData();
+
   return (
     <div>
 
-      <div className="arts_detail_container">
+      <div className="art-detail__container">
         {/* 작품 사진 */}
-        <img src={art.art_img} alt="작품 이미지" />
+        <img src={artData.art_img} alt="작품 이미지" className="art-img" />
 
         {/* 작품 상세 정보 */}
-        <div className="arts_detail_content">
+        <div className="art-detail_content">
           <div>
-            <h1>{art.art_name}</h1>
-            <div className="artist_profile">
-              <ProfileImg src="https://item.kakaocdn.net/do/b9df681f72876cbace33e39bb375f0ea8f324a0b9c48f77dbce3a43bd11ce785" height="30px" />
-              <Link to="/mypage/arts">{art.nickname} <span>작가</span></Link>
-            </div>
-            <div className="upload_date">{`${art.art_reg_date[0]}.${art.art_reg_date[1]}.${art.art_reg_date[2]}.`}</div>
+            <h1>{artData.art_name}</h1>
+            <Link className="artist_profile Link" to={`./${artData.nickname}/arts`}>
+              {/* 프로필 이미지는 아직입니다!! src={artData.profile_img}*/}
+              <ProfileImg height="30px" width="30px" />
+              <div>{artData.nickname} <span className="jakka">작가</span></div>
+            </Link>
+            <div className="upload_date">{`${artData.art_reg_date[0]}.${(artData.art_reg_date[1]+'').padStart(2, "0")}.${(artData.art_reg_date[2]+'').padStart(2, "0")}.`}</div>
             <div className="arts_description">
-              {art.art_description}
+              {artData.art_description}
             </div>
             <div>
-              {art.art_category.artCategoryName}
+              {artData.art_category.artCategoryName}
             </div>
           </div>
           <div>
@@ -42,7 +51,7 @@ function ArtsDetail() {
               <div className="views">
                 <img src="ArtsMain" alt="" />
                 viewers:
-                {art.art_hit}
+                {artData.art_hit}
               </div>
               <div className="downloaded">
                 <img src="ArtsMain" alt="" />
@@ -50,7 +59,7 @@ function ArtsDetail() {
               </div>
               <div className="likes">
                 <img src="ArtsMain" alt="" />
-                좋아요 : {art.art_like_count}
+                좋아요 : {artData.art_like_count}
               </div>
             </div>
             <div>
