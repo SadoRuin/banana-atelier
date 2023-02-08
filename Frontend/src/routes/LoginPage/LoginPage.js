@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
 import axios from 'axios'
 
-
 export default function LoginPage(props) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -40,7 +39,8 @@ export default function LoginPage(props) {
         localStorage.setItem("profileImg", response.payload.data.profileImg)
         let token = localStorage.getItem("token")
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        })
+        navigate('/')
+      })
   }
   return (
     <div>

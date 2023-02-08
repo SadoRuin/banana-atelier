@@ -14,6 +14,9 @@ import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } 
 import LoginPage from "./routes/LoginPage/LoginPage";
 import SignUpPage from "./routes/SignUpPage/SignUpPage";
 
+// 에러 페이지
+import Error from './routes/Error'
+
 // 전체 Layout(Nav바랑 Footer)
 import Layout from "./routes/LayoutPage/Layout"
 
@@ -28,6 +31,7 @@ import { loader as ArtsDetailLoader } from "./routes/ArtsPage/ArtsDetail";
 
 // 큐레이션 페이지
 import CurationsMain from "./routes/CurationsPage/CurationsMain";
+import { loader as curationListLoader } from "./routes/CurationsPage/CurationsMain";
 import CurationsOnAir from "./routes/CurationsPage/CurationsOnAir"
 import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
 import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
@@ -85,84 +89,87 @@ const router = createBrowserRouter(
       <Route
         path="/"
         element={ <Layout /> }
+        errorElement={ <Error /> }
       >
-        {/* 랜딩 페이지 */}
-        <Route index element={ <LandingPage /> } loader={LandingLoader} />
+        <Route errorElement={ <Error /> }>
+          {/* 랜딩 페이지 */}
+          <Route index element={ <LandingPage /> } loader={LandingLoader} errorElement={ <Error /> } />
 
-        {/* 작품 페이지 */}
-        <Route path="arts" element={ <ArtsMain /> } />
-        <Route path=":nickname/:art_seq" element={ <ArtsDetail /> } loader={ArtsDetailLoader} />
+          {/* 작품 페이지 */}
+          <Route path="arts" element={ <ArtsMain /> } />
+          <Route path=":nickname/:art_seq" element={ <ArtsDetail /> } loader={ArtsDetailLoader} />
 
-        {/* 큐레이션 페이지 */}
-        <Route path="curations" element={ <CurationsMain /> } />
-        <Route path="curations/on_air" element={ <CurationsOnAir /> } />
-        
-        <Route path="curations/on_air/CurationsOpenVidu" element={<CurationsOpenVidu/>}/>
+          {/* 큐레이션 페이지 */}
+          <Route path="curations" element={ <CurationsMain /> } loader={curationListLoader}/>
+          <Route path="curations/on_air" element={ <CurationsOnAir /> } />
 
-        <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
-        <Route path="curations/finish" element={ <CurationsFinish /> } />
-        <Route path="curations/detail" element={ <CurationsDetail /> } />
-        <Route path="curations/register" element={ <CurationsRegister /> } />
+          <Route path="curations/on_air/CurationsOpenVidu" element={<CurationsOpenVidu/>}/>
 
-        {/* 커미션 페이지 */}
-        <Route path="commissions" element={ <CommissionsMain /> } />
-        <Route path="commissions/detail" element={ <CommissionsDetail /> } />
-        <Route path="commissions/detail/register" element={ <CommissionsRegister/> } />
+          <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
+          <Route path="curations/finish" element={ <CurationsFinish /> } />
+          <Route path="curations/detail" element={ <CurationsDetail /> } />
+          <Route path="curations/register" element={ <CurationsRegister /> } />
 
-        {/*마이페이지*/}
-        <Route
-          path="mypage"
-          element={<MyPageLayout />}
-        >
+          {/* 커미션 페이지 */}
+          <Route path="commissions" element={ <CommissionsMain /> } />
+          <Route path="commissions/detail" element={ <CommissionsDetail /> } />
+          <Route path="commissions/detail/register" element={ <CommissionsRegister/> } />
 
+          {/*마이페이지*/}
           <Route
-            path="arts"
-            element={<ArtsRoot />}
+            path=":nickname"
+            element={<MyPageLayout />}
           >
-            <Route index element={ <ArtsIndex /> }>
-              {/* 대표작품 설정 페이지 들어갈거임 */}
+
+            <Route
+              path="arts"
+              element={<ArtsRoot />}
+            >
+              <Route index element={ <ArtsIndex /> }>
+                {/* 대표작품 설정 페이지 들어갈거임 */}
+              </Route>
+              <Route path="favorite" element={ <ArtsFavorite /> }/>
+              <Route path="owns" element={ <ArtsMyCollections /> } />
             </Route>
-            <Route path="favorite" element={ <ArtsFavorite /> }/>
-            <Route path="owns" element={ <ArtsMyCollections /> } />
-          </Route>
 
-          <Route
-            path="notices"
-            element={ <NoticesRoot /> }
-          >
             <Route
-              path="mine"
-              element={ <NoticesMine /> }
-              loader={getNotices}/>
+              path="notices"
+              element={ <NoticesRoot /> }
+            >
+              <Route
+                path="mine"
+                element={ <NoticesMine /> }
+                loader={getNotices}/>
+              <Route
+                path="following"
+                element={ <NoticesFollowing /> }
+                loader={getNotices}
+              />
+              <Route
+                path=":notice_id"
+                element={<NoticesDetail/>}
+                loader={noticeLoader}
+              />
+            </Route>
+
+
             <Route
-              path="following"
-              element={ <NoticesFollowing /> }
-              loader={getNotices}
-            />
-            <Route
-              path=":notice_id"
-              element={<NoticesDetail/>}
-              loader={noticeLoader}
-            />
+              path="curations"
+              element={ <CurationsRoot /> }
+            >
+              <Route path="mine" element={ <CurationsMine /> } />
+              <Route path="following" element={ <CurationsFollowing /> } />
+              <Route path="bookmark" element={ <CurationsBookmark /> } />
+            </Route>
+
+            <Route path="commissions" element={ <Commissions /> } />
+            <Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />
+
+            <Route path="arts/edit_profile" element={ <EditProfile /> }></Route>
+            <Route path="arts/upload" element={ <Upload /> }></Route>
+            <Route path="arts/set_masterpiece" element={ <SetMasterpiece /> }></Route>
+
           </Route>
-
-
-          <Route
-            path="curations"
-            element={ <CurationsRoot /> }
-          >
-            <Route path="mine" element={ <CurationsMine /> } />
-            <Route path="following" element={ <CurationsFollowing /> } />
-            <Route path="bookmark" element={ <CurationsBookmark /> } />
-          </Route>
-
-          <Route path="commissions" element={ <Commissions /> } />
-          <Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />
-
-          <Route path="arts/edit_profile" element={ <EditProfile /> }></Route>
-          <Route path="arts/upload" element={ <Upload /> }></Route>
-          <Route path="arts/set_masterpiece" element={ <SetMasterpiece /> }></Route>
-
         </Route>
       </Route>
 

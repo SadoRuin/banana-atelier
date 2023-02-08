@@ -1,0 +1,59 @@
+/* width랑 height 나중에 조절하기*/
+.art-item__container {
+    width:  200px;
+    height: 200px;
+    display: inline-flex;
+    flex-direction: column;
+    margin: 10px;
+    position: relative;
+
+    box-shadow: 0 0 9px 6px #0000001A;
+
+    border-radius: 10px;
+}
+
+.art-img {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 150px;
+    width: 100%;
+}
+.art-thumbnail {
+    height: 150px;
+    width: 100%;
+    background-size: cover;
+    border-radius: 10px 10px 0 0;
+}
+.hidden {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    color: transparent;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding: 10px;
+    box-sizing: border-box;
+}
+.hidden:hover {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 50%);
+    color: white;
+}
+
+.art-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+/*.art-info__artist{*/
+
+/*}*/
+.art-info__sub {
+    display: flex;
+
+}
