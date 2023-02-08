@@ -33,11 +33,7 @@ public class CurationController {
 	@GetMapping("/main")
 	@ApiOperation(value = "큐레이션 리스트")
 	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getList() {
-		System.out.println("wowowowowo");
 		List<CurationDataResponse.CurationSimple> curationList =  curationService.getCurationList();
-		System.out.println(curationList);
-		System.out.println("여긴가? :"+curationList.size());
-		System.out.println("test");
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
 
