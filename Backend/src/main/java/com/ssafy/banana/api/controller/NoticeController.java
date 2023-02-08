@@ -65,6 +65,60 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(myNoticeList);
 	}
 
+	// @ApiOperation(value = "팔로잉 작가 공지사항 리스트", notes = "내가 팔로우한 작가들의 공지사항 목록을 반환합니다")
+	// @GetMapping("/{user_seq}/following")
+	// public ResponseEntity<List> getMyArtistsNoticeList(@PathVariable("user_seq") Long userSeq,
+	// 	@RequestHeader(AUTHORIZATION) String token) {
+	//
+	// 	token = getToken(token);
+	// 	if (!tokenProvider.validateToken(token)) {
+	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+	// 	}
+	// 	Long userSeq = tokenProvider.getSubject(token);
+	// 	return null;
+	// }
+	//
+	@ApiOperation(value = "공지사항 상세", notes = "공지사항 상세 정보를 반환합니다")
+	@GetMapping("/detail/{notice_seq}")
+	public ResponseEntity getNotice(@PathVariable("notice_seq") Long noticeSeq,
+		@RequestHeader(value = AUTHORIZATION, required = false) String token) {
+
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		NoticeResponse noticeResponse = noticeService.getNotice(noticeSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(noticeResponse);
+	}
+
+	//
+	// @ApiOperation(value = "공지사항 수정", notes = "등록된 공지사항을 수정합니다")
+	// @PutMapping
+	// public ResponseEntity updateNotice(@RequestBody ArtRequest artRequest,
+	// 	@RequestHeader(AUTHORIZATION) String token) {
+	//
+	// 	token = getToken(token);
+	// 	if (!tokenProvider.validateToken(token)) {
+	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+	// 	}
+	//
+	// 	return null;
+	// }
+	//
+	// @ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
+	// @DeleteMapping
+	// public ResponseEntity deleteNotice(@PathVariable("art_seq") Long artSeq,
+	// 	@RequestHeader(AUTHORIZATION) String token) {
+	//
+	// 	token = getToken(token);
+	// 	if (!tokenProvider.validateToken(token)) {
+	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+	// 	}
+	//
+	// 	return null;
+	// }
+
 	private static String getToken(String token) {
 		if (token.substring(0, 7).equals("Bearer ")) {
 			token = token.substring("Bearer ".length());

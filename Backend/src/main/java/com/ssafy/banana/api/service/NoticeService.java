@@ -57,4 +57,12 @@ public class NoticeService {
 			throw new CustomException(CustomExceptionType.NO_CONTENT);
 		}
 	}
+
+	public NoticeResponse getNotice(Long noticeSeq) {
+
+		Notice notice = noticeRepository.findById(noticeSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+
+		return new NoticeResponse(notice);
+	}
 }
