@@ -16,6 +16,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* 컨테이너 양 옆 여백 */
+.content__container {
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+/* 반응형 웹페이지를 위해서... */
+.grid__for-components {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.grid__detail-page {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
 /* Nav바를 바닥에 고정하기 위함 */
 .wrapper{
   display: flex;
@@ -24,17 +42,6 @@ body {
 }
 .contentWrapper{
   flex: 1;
-}
-
-.content__container {
-  padding-left: 100px;
-  padding-right: 100px;
-}
-@media (max-width: 992px) {
-  .content__container {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
 }
 
 /* 현재 페이지에 있을 때 active 활성화 */
@@ -63,7 +70,25 @@ body {
   font-size: 13px;
   margin-left: 2px;
 }
+/* 업로드 날짜 */
+.upload_date {
+  color: #656565;
+  font-size: 13px;
+  margin-bottom: 30px;
+}
 
+
+@media (max-width: 992px) {
+  .content__container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .grid__for-components {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
 
 
 

@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 
 export const YellowBtn = styled.button`
+  width: ${props => props.width || "auto"};
   border: none;
   border-radius: 15px;
+  font-size: 13px;
+  box-sizing: border-box;
   padding: 7px 10px;
   background-color: #F9D923;
   cursor: pointer;
@@ -14,6 +17,8 @@ export const YellowBtn = styled.button`
 export const GreenBtn = styled.button`
   border: none;
   border-radius: 15px;
+  font-size: 13px;
+  box-sizing: border-box;
   padding: 7px 10px;
   background-color: #36AE7C;
   cursor: pointer;
@@ -26,6 +31,8 @@ export const GreenBtn = styled.button`
 export const BlueBtn = styled.button`
   border: none;
   border-radius: 15px;
+  font-size: 13px;
+  box-sizing: border-box;
   padding: 7px 10px;
   background-color: #187498;
   cursor: pointer;
@@ -38,6 +45,8 @@ export const BlueBtn = styled.button`
 export const RedBtn = styled.button`
   border: none;
   border-radius: 15px;
+  font-size: 13px;
+  box-sizing: border-box;
   padding: 7px 10px;
   background-color: #EB5353;
   cursor: pointer;
@@ -50,6 +59,7 @@ export const RedBtn = styled.button`
 export const WhiteBtn = styled.button`
   border: 1px solid #EBEBEB;
   box-sizing: border-box;
+  font-size: 13px;
   border-radius: 15px;
   padding: 7px 10px;
   background-color: #FFFFFF;
@@ -57,4 +67,40 @@ export const WhiteBtn = styled.button`
   &:hover {
     background-color: #F0F0F0;
   }
+`
+
+export const LikeBtn = styled.button`
+  border: 1px solid #EBEBEB;
+  border-radius: 50%;
+  color: #EB5353;
+  background-color: white;
+  cursor: pointer;
+  
+  padding: 7px;
+  font-size: 13px;
+  width: 31px;
+  height: 31px;
+  box-sizing: border-box;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const BookmarkBtn = styled.button`
+  border: 1px solid #EBEBEB;
+  border-radius: 50%;
+  color: #EB5353;
+  background-color: white;
+  cursor: pointer;
+
+  padding: 7px;
+  font-size: 13px;
+  width: 31px;
+  height: 31px;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
