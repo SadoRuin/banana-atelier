@@ -28,6 +28,11 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
+.grid__detail-page {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
 
 /* Nav바를 바닥에 고정하기 위함 */
 .wrapper{
@@ -64,6 +69,12 @@ body {
   color: #656565;
   font-size: 13px;
   margin-left: 2px;
+}
+/* 업로드 날짜 */
+.upload_date {
+  color: #656565;
+  font-size: 13px;
+  margin-bottom: 30px;
 }
 
 

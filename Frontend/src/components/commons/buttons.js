@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 export const YellowBtn = styled.button`
+  width: ${props => props.width || "auto"};
   border: none;
   border-radius: 15px;
   font-size: 13px;
