@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,18 +109,20 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(notice);
 	}
 
-	// @ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
-	// @DeleteMapping
-	// public ResponseEntity deleteNotice(@PathVariable("art_seq") Long artSeq,
-	// 	@RequestHeader(AUTHORIZATION) String token) {
-	//
-	// 	token = getToken(token);
-	// 	if (!tokenProvider.validateToken(token)) {
-	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-	// 	}
-	//
-	// 	return null;
-	// }
+	@ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
+	@DeleteMapping("/{notice_seq}")
+	public ResponseEntity deleteNotice(@PathVariable("notice_seq") Long noticeSeq,
+		@RequestHeader(AUTHORIZATION) String token) {
+
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Long userSeq = tokenProvider.getSubject(token);
+		Long result = noticeService.deleteNotice(noticeSeq, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
 
 	private static String getToken(String token) {
 		if (token.substring(0, 7).equals("Bearer ")) {

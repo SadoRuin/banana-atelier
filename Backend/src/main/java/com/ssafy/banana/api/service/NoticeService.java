@@ -87,4 +87,17 @@ public class NoticeService {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 	}
+
+	public Long deleteNotice(Long noticeSeq, Long userSeq) {
+
+		Notice notice = noticeRepository.findById(noticeSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
+		if (notice.getArtist().getId() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		noticeRepository.deleteById(noticeSeq);
+
+		return noticeSeq;
+	}
 }
