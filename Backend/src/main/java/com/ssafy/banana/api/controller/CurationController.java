@@ -13,13 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.banana.api.service.CurationArtService;
 import com.ssafy.banana.api.service.CurationService;
-import com.ssafy.banana.db.entity.CurationArt;
+import com.ssafy.banana.db.repository.CurationRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
-import com.ssafy.banana.dto.response.CurationAllListResponse;
-import com.ssafy.banana.dto.response.CurationDetailResponse;
-import com.ssafy.banana.dto.response.CurationResponse;
+import com.ssafy.banana.dto.response.CurationDataResponse;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,15 +29,11 @@ import lombok.RequiredArgsConstructor;
 public class CurationController {
 
 	private final CurationService curationService;
-	private final CurationArtService curationArtService;
 
 	@GetMapping("/main")
 	@ApiOperation(value = "큐레이션 리스트")
-	public ResponseEntity<List<CurationAllListResponse>> getList() {
-		List<CurationAllListResponse> curationList =  curationService.getCurationList();
-		if (curationList.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-		}
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getList() {
+		List<CurationDataResponse.CurationSimple> curationList =  curationService.getCurationList();
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
 
@@ -53,11 +46,8 @@ public class CurationController {
 
 	@GetMapping("/{curation_seq}")
 	@ApiOperation(value = "큐레이션 디테일 조회")
-	public ResponseEntity<CurationDetailResponse> getCuration(@PathVariable long curation_seq){
-		CurationResponse curationResponse = curationService.getCuration(curation_seq);
-		List<CurationArt> curationArtList = curationArtService.getCurationArtList(curation_seq);
-		CurationDetailResponse curationDetailResponse = new CurationDetailResponse(curationResponse,curationArtList );
-		return ResponseEntity.status(HttpStatus.OK).body(curationDetailResponse);
+	public ResponseEntity<CurationDataResponse.Curation> getCuration(@PathVariable("curation_seq") long curation_seq){
+		return ResponseEntity.status(HttpStatus.OK).body(curationService.getCuration(curation_seq));
 	}
 
 	@PutMapping("/{curation_seq}")
@@ -74,13 +64,4 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 삭제 성공");
 	}
 
-	// @GetMapping("/details/{curation_seq}")
-	// @ApiOperation(value = "큐레이션 작품 정보 리스트")
-	// public ResponseEntity<List<CurationArtResponse>> getCurationArtList(@PathVariable long curation_seq) {
-	// 	List<CurationArtResponse> curationArtList =  curationService.getCurationArtList(curation_seq);
-	// 	if (curationArtList.isEmpty()) {
-	// 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-	// 	}
-	// 	return ResponseEntity.status(HttpStatus.OK).body(curationArtList);
-	// }
 }
