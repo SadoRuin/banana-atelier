@@ -32,6 +32,7 @@
     padding: 15px;
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
 
     box-sizing: border-box;
 }
@@ -39,6 +40,7 @@
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 50%);
     color: white;
 }
+
 
 .art-info {
     width: 100%;
