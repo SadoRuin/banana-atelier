@@ -14,7 +14,8 @@ public enum CustomExceptionType {
 	USER_CONFLICT(HttpStatus.CONFLICT, "E009", "이미 가입된 사용자입니다."),
 	NO_CONTENT(HttpStatus.NO_CONTENT, "E010", "데이터가 존재하지 않습니다."),
 	DO_NOT_DELETE(HttpStatus.BAD_REQUEST, "E011", "삭제할 수 없습니다."),
-	;
+	FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "E012", "파일을 업로드 할 수 없습니다."),
+	FILE_EXTENSION_ERROR(HttpStatus.FORBIDDEN, "E103", "jpg, jpeg, png의 이미지 파일만 업로드해주세요");
 
 	private final HttpStatus httpStatus;
 	private final String code;

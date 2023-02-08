@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.ArtCategory;
@@ -18,6 +20,7 @@ import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtRepository;
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
@@ -38,31 +41,44 @@ public class ArtService {
 	private final MyArtRepository myArtRepository;
 	private final ArtistRepository artistRepository;
 	private final ArtistService artistService;
+	private final FileService fileService;
 
 	@Transactional
-	public Art uploadArt(ArtRequest artRequest, Long userSeq) {
+	public Art uploadArt(ArtRequest artRequest, FileDto fileDto) {
+
+		Long userSeq = fileDto.getUserSeq();
+		MultipartFile artFile = fileDto.getArtFile();
 
 		if (artRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
+		// 작가 체크
 		artistService.checkArtist(userSeq);
+
+		LocalDateTime artRegDate = LocalDateTime.now();
+		// 이미지 파일 저장
+		if (!ObjectUtils.isEmpty(artFile)) {
+			fileDto = fileService.saveFile(fileDto, artRegDate);
+		} else {
+			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
+		}
+		// 썸네일 생성
+		fileDto = fileService.makeAndSaveThumbnail(fileDto);
 
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
 		Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
-		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
 		if (artCategory == null || artist == null) {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
-
 		Art art = Art.builder()
-			.artImg(artRequest.getArtImg())
-			.artThumbnail(artThumbnail)
+			.artImg(fileDto.getNewArtName())
+			.artThumbnail(fileDto.getNewThumbnailName())
 			.artName(artRequest.getArtName())
 			.artDescription(artRequest.getArtDescription())
 			.artCategory(artCategory)
 			.artist(artist)
-			.artRegDate(LocalDateTime.now())
+			.artRegDate(artRegDate)
 			.build();
 
 		artRepository.save(art);
@@ -262,7 +278,7 @@ public class ArtService {
 
 		if (artistSeq == userSeq) {
 			art.setArtName(artRequest.getArtName());
-			art.setArtImg(artRequest.getArtImg());
+			// art.setArtImg(artRequest.getArtImg());
 			art.setArtThumbnail(artThumbnail);
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());

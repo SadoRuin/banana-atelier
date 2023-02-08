@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
+import com.ssafy.banana.api.service.ArtistService;
 import com.ssafy.banana.db.entity.Art;
+import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
@@ -28,6 +32,7 @@ import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,12 +42,19 @@ import lombok.RequiredArgsConstructor;
 public class ArtController {
 
 	private static final String AUTHORIZATION = "Authorization";
+	private static final String DOT = ".";
+	private static final String EXTENSION_JPG = "jpg";
+	private static final String EXTENSION_PNG = "png";
+	private static final String EXTENSION_JPEG = "jpeg";
 	private final TokenProvider tokenProvider;
 	private final ArtService artService;
+	private final ArtistService artistService;
 
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
-	public ResponseEntity uploadArt(@RequestBody ArtRequest artRequest,
+	public ResponseEntity uploadArt(
+		@ApiParam(value = "art_file") @RequestPart(value = "art_file", required = false) MultipartFile artFile,
+		@RequestPart ArtRequest artRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -50,7 +62,25 @@ public class ArtController {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		Long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.uploadArt(artRequest, userSeq);
+
+		String originalFilename = artFile.getOriginalFilename();
+		int dotIndex = originalFilename.lastIndexOf(DOT);
+		String originalArtName = originalFilename.substring(0, dotIndex);
+		String extension = originalFilename.substring(dotIndex + 1);
+
+		if (!extension.equalsIgnoreCase(EXTENSION_JPG)
+			&& !extension.equalsIgnoreCase(EXTENSION_JPEG)
+			&& !extension.equalsIgnoreCase(EXTENSION_PNG)) {
+			throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
+		}
+
+		FileDto fileDto = FileDto.builder()
+			.userSeq(userSeq)
+			.artFile(artFile)
+			.originalArtName(originalArtName)
+			.extension(extension)
+			.build();
+		Art art = artService.uploadArt(artRequest, fileDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
