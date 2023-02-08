@@ -60,6 +60,19 @@ public class NoticeService {
 		}
 	}
 
+	public List<NoticeResponse> getMyArtistsNoticeList(Long userSeq, Long tokenUserSeq) {
+
+		if (userSeq != tokenUserSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<NoticeResponse> myArtistNoticeList = noticeRepository.findMyArtistNotice(userSeq);
+		if (!CollectionUtils.isEmpty(myArtistNoticeList)) {
+			return myArtistNoticeList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+	}
+
 	public NoticeResponse getNotice(Long noticeSeq) {
 
 		Notice notice = noticeRepository.findById(noticeSeq)
@@ -100,4 +113,5 @@ public class NoticeService {
 
 		return noticeSeq;
 	}
+
 }

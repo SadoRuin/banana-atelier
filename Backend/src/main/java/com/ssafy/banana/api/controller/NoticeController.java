@@ -67,19 +67,21 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(myNoticeList);
 	}
 
-	// @ApiOperation(value = "팔로잉 작가 공지사항 리스트", notes = "내가 팔로우한 작가들의 공지사항 목록을 반환합니다")
-	// @GetMapping("/{user_seq}/following")
-	// public ResponseEntity<List> getMyArtistsNoticeList(@PathVariable("user_seq") Long userSeq,
-	// 	@RequestHeader(AUTHORIZATION) String token) {
-	//
-	// 	token = getToken(token);
-	// 	if (!tokenProvider.validateToken(token)) {
-	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-	// 	}
-	// 	Long userSeq = tokenProvider.getSubject(token);
-	// 	return null;
-	// }
-	//
+	@ApiOperation(value = "팔로잉 작가 공지사항 리스트", notes = "내가 팔로우한 작가들의 공지사항 목록을 반환합니다")
+	@GetMapping("/{user_seq}/following")
+	public ResponseEntity<List> getMyArtistsNoticeList(@PathVariable("user_seq") Long userSeq,
+		@RequestHeader(AUTHORIZATION) String token) {
+
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		List<NoticeResponse> myArtistNoticeList = noticeService.getMyArtistsNoticeList(userSeq, tokenUserSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(myArtistNoticeList);
+	}
+
 	@ApiOperation(value = "공지사항 상세", notes = "공지사항 상세 정보를 반환합니다")
 	@GetMapping("/detail/{notice_seq}")
 	public ResponseEntity getNotice(@PathVariable("notice_seq") Long noticeSeq,
