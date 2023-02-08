@@ -323,8 +323,13 @@ class App extends Component {
                                 type="button"
                                 id="buttonLeaveSession"
                                 onClick={this.leaveSession}
+<<<<<<< Frontend/src/routes/CurationsPage/openvidu.js
+                                value="나가기"
+                            />
+=======
                                 value="나가기"
                                 />
+>>>>>>> Frontend/src/routes/CurationsPage/openvidu.js
                             <button
                                 className="btn btn-large btn-danger"
                                 type="button"
@@ -334,6 +339,10 @@ class App extends Component {
                             >
                                 나가기
                             </button>
+<<<<<<< Frontend/src/routes/CurationsPage/openvidu.js
+
+=======
+>>>>>>> Frontend/src/routes/CurationsPage/openvidu.js
                         </div>
 
                         {this.state.mainStreamManager !== undefined ? (
