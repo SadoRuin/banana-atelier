@@ -3,6 +3,8 @@ package com.ssafy.banana.api.service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -105,4 +107,42 @@ public class FileService {
 		}
 	}
 
+	@Transactional
+	public FileDto saveProfileImage(FileDto fileDto, String existingFile) {
+		MultipartFile source = fileDto.getArtFile();
+		Long userSeq = fileDto.getUserSeq();
+		String originalArtName = fileDto.getOriginalArtName();
+		String extension = fileDto.getExtension();
+
+		/**
+		 * 파일 저장명 : 원래파일명_UUID.확장자명
+		 */
+		StringBuilder newArtname = new StringBuilder()
+			.append(originalArtName)
+			.append(SymbolUtil.UNDER_BAR)
+			.append(UUID.randomUUID())
+			.append(SymbolUtil.DOT)
+			.append(extension);
+		fileDto.setNewArtName(newArtname.toString());
+
+		/**
+		 * 파일 저장 경로 : path/(유저pk) 경로가 없다면 생성
+		 */
+		File savePath = new File(fileUtil.getProfilePath(), userSeq.toString());
+		if (!savePath.exists()) {
+			savePath.mkdirs();
+		}
+		try {
+			File dist = new File(savePath, newArtname.toString());
+			// 파일 저장
+			source.transferTo(dist);
+			fileDto.setArtImg(dist);
+			// 기존 프로필이미지 삭제
+			Files.deleteIfExists(Paths.get(fileUtil.getProfilePath(), userSeq.toString(), existingFile));
+		} catch (IOException e) {
+			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
+		}
+
+		return fileDto;
+	}
 }

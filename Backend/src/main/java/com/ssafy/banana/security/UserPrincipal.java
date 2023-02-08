@@ -54,6 +54,10 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 		);
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	public String getNickname() {
 		return nickname;
 	}

@@ -3,6 +3,7 @@ package com.ssafy.banana.exception;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.ssafy.banana.dto.response.ExceptionResponse;
 
@@ -23,7 +24,12 @@ public class GlobalExceptionAdvice {
 	public ResponseEntity<ExceptionResponse> exceptionHandler(Exception e) {
 		System.out.println(e.getMessage());
 		return getResponseEntity(CustomExceptionType.INTERNAL_SERVER_ERROR);
+	}
 
+	@ExceptionHandler(value = MaxUploadSizeExceededException.class)
+	public ResponseEntity<ExceptionResponse> maxUploadSizeExceededExceptionHandler(Exception e) {
+		System.out.println(e.getMessage());
+		return getResponseEntity(CustomExceptionType.MAX_UPLOAD_SIZE_EXCEEDED);
 	}
 
 	private ResponseEntity getResponseEntity(CustomExceptionType exceptionType) {
