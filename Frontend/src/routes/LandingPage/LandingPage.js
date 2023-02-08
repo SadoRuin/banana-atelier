@@ -27,9 +27,9 @@ function LandingPage() {
         <p>이 곳에는 요즘 뜨는 커미션 작가가 들어간다</p>
       </div>
 
-      <div>
+      <div >
         <h1><Link className='Link' to="arts">트렌딩🔥</Link></h1>
-        <div>
+        <div className="grid__for-components">
           {arts.data.map((art) => <div key={`art_item_${art.art_seq}`}>
             <ArtItem
               nickname={art.nickname}
