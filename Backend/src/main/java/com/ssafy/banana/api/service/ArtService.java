@@ -1,8 +1,16 @@
 package com.ssafy.banana.api.service;
 
+import java.io.File;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,8 +34,10 @@ import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
+import com.ssafy.banana.dto.response.FileResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.util.FileUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +52,7 @@ public class ArtService {
 	private final ArtistRepository artistRepository;
 	private final ArtistService artistService;
 	private final FileService fileService;
+	private final FileUtil fileUtil;
 
 	@Transactional
 	public Art uploadArt(ArtRequest artRequest, FileDto fileDto) {
@@ -261,6 +272,57 @@ public class ArtService {
 		artRepository.save(art);
 
 		return art;
+	}
+
+	public FileResponse downloadArt(MyArtRequest myArtRequest, Long userSeq) {
+
+		if (myArtRequest.getUserSeq() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
+		if (art == null) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
+		String path = new StringBuilder()
+			.append(fileUtil.getArtImgPath())
+			.append(File.separator)
+			.append(userSeq)
+			.append(File.separator)
+			.append(art.getArtImg())
+			.toString();
+
+		try {
+			// path = URLDecoder.decode(path, "UTF-8");
+			Path artImgPath = Paths.get(path);
+			Resource resource = new InputStreamResource(Files.newInputStream(artImgPath));
+
+			HttpHeaders headers = new HttpHeaders();
+
+			// 파일명 인코딩
+			String artImg = URLEncoder.encode(art.getArtImg(), fileUtil.UTF_8);
+			// String artImg = new String(art.getArtImg().getBytes("utf-8"), "iso-8859-1");
+
+			// 다른 이름으로 저장 설정
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + artImg + "\"");
+			// headers.setContentDisposition(ContentDisposition.builder("attachment").filename(artImg).build());
+
+			// 파일의 타입으로 Content-type 설정
+			String contentType = Files.probeContentType(artImgPath);
+			headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+
+			headers.add(HttpHeaders.CONTENT_ENCODING, fileUtil.BINARY);
+
+			// 다운로드 수 증가
+			art.setArtDownloadCount(art.getArtDownloadCount() + 1);
+			artRepository.save(art);
+
+			return FileResponse.builder()
+				.headers(headers)
+				.resource(resource)
+				.build();
+		} catch (Exception e) {
+			throw new CustomException(CustomExceptionType.FILE_DOWNLOAD_ERROR);
+		}
 	}
 
 	@Transactional

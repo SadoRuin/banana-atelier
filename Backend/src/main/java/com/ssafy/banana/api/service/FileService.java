@@ -15,10 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.coobird.thumbnailator.Thumbnails;
 
-import com.ssafy.banana.config.FileConfig;
 import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.util.FileUtil;
+import com.ssafy.banana.util.SymbolUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,9 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileService {
 
-	private final FileConfig fileConfig;
-	private final static String UNDER_BAR = "_";
-	private static final String DOT = ".";
+	private final FileUtil fileUtil;
 
 	@Transactional
 	public FileDto saveFile(FileDto fileDto, LocalDateTime artRegDate) {
@@ -41,25 +40,26 @@ public class FileService {
 		/**
 		 * 파일 저장명 : 원래파일명_저장시각_UUID.확장자명
 		 */
-		StringBuilder newArtname = new StringBuilder()
+		String newArtname = new StringBuilder()
 			.append(originalArtName)
-			.append(UNDER_BAR)
+			.append(SymbolUtil.UNDER_BAR)
 			.append(artRegDate.format(DateTimeFormatter.ofPattern("yyyymmddHHmmss")))
-			.append(UNDER_BAR)
+			.append(SymbolUtil.UNDER_BAR)
 			.append(UUID.randomUUID())
-			.append(DOT)
-			.append(extension);
-		fileDto.setNewArtName(newArtname.toString());
+			.append(SymbolUtil.DOT)
+			.append(extension)
+			.toString();
+		fileDto.setNewArtName(newArtname);
 
 		/**
 		 * 파일 저장 경로 : path/(유저pk) 경로가 없다면 생성
 		 */
-		File savePath = new File(fileConfig.getArtImgPath(), userSeq.toString());
+		File savePath = new File(fileUtil.getArtImgPath(), userSeq.toString());
 		if (!savePath.exists()) {
 			savePath.mkdirs();
 		}
 		try {
-			File artImg = new File(savePath, newArtname.toString());
+			File artImg = new File(savePath, newArtname);
 			// 파일 저장
 			artFile.transferTo(artImg);
 			fileDto.setArtImg(artImg);
@@ -77,13 +77,13 @@ public class FileService {
 		File artImg = fileDto.getArtImg();
 		String newFilename = fileDto.getNewArtName();
 
-		File savePath = new File(fileConfig.getArtThumbnailPath(), userSeq.toString());
+		File savePath = new File(fileUtil.getArtThumbnailPath(), userSeq.toString());
 		if (!savePath.exists()) {
 			savePath.mkdirs();
 		}
 
 		try {
-			String newThumbnailname = "s_" + newFilename;
+			String newThumbnailname = SymbolUtil.THUMBNAIL_PREFIX + newFilename;
 			File artThumbnail = new File(savePath, newThumbnailname);
 			BufferedImage originImg = ImageIO.read(artImg);
 
@@ -104,4 +104,5 @@ public class FileService {
 			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
 		}
 	}
+
 }

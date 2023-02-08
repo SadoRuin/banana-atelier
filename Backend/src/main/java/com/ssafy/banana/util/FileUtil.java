@@ -24,8 +24,10 @@ public class FileUtil {
 	public static final String EXTENSION_JPG = "jpg";
 	public static final String EXTENSION_PNG = "png";
 	public static final String EXTENSION_JPEG = "jpeg";
+	public static final String BINARY = "binary";
+	public static final String UTF_8 = "UTF-8";
 
 	private FileUtil() {
 	}
-	
+
 }
