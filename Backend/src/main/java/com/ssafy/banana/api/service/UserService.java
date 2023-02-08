@@ -9,11 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.banana.db.entity.Artist;
+import com.ssafy.banana.db.entity.MyArtist;
+import com.ssafy.banana.db.entity.MyArtistId;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
+import com.ssafy.banana.db.repository.ArtistRepository;
+import com.ssafy.banana.db.repository.MyArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.UserDto;
+import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.dto.request.UpdateUserRequest;
 import com.ssafy.banana.exception.CustomException;
@@ -32,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final AuthService authService;
 	private final UserRepository userRepository;
+	private final MyArtistRepository myArtistRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenProvider tokenProvider;
 	private final SecurityUtil securityUtil;
@@ -42,6 +49,7 @@ public class UserService {
 	private static final String EXTENSION_JPG = "jpg";
 	private static final String EXTENSION_PNG = "png";
 	private static final String EXTENSION_JPEG = "jpeg";
+	private final ArtistRepository artistRepository;
 
 	@Transactional
 	public void signup(SignupRequest signupRequest) {
@@ -186,6 +194,57 @@ public class UserService {
 		} else {
 			throw new CustomException(CustomExceptionType.ACCESS_TOKEN_ERROR);
 		}
+	}
+
+	public void followArtist(String token, SeqRequest seqRequest) {
+		long userSeq = tokenProvider.getSubject(token);
+		long artistSeq = seqRequest.getUserSeq();
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		Artist artist = artistRepository.findById(artistSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		MyArtistId myArtistId = MyArtistId.builder()
+			.userSeq(userSeq)
+			.artistSeq(artistSeq)
+			.build();
+		if (myArtistRepository.findById(myArtistId).isPresent()) {
+			throw new CustomException(CustomExceptionType.ARTIST_FOLLOW_CONFLICT);
+		}
+
+		MyArtist myArtist = MyArtist.builder()
+			.id(myArtistId)
+			.artist(artist)
+			.user(user)
+			.build();
+
+		myArtistRepository.save(myArtist);
+
+		int like = artist.getUser().getArtistLikeCount();
+		artist.getUser().setArtistLikeCount(like + 1);
+		artistRepository.save(artist);
+	}
+
+	public void unFollowArtist(String token, SeqRequest seqRequest) {
+		long userSeq = tokenProvider.getSubject(token);
+		long artistSeq = seqRequest.getUserSeq();
+
+		Artist artist = artistRepository.findById(artistSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		MyArtistId myArtistId = MyArtistId.builder()
+			.userSeq(userSeq)
+			.artistSeq(artistSeq)
+			.build();
+		MyArtist myArtist = myArtistRepository.findById(myArtistId)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+
+		myArtistRepository.delete(myArtist);
+
+		int like = artist.getUser().getArtistLikeCount();
+		artist.getUser().setArtistLikeCount(like - 1);
+		artistRepository.save(artist);
 	}
 
 	public String createCode(int digit) {

@@ -38,8 +38,12 @@ public class AuthService {
 
 		UsernamePasswordAuthenticationToken authenticationToken =
 			new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		Authentication authentication;
+		try {
+			authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		} catch (Exception e) {
+			throw new CustomException(CustomExceptionType.LOGIN_FAIL);
+		}
 
 		String accessToken = tokenProvider.createAccessToken(authentication);
 		tokenProvider.createRefreshToken(authentication);
@@ -84,6 +88,21 @@ public class AuthService {
 
 		SecurityContextHolder.getContext().setAuthentication(null);
 		logger.info("로그아웃 유저 이메일 : '{}'", email);
+	}
+
+	public void checkPassword(String password) {
+		String email = securityUtil.getCurrentUsername()
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		UsernamePasswordAuthenticationToken authenticationToken =
+			new UsernamePasswordAuthenticationToken(email, password);
+
+		try {
+			Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		} catch (Exception e) {
+			throw new CustomException(CustomExceptionType.PASSWORD_NOT_MATCHED);
+		}
+
 	}
 
 	public TokenDto reissue(String token) {

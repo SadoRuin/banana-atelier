@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.banana.api.service.UserService;
 import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.EmailRequest;
+import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.dto.request.UpdateUserRequest;
 import com.ssafy.banana.dto.response.ExceptionResponse;
@@ -125,8 +126,8 @@ public class UserController {
 	@PatchMapping("/update")
 	@ApiOperation(value = "회원정보 수정")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "password", value = "비밀번호"),
 		@ApiImplicitParam(name = "nickname", value = "닉네임"),
+		@ApiImplicitParam(name = "password", value = "비밀번호"),
 		@ApiImplicitParam(name = "imageFile", value = "프로필이미지 파일")
 	})
 	@ApiResponses({
@@ -151,6 +152,32 @@ public class UserController {
 	public ResponseEntity deleteUser(@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		userService.deleteUser(token);
-		return ResponseEntity.ok().body(new SuccessResponse("탈퇴되었습니다."));
+		return ResponseEntity.ok(new SuccessResponse("탈퇴되었습니다."));
+	}
+
+	@PostMapping("/follow")
+	@ApiOperation(value = "작가 팔로우")
+	@ApiImplicitParam(name = "userSeq", value = "작가번호")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "팔로우 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class),
+		@ApiResponse(code = 409, message = "이미 팔로우한 작가입니다.", response = ExceptionResponse.class)
+	})
+	public ResponseEntity followArtist(@RequestHeader String Authorization, @RequestBody SeqRequest seqRequest) {
+		String token = Authorization.split(" ")[1];
+		userService.followArtist(token, seqRequest);
+		return ResponseEntity.ok(new SuccessResponse("팔로우 되었습니다."));
+	}
+
+	@DeleteMapping("/follow")
+	@ApiOperation(value = "작가 언팔로우")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "언팔로우 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다. or 팔로우 정보가 없습니다.", response = ExceptionResponse.class)
+	})
+	public ResponseEntity unFollowArtist(@RequestHeader String Authorization, @RequestBody SeqRequest seqRequest) {
+		String token = Authorization.split(" ")[1];
+		userService.unFollowArtist(token, seqRequest);
+		return ResponseEntity.ok(new SuccessResponse("팔로우가 해제되었습니다."));
 	}
 }
