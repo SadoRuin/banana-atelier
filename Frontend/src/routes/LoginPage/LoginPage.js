@@ -12,9 +12,7 @@ export default function LoginPage(props) {
   const navigate = useNavigate()
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
-
-  
-  const [pwMessage, SetPwMessage] = useState('')
+  const [pwMessage, setPwMessage] = useState('')
 
   const handleFindPw = (event) => {
     event.preventDefault()
@@ -24,12 +22,12 @@ export default function LoginPage(props) {
     axios.patch('https://i8a108.p.ssafy.io/api/users/find-password', body)
       .then(response => {
         console.log('response', response)
-        SetPwMessage('임시 비밀번호가 이메일로 발급되었습니다.')
+        setPwMessage('임시 비밀번호가 이메일로 발급되었습니다.')
       })
       .catch(error => {
         console.log(error)
         if (error.message === 'Request failed with status code 404') {
-          SetPwMessage('회원 정보가 없습니다.')
+          setPwMessage('회원 정보가 없습니다.')
         }
       })
   }
@@ -61,6 +59,10 @@ export default function LoginPage(props) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         navigate('/')
       })
+      .catch(error => {
+        console.log(error)
+        setPwMessage('Email이나 Password를 확인하세요.')
+      })
   }
   return (
     <div>
@@ -73,14 +75,14 @@ export default function LoginPage(props) {
         <input type="email" value={Email} onChange = {onEmailHandler} />
         <label>Password</label>
         <input type="password" value={Password} onChange = {onPasswordHandler} />
-        <button onClick={handleFindPw}>비밀번호 재설정</button>
-        { pwMessage }
         <br />
         <button>로그인</button>
         <button onClick={event => {
           event.preventDefault()
           navigate("/signup")
         }}>회원가입</button>
+        <button onClick={handleFindPw}>비밀번호 재설정</button>
+        { pwMessage }
       </form>
 
     </div>
