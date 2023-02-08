@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.banana.api.service.AuthService;
 import com.ssafy.banana.dto.TokenDto;
 import com.ssafy.banana.dto.request.LoginRequest;
+import com.ssafy.banana.dto.request.PasswordRequest;
 import com.ssafy.banana.dto.request.VerifyRequest;
 import com.ssafy.banana.dto.response.ExceptionResponse;
 import com.ssafy.banana.dto.response.LoginResponse;
@@ -83,6 +84,19 @@ public class AuthController {
 		String token = Authorization.split(" ")[1];
 		authService.logout(token);
 		return ResponseEntity.ok().body(new SuccessResponse("로그아웃 되었습니다."));
+	}
+
+	@PostMapping("/check-password")
+	@ApiOperation(value = "비밀번호 확인")
+	@ApiImplicitParam(name = "password", value = "유저 비밀번호", required = true)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "비밀번호 확인 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 401, message = "비밀번호 불일치", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
+	})
+	public ResponseEntity checkPassword(@RequestBody PasswordRequest passwordRequest) {
+		authService.checkPassword(passwordRequest.getPassword());
+		return ResponseEntity.ok(new SuccessResponse("확인되었습니다."));
 	}
 
 	@PostMapping("/reissue")

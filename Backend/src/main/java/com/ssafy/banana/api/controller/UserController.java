@@ -151,6 +151,6 @@ public class UserController {
 	public ResponseEntity deleteUser(@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		userService.deleteUser(token);
-		return ResponseEntity.ok().body(new SuccessResponse("탈퇴되었습니다."));
+		return ResponseEntity.ok(new SuccessResponse("탈퇴되었습니다."));
 	}
 }
