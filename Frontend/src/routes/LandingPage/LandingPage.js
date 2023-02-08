@@ -15,23 +15,22 @@ function LandingPage() {
   const {arts} = useLoaderData();
 
   return (
-    <div>
+    <div className="content__container" >
 
       <div>
-        <h1><Link to="curations">큐레이션🍌</Link></h1>
-        <p>현재 진행중인</p>
+        <h1><Link className='Link' to="curations">큐레이션🍌</Link></h1>
+        <p>현재 진행중인 큐레이션 -> 진행 예정 큐레이션 보여주기</p>
       </div>
 
       <div>
-        <h1><Link to="commissions">요즘 뜨는 커미션 작가💰</Link></h1>
+        <h1><Link className='Link' to="commissions">요즘 뜨는 커미션 작가💰</Link></h1>
         <p>이 곳에는 요즘 뜨는 커미션 작가가 들어간다</p>
       </div>
 
       <div>
-        <h1><Link to="arts">트렌딩🔥</Link></h1>
-        <p>이 곳에는 요즘 인기가 많아진 작품들이 들어간다.</p>
+        <h1><Link className='Link' to="arts">트렌딩🔥</Link></h1>
         <div>
-          {arts.data.map((art) => <div key={art.art_seq}>
+          {arts.data.map((art) => <div key={`art_item_${art.art_seq}`}>
             <ArtItem
               nickname={art.nickname}
               art_seq={art.art_seq}
