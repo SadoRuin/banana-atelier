@@ -1,13 +1,15 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import customAxios from '../../_actions/customAxios'
 
 export function loader() {
-  const curationsList = customAxios().get(`curations`);
+  const curationsList = customAxios().get(`curations/main`);
   return curationsList;
 }
 
 function CurationsMain() {
+  const curationsList = useLoaderData();
+  console.log(curationsList);
   return (
     <div>
 
