@@ -267,7 +267,31 @@ class App extends Component {
 		this.removeScreen();
 	}
 
-
+    aa(){
+        var OV = new OpenVidu();
+        var sessionScreen = OV.initSession();
+        this.getToken().then((token) => {
+            sessionScreen.connect(token).then(() => {
+                var publisher = OV.initPublisher("html-element-id", { videoSource: "screen" });
+    
+                publisher.once('accessAllowed', (event) => {
+                    publisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                        console.log('User pressed the "Stop sharing" button');
+                    });
+                    sessionScreen.publish(publisher);
+    
+                });
+    
+                publisher.once('accessDenied', (event) => {
+                    console.warn('ScreenShare: Access Denied');
+                });
+    
+            }).catch((error => {
+                console.warn('There was an error connecting to the session:', error.code, error.message);
+    
+            }));
+        });
+    }
 
 
     render() {
@@ -318,13 +342,13 @@ class App extends Component {
                     <div id="session">
                         <div id="session-header">
                             <h1 id="session-title">{mySessionId}</h1>
-                            <input
+                            {/* <input
                                 className="btn btn-large btn-danger"
                                 type="button"
                                 id="buttonLeaveSession"
                                 onClick={this.leaveSession}
                                 value="나가기"
-                            />
+                            /> */}
 
                             <button
                                 className="btn btn-large btn-danger"
@@ -334,6 +358,15 @@ class App extends Component {
                                 value="나가기"
                             >
                                 나가기
+                            </button>
+                            <button
+                                className="btn btn-large btn-danger"
+                                type="button"
+                                id="buttonScreenShare"
+                                onClick={this.toggleScreenShare}
+                                value="화면 공유"
+                            >
+                                화면 공유
                             </button>
                         </div>
 
