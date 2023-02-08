@@ -1,14 +1,17 @@
 package com.ssafy.banana.api.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.Notice;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.NoticeRepository;
 import com.ssafy.banana.dto.request.NoticeRequest;
+import com.ssafy.banana.dto.response.NoticeResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
@@ -40,5 +43,18 @@ public class NoticeService {
 		noticeRepository.save(notice);
 
 		return notice;
+	}
+
+	public List<NoticeResponse> getMyNoticeList(Long userSeq, Long tokenUserSeq) {
+
+		if (userSeq != tokenUserSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<NoticeResponse> myNoticeList = noticeRepository.findByUserSeq(userSeq);
+		if (!CollectionUtils.isEmpty(myNoticeList)) {
+			return myNoticeList;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
 	}
 }

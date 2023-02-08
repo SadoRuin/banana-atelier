@@ -1,7 +1,11 @@
 package com.ssafy.banana.api.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.banana.api.service.NoticeService;
 import com.ssafy.banana.db.entity.Notice;
 import com.ssafy.banana.dto.request.NoticeRequest;
+import com.ssafy.banana.dto.response.NoticeResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
@@ -43,6 +48,21 @@ public class NoticeController {
 		Notice notice = noticeService.uploadNotice(noticeRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(notice);
+	}
+
+	@ApiOperation(value = "나의 공지사항 리스트", notes = "작가 본인의 공지사항 목록을 반환합니다")
+	@GetMapping("/{user_seq}")
+	public ResponseEntity<List> getMyNoticeList(@PathVariable("user_seq") Long userSeq,
+		@RequestHeader(AUTHORIZATION) String token) {
+
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		List<NoticeResponse> myNoticeList = noticeService.getMyNoticeList(userSeq, tokenUserSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(myNoticeList);
 	}
 
 	private static String getToken(String token) {
