@@ -323,7 +323,7 @@ class App extends Component {
                                 type="button"
                                 id="buttonLeaveSession"
                                 onClick={this.leaveSession}
-                                value="나가기"
+                                value="나가기?"
                             />
                         </div>
 
