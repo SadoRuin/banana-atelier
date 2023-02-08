@@ -23,9 +23,9 @@ function CurationsDetail() {
             <div className="curation_description">
               큐레이션 설명 주절주절주절
             </div>
-            <div className="category">
-              카테고리 칸은 이 작품의 카테고리 number 보면 됨
-            </div>
+            {/*<div className="category">*/}
+            {/*  카테고리 칸은 이 작품의 카테고리 number 보면 됨*/}
+            {/*</div>*/}
           </div>
           <div>
             <div>
