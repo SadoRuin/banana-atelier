@@ -34,7 +34,7 @@ public class CurationController {
 	private final CurationService curationService;
 	private final CurationArtService curationArtService;
 
-	@GetMapping
+	@GetMapping("/main")
 	@ApiOperation(value = "큐레이션 리스트")
 	public ResponseEntity<List<CurationAllListResponse>> getList() {
 		List<CurationAllListResponse> curationList =  curationService.getCurationList();
