@@ -4,12 +4,13 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,6 +113,7 @@ public class UserController {
 
 	@GetMapping("/profile/{user_seq}")
 	@ApiOperation(value = "회원정보 조회")
+	@ApiImplicitParam(name = "user_seq", value = "유저 회원번호", required = true)
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "회원정보 조회 성공", response = UserDto.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
@@ -120,16 +122,35 @@ public class UserController {
 		return ResponseEntity.ok(userService.getUserInfo(userSeq));
 	}
 
-	@PutMapping("/update")
+	@PatchMapping("/update")
 	@ApiOperation(value = "회원정보 수정")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "password", value = "비밀번호"),
 		@ApiImplicitParam(name = "nickname", value = "닉네임"),
 		@ApiImplicitParam(name = "imageFile", value = "프로필이미지 파일")
 	})
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "회원정보 수정 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 400, message = "프로필 이미지 업로드 or 기존 이미지 삭제 실패.", response = ExceptionResponse.class),
+		@ApiResponse(code = 403, message = "파일 확장자 오류.", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
+	})
 	public ResponseEntity updateUser(@RequestPart UpdateUserRequest updateUserRequest,
 		@RequestPart MultipartFile imageFile) {
 		userService.updateUser(updateUserRequest, imageFile);
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("회원정보가 수정되었습니다."));
+	}
+
+	@DeleteMapping("/delete")
+	@ApiOperation(value = "회원 탈퇴")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "회원 탈퇴 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 401, message = "액세스토큰 오류", response = ExceptionResponse.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
+	})
+	public ResponseEntity deleteUser(@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		userService.deleteUser(token);
+		return ResponseEntity.ok().body(new SuccessResponse("탈퇴되었습니다."));
 	}
 }
