@@ -325,6 +325,16 @@ class App extends Component {
                                 onClick={this.leaveSession}
                                 value="나가기?"
                             />
+                            <button
+                                className="btn btn-large btn-danger"
+                                type="button"
+                                id="buttonLeaveSession"
+                                onClick={this.leaveSession}
+                                value="나가기"
+                            >
+                                나가기
+                            </button>
+
                         </div>
 
                         {this.state.mainStreamManager !== undefined ? (
