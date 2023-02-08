@@ -67,7 +67,7 @@ public class Curation {
 	private String curationHit;
 
 	@NotNull
-	@Column(name = "curation_bm_count", nullable = false)
+	@Column(name = "curation_bm_cnt", nullable = false)
 	private int curationBmCount;
 
 	@Size(max = 100)
