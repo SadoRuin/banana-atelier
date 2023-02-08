@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.banana.config.FileConfig;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.dto.request.UpdateUserRequest;
@@ -31,7 +33,12 @@ public class UserService {
 	private final SecurityUtil securityUtil;
 	private final RedisUtil redisUtil;
 	private final EmailUtil emailUtil;
+	private final FileService fileService;
+	private final FileConfig fileConfig;
 	private final char[] specialChars = {'!', '@', '$', '%', '(', ')'};
+	private static final String EXTENSION_JPG = "jpg";
+	private static final String EXTENSION_PNG = "png";
+	private static final String EXTENSION_JPEG = "jpeg";
 	@Value("${images.profile}")
 	private String profileImagePath;
 
@@ -166,10 +173,32 @@ public class UserService {
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		System.out.println("updateUserRequest.getNickname() = " + updateUserRequest.getNickname());
-		System.out.println("updateUserRequest.getPassword() = " + updateUserRequest.getPassword());
-		System.out.println("imageFile = " + imageFile.getOriginalFilename());
+		if (!updateUserRequest.getNickname().equals("")) {
+			user.setNickname(updateUserRequest.getNickname());
+		}
+		if (!updateUserRequest.getPassword().equals("")) {
+			user.setPassword(updateUserRequest.getPassword());
+		}
+		if (!imageFile.isEmpty()) {
+			String[] fileName = imageFile.getOriginalFilename().split("\\.");
+			if (!fileName[1].equalsIgnoreCase(EXTENSION_JPG)
+				&& !fileName[1].equalsIgnoreCase(EXTENSION_JPEG)
+				&& !fileName[1].equalsIgnoreCase(EXTENSION_PNG)) {
+				throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
+			}
 
-		// userRepository.save(user);
+			FileDto fileDto = FileDto.builder()
+				.userSeq(user.getId())
+				.artFile(imageFile)
+				.originalArtName(fileName[0])
+				.extension(fileName[1])
+				.build();
+
+			fileDto = fileService.saveProfileImage(fileDto, user.getProfileImg());
+
+			user.setProfileImg(fileDto.getNewArtName());
+		}
+
+		userRepository.save(user);
 	}
 }

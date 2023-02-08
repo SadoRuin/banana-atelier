@@ -15,7 +15,8 @@ public enum CustomExceptionType {
 	NO_CONTENT(HttpStatus.NO_CONTENT, "E010", "데이터가 존재하지 않습니다."),
 	DO_NOT_DELETE(HttpStatus.BAD_REQUEST, "E011", "삭제할 수 없습니다."),
 	FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "E012", "파일을 업로드 할 수 없습니다."),
-	FILE_EXTENSION_ERROR(HttpStatus.FORBIDDEN, "E103", "jpg, jpeg, png의 이미지 파일만 업로드해주세요");
+	FILE_EXTENSION_ERROR(HttpStatus.FORBIDDEN, "E013", "jpg, jpeg, png의 이미지 파일만 업로드해주세요"),
+	MAX_UPLOAD_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "E014", "한번에 업로드 가능한 용량(10MB)을 초과했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
