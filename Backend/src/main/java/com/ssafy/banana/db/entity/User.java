@@ -61,7 +61,4 @@ public class User {
 	@Column(name = "role", nullable = false, length = 10)
 	private Role role;
 
-	@Column(name = "is_authorized", nullable = false)
-	private boolean isAuthorized;
-
 }

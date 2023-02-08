@@ -19,6 +19,7 @@ import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.UserPrincipal;
 import com.ssafy.banana.security.jwt.TokenProvider;
 import com.ssafy.banana.util.RedisUtil;
+import com.ssafy.banana.util.SecurityUtil;
 
 import io.jsonwebtoken.io.Encoders;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AuthService {
 
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final SecurityUtil securityUtil;
 	private final RedisUtil redisUtil;
 
 	public LoginResponse login(LoginRequest loginRequest) {
@@ -69,8 +71,8 @@ public class AuthService {
 
 	public void logout(String token) {
 		logger.info(token);
-		UserPrincipal userPrincipal = (UserPrincipal)tokenProvider.getAuthentication(token).getPrincipal();
-		String email = userPrincipal.getUsername();
+		String email = securityUtil.getCurrentUsername()
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 		String key = "RT:" + Encoders.BASE64.encode(email.getBytes());
 		if (redisUtil.getData(key) != null) {
 			redisUtil.deleteData(key);
@@ -81,7 +83,7 @@ public class AuthService {
 		redisUtil.setDataExpire(token, token, expiration - now.getTime());
 
 		SecurityContextHolder.getContext().setAuthentication(null);
-		logger.info("로그아웃 유저 이메일 : '{}' , 유저 권한 : '{}'", userPrincipal.getUsername(), userPrincipal.getRole());
+		logger.info("로그아웃 유저 이메일 : '{}'", email);
 	}
 
 	public TokenDto reissue(String token) {

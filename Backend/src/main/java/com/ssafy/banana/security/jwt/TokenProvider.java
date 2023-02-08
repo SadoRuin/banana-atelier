@@ -88,7 +88,7 @@ public class TokenProvider implements InitializingBean {
 			.compact();
 
 		String key = "RT:" + Encoders.BASE64.encode(userPrincipal.getUsername().getBytes());
-		redisUtil.setDataExpire(key, refreshToken, refreshTokenValidTime);
+		redisUtil.setDataExpire(key, refreshToken, refreshTokenValidTime * 1000);
 	}
 
 	public Authentication getAuthentication(String token) {

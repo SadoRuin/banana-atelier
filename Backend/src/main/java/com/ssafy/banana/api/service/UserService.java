@@ -2,15 +2,18 @@ package com.ssafy.banana.api.service;
 
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.SignupRequest;
+import com.ssafy.banana.dto.request.UpdateUserRequest;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.util.EmailUtil;
@@ -29,6 +32,8 @@ public class UserService {
 	private final RedisUtil redisUtil;
 	private final EmailUtil emailUtil;
 	private final char[] specialChars = {'!', '@', '$', '%', '(', ')'};
+	@Value("${images.profile}")
+	private String profileImagePath;
 
 	@Transactional
 	public void signup(SignupRequest signupRequest) {
@@ -44,7 +49,6 @@ public class UserService {
 			.profileImg(profileImg)
 			.artistLikeCount(0)
 			.role(Role.USER)
-			.isAuthorized(false)
 			.build();
 
 		userRepository.save(user);
@@ -52,7 +56,10 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public UserDto getUserInfo(long id) {
-		return UserDto.from(userRepository.findById(id).orElse(null));
+		return UserDto.from(
+			userRepository.findById(id)
+				.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND))
+		);
 	}
 
 	@Transactional(readOnly = true)
@@ -103,7 +110,7 @@ public class UserService {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 		Random rand = new Random();
-		String newPassword = specialChars[rand.nextInt(6)] + createCode(14) + specialChars[rand.nextInt(6)];
+		String newPassword = createCode(14) + specialChars[rand.nextInt(6)];
 		String content = "";
 		content += "<div style='margin:20px;'>";
 		content += "<h1> 안녕하세요 바나나공방입니다. </h1>";
@@ -125,12 +132,12 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public static String createCode(int digit) {
+	public String createCode(int digit) {
 		StringBuffer key = new StringBuffer();
 		Random rnd = new Random();
 
 		for (int i = 0; i < digit; i++) { // 인증코드 8자리
-			int index = rnd.nextInt(3); // 0~2 까지 랜덤
+			int index = rnd.nextInt(4); // 0~2 까지 랜덤
 
 			switch (index) {
 				case 0:
@@ -145,8 +152,24 @@ public class UserService {
 					key.append((rnd.nextInt(10)));
 					// 0~9
 					break;
+				case 3:
+					key.append(specialChars[rnd.nextInt(6)]);
+					// 0~9
+					break;
 			}
 		}
 		return key.toString();
+	}
+
+	public void updateUser(UpdateUserRequest updateUserRequest, MultipartFile imageFile) {
+		User user = securityUtil.getCurrentUsername()
+			.flatMap(userRepository::findByEmail)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		System.out.println("updateUserRequest.getNickname() = " + updateUserRequest.getNickname());
+		System.out.println("updateUserRequest.getPassword() = " + updateUserRequest.getPassword());
+		System.out.println("imageFile = " + imageFile.getOriginalFilename());
+
+		// userRepository.save(user);
 	}
 }
