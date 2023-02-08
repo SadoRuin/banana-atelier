@@ -2,13 +2,13 @@ package com.ssafy.banana.api.service;
 
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.banana.config.FileConfig;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.UserRepository;
@@ -18,6 +18,8 @@ import com.ssafy.banana.dto.request.SignupRequest;
 import com.ssafy.banana.dto.request.UpdateUserRequest;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.security.UserPrincipal;
+import com.ssafy.banana.security.jwt.TokenProvider;
 import com.ssafy.banana.util.EmailUtil;
 import com.ssafy.banana.util.RedisUtil;
 import com.ssafy.banana.util.SecurityUtil;
@@ -28,19 +30,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+	private final AuthService authService;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final TokenProvider tokenProvider;
 	private final SecurityUtil securityUtil;
 	private final RedisUtil redisUtil;
 	private final EmailUtil emailUtil;
 	private final FileService fileService;
-	private final FileConfig fileConfig;
 	private final char[] specialChars = {'!', '@', '$', '%', '(', ')'};
 	private static final String EXTENSION_JPG = "jpg";
 	private static final String EXTENSION_PNG = "png";
 	private static final String EXTENSION_JPEG = "jpeg";
-	@Value("${images.profile}")
-	private String profileImagePath;
 
 	@Transactional
 	public void signup(SignupRequest signupRequest) {
@@ -139,6 +140,54 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	public void updateUser(UpdateUserRequest updateUserRequest, MultipartFile imageFile) {
+		User user = securityUtil.getCurrentUsername()
+			.flatMap(userRepository::findByEmail)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		if (!updateUserRequest.getNickname().equals("")) {
+			user.setNickname(updateUserRequest.getNickname());
+		}
+		if (!updateUserRequest.getPassword().equals("")) {
+			user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
+		}
+		if (!imageFile.isEmpty()) {
+			String[] fileName = imageFile.getOriginalFilename().split("\\.");
+			if (!fileName[1].equalsIgnoreCase(EXTENSION_JPG)
+				&& !fileName[1].equalsIgnoreCase(EXTENSION_JPEG)
+				&& !fileName[1].equalsIgnoreCase(EXTENSION_PNG)) {
+				throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
+			}
+
+			FileDto fileDto = FileDto.builder()
+				.userSeq(user.getId())
+				.artFile(imageFile)
+				.originalArtName(fileName[0])
+				.extension(fileName[1])
+				.build();
+
+			fileDto = fileService.saveProfileImage(fileDto, user.getProfileImg());
+
+			user.setProfileImg(fileDto.getNewArtName());
+		}
+
+		userRepository.save(user);
+	}
+
+	public void deleteUser(String token) {
+		long id = tokenProvider.getSubject(token);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+		if (id == userPrincipal.getId()) {
+			User user = userRepository.findById(id)
+				.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+			authService.logout(token);
+			userRepository.delete(user);
+		} else {
+			throw new CustomException(CustomExceptionType.ACCESS_TOKEN_ERROR);
+		}
+	}
+
 	public String createCode(int digit) {
 		StringBuffer key = new StringBuffer();
 		Random rnd = new Random();
@@ -166,39 +215,5 @@ public class UserService {
 			}
 		}
 		return key.toString();
-	}
-
-	public void updateUser(UpdateUserRequest updateUserRequest, MultipartFile imageFile) {
-		User user = securityUtil.getCurrentUsername()
-			.flatMap(userRepository::findByEmail)
-			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
-
-		if (!updateUserRequest.getNickname().equals("")) {
-			user.setNickname(updateUserRequest.getNickname());
-		}
-		if (!updateUserRequest.getPassword().equals("")) {
-			user.setPassword(updateUserRequest.getPassword());
-		}
-		if (!imageFile.isEmpty()) {
-			String[] fileName = imageFile.getOriginalFilename().split("\\.");
-			if (!fileName[1].equalsIgnoreCase(EXTENSION_JPG)
-				&& !fileName[1].equalsIgnoreCase(EXTENSION_JPEG)
-				&& !fileName[1].equalsIgnoreCase(EXTENSION_PNG)) {
-				throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
-			}
-
-			FileDto fileDto = FileDto.builder()
-				.userSeq(user.getId())
-				.artFile(imageFile)
-				.originalArtName(fileName[0])
-				.extension(fileName[1])
-				.build();
-
-			fileDto = fileService.saveProfileImage(fileDto, user.getProfileImg());
-
-			user.setProfileImg(fileDto.getNewArtName());
-		}
-
-		userRepository.save(user);
 	}
 }
