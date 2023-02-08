@@ -1,0 +1,98 @@
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-size: 15px;
+  font-style: normal;
+}
+body {
+  margin: 0;
+  color: #333333;
+  font-size: 15px;
+  font-family: 'Pretendard-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 컨테이너 양 옆 여백 */
+.content__container {
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+/* 반응형 웹페이지를 위해서... */
+.grid__for-components {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.grid__detail-page {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Nav바를 바닥에 고정하기 위함 */
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.contentWrapper{
+  flex: 1;
+}
+
+/* 현재 페이지에 있을 때 active 활성화 */
+.navActive {
+  font-weight: bold !important;
+}
+
+/* 링크 보라색 되는거 꼴뵈기 싫어서 */
+.navLink, .Link {
+  text-decoration: none;
+  color: #333333;
+}
+.navLink:visited, .Link:visited {
+  text-decoration: none;
+  color: #333333;
+}
+
+/* 링크에 마우스를 올렸을 때 굵어지면 좋겠다 싶은 것만 */
+.LinkHoverBold:hover {
+  font-weight: bold
+}
+
+/* OOO 작가 할 때 작가 이름 작게 보이게 할 것 */
+.jakka {
+  color: #656565;
+  font-size: 13px;
+  margin-left: 2px;
+}
+/* 업로드 날짜 */
+.upload_date {
+  color: #656565;
+  font-size: 13px;
+  margin-bottom: 30px;
+}
+
+
+@media (max-width: 992px) {
+  .content__container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .grid__for-components {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

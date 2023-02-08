@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs "nodejs"
+    }
+
+    stages {
+        stage('React Build') {
+            steps {
+                dir('Frontend') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('Frontend') {
+                    sh 'docker build -t banana-front:latest .'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps{
+                sh 'docker rm -f front'
+                sh 'docker run -d --name front -p 3126:3126 -u root banana-front:latest'
+            }
+        }
+
+       stage('Finish') {
+            steps{
+                sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
+            }
+        }
+    }
+}

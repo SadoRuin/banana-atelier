@@ -1,0 +1,17 @@
+#nav_bar {
+    border-bottom: 1px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 100px;
+}
+@media (max-width: 992px) {
+    #nav_bar {
+        padding: 10px 30px;
+    }
+}
+
+
+/* 여기 쓰는 NavLink는 추후 모든 페이지에서 접근할 수 있게 빼놓아야 함! */
+
