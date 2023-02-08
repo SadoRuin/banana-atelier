@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,20 +93,21 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(noticeResponse);
 	}
 
-	//
-	// @ApiOperation(value = "공지사항 수정", notes = "등록된 공지사항을 수정합니다")
-	// @PutMapping
-	// public ResponseEntity updateNotice(@RequestBody ArtRequest artRequest,
-	// 	@RequestHeader(AUTHORIZATION) String token) {
-	//
-	// 	token = getToken(token);
-	// 	if (!tokenProvider.validateToken(token)) {
-	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-	// 	}
-	//
-	// 	return null;
-	// }
-	//
+	@ApiOperation(value = "공지사항 수정", notes = "등록된 공지사항을 수정합니다")
+	@PutMapping
+	public ResponseEntity updateNotice(@RequestBody NoticeRequest noticeRequest,
+		@RequestHeader(AUTHORIZATION) String token) {
+
+		token = getToken(token);
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Long userSeq = tokenProvider.getSubject(token);
+		Notice notice = noticeService.updateNotice(noticeRequest, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(notice);
+	}
+
 	// @ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
 	// @DeleteMapping
 	// public ResponseEntity deleteNotice(@PathVariable("art_seq") Long artSeq,

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.ssafy.banana.db.entity.Artist;
@@ -24,6 +25,7 @@ public class NoticeService {
 	private final NoticeRepository noticeRepository;
 	private final ArtistRepository artistRepository;
 
+	@Transactional
 	public Notice uploadNotice(NoticeRequest noticeRequest, Long userSeq) {
 
 		if (noticeRequest.getUserSeq() != userSeq) {
@@ -64,5 +66,25 @@ public class NoticeService {
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
 		return new NoticeResponse(notice);
+	}
+
+	@Transactional
+	public Notice updateNotice(NoticeRequest noticeRequest, Long userSeq) {
+
+		if (noticeRequest.getUserSeq() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		Notice notice = noticeRepository.findById(noticeRequest.getNoticeSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
+		if (notice.getArtist().getId() == userSeq) {
+			notice.setNoticeTitle(noticeRequest.getNoticeTitle());
+			notice.setNoticeContent(noticeRequest.getNoticeContent());
+			noticeRepository.save(notice);
+
+			return notice;
+		} else {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 	}
 }

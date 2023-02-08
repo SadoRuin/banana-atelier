@@ -19,4 +19,5 @@ public class NoticeRequest {
 	private Long userSeq;
 	private String noticeTitle;
 	private String noticeContent;
+	private Long noticeSeq;
 }
