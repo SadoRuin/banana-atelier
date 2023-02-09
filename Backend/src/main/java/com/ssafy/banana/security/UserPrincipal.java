@@ -1,10 +1,12 @@
 package com.ssafy.banana.security;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -19,6 +21,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 	private String nickname;
 	private String profileImg;
 	private Role role;
+	private Collection<SimpleGrantedAuthority> authorities;
 	private Map<String, Object> attributes;
 
 	// 일반 시큐리티 로그인시 사용
@@ -44,7 +47,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 	}
 
 	public static UserPrincipal create(User user) {
-		return new UserPrincipal(
+		UserPrincipal userPrincipal = new UserPrincipal(
 			user.getId(),
 			user.getEmail(),
 			user.getPassword(),
@@ -52,6 +55,8 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 			user.getProfileImg(),
 			user.getRole()
 		);
+		userPrincipal.setAuthorities(Arrays.asList(new SimpleGrantedAuthority(user.getRole().toString())));
+		return userPrincipal;
 	}
 
 	public Long getId() {
@@ -127,4 +132,8 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 		return id + "";
 	}
 
+	public void setAuthorities(
+		Collection<SimpleGrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
 }
