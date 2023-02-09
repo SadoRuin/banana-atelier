@@ -76,12 +76,11 @@ public class ArtService {
 		// 썸네일 생성
 		fileDto = fileService.makeAndSaveThumbnail(fileDto);
 
-		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
-		Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
+		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+		Artist artist = artistRepository.findById(artRequest.getUserSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		if (artCategory == null || artist == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
 		Art art = Art.builder()
 			.artImg(fileDto.getNewArtName())
 			.artThumbnail(fileDto.getNewThumbnailName())
@@ -167,11 +166,9 @@ public class ArtService {
 				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 			}
 			isRepresent = masterpieceRequest.isRepresent();
-			art = artRepository.findById(masterpieceRequest.getArtSeq()).orElse(null);
+			art = artRepository.findById(masterpieceRequest.getArtSeq())
+				.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
-			if (art == null) {
-				throw new CustomException(CustomExceptionType.NO_CONTENT);
-			}
 			art.setRepresent(isRepresent);
 			artRepository.save(art);
 		}
@@ -210,10 +207,8 @@ public class ArtService {
 
 	public ArtDetailResponse getArt(Long artSeq) {
 
-		Art art = artRepository.findById(artSeq).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.NO_CONTENT);
-		}
+		Art art = artRepository.findById(artSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 		User artist = art.getArtist().getUser();
 
 		return new ArtDetailResponse(art, artist);
@@ -225,14 +220,11 @@ public class ArtService {
 		if (myArtRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
-		User user = userRepository.findById(myArtRequest.getUserSeq()).orElse(null);
+		Art art = artRepository.findById(myArtRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+		User user = userRepository.findById(myArtRequest.getUserSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.NO_CONTENT);
-		} else if (user == null) {
-			throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
-		}
 		MyArtId myArtId = MyArtId.builder()
 			.userSeq(user.getId())
 			.artSeq(art.getId())
@@ -258,15 +250,14 @@ public class ArtService {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		MyArt myArt = myArtRepository.findMyArt(myArtRequest.getArtSeq(), myArtRequest.getUserSeq());
-		if (myArt == null) {
+		if (ObjectUtils.isEmpty(myArt)) {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
 		myArtRepository.delete(myArt);
 
-		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
+		Art art = artRepository.findById(myArtRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
 		int artLikeCount = myArtRepository.countArtLike(art.getId());
 		art.setArtLikeCount(artLikeCount);
 		artRepository.save(art);
@@ -279,10 +270,9 @@ public class ArtService {
 		if (myArtRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
+		Art art = artRepository.findById(myArtRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
 		String path = new StringBuilder()
 			.append(fileUtil.getArtImgPath())
 			.append(File.separator)
@@ -331,10 +321,8 @@ public class ArtService {
 		if (artRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
+		Art art = artRepository.findById(artRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		Long artistSeq = art.getArtist().getId();
 
 		if (artistSeq == userSeq) {
@@ -351,10 +339,8 @@ public class ArtService {
 	@Transactional
 	public Long deleteArt(Long artSeq, Long userSeq) {
 
-		Art art = artRepository.findById(artSeq).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
+		Art art = artRepository.findById(artSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		Long artistSeq = art.getArtist().getId();
 
 		if (userSeq != artistSeq) {
