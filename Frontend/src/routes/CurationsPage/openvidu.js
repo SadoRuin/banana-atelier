@@ -368,6 +368,15 @@ class App extends Component {
                             >
                                 화면 공유
                             </button>
+                            <button
+                                className="btn btn-large btn-danger"
+                                type="button"
+                                id="buttonScreenShare"
+                                onClick={this.aa}
+                                value="aa"
+                            >
+                                aa
+                            </button>
                         </div>
 
                         {this.state.mainStreamManager !== undefined ? (
