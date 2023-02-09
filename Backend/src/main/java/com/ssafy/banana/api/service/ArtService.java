@@ -107,7 +107,8 @@ public class ArtService {
 
 	public List<ArtResponse> getNewArtList() {
 
-		List<ArtResponse> newArtList = artRepository.findNewArts();
+		LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
+		List<ArtResponse> newArtList = artRepository.findNewArts(twoWeeksAgo);
 		if (!CollectionUtils.isEmpty(newArtList)) {
 			return newArtList;
 		} else {
