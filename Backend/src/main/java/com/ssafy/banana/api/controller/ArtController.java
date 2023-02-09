@@ -22,18 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.db.entity.Art;
-import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
 import com.ssafy.banana.dto.response.FileResponse;
+import com.ssafy.banana.dto.response.SuccessResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
 import com.ssafy.banana.util.FileUtil;
-import com.ssafy.banana.util.SymbolUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -58,32 +57,10 @@ public class ArtController {
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long userSeq = tokenProvider.getSubject(token);
 
-		String originalFilename = artFile.getOriginalFilename();
-		int dotIndex = originalFilename.lastIndexOf(SymbolUtil.DOT);
+		artService.uploadArt(artFile, artRequest, token);
 
-		// 파일 확장자 check
-		String extension = originalFilename.substring(dotIndex + 1);
-		if (!extension.equalsIgnoreCase(FileUtil.EXTENSION_JPG)
-			&& !extension.equalsIgnoreCase(FileUtil.EXTENSION_JPEG)
-			&& !extension.equalsIgnoreCase(FileUtil.EXTENSION_PNG)) {
-			throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
-		}
-
-		String originalArtName = originalFilename.substring(0, dotIndex);
-		FileDto fileDto = FileDto.builder()
-			.userSeq(userSeq)
-			.artFile(artFile)
-			.originalArtName(originalArtName)
-			.extension(extension)
-			.build();
-		Art art = artService.uploadArt(artRequest, fileDto);
-
-		return ResponseEntity.status(HttpStatus.OK).body(art);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("작품이 업로드되었습니다."));
 	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")

@@ -28,7 +28,6 @@ import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtRepository;
 import com.ssafy.banana.db.repository.UserRepository;
-import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
@@ -37,6 +36,7 @@ import com.ssafy.banana.dto.response.ArtResponse;
 import com.ssafy.banana.dto.response.FileResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.security.jwt.TokenProvider;
 import com.ssafy.banana.util.FileUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -53,45 +53,35 @@ public class ArtService {
 	private final ArtistService artistService;
 	private final FileService fileService;
 	private final FileUtil fileUtil;
+	private final TokenProvider tokenProvider;
+	private final AwsS3Service awsS3Service;
 
 	@Transactional
-	public Art uploadArt(ArtRequest artRequest, FileDto fileDto) {
-
-		Long userSeq = fileDto.getUserSeq();
-		MultipartFile artFile = fileDto.getArtFile();
+	public Art uploadArt(MultipartFile artFile, ArtRequest artRequest, String token) {
+		long userSeq = tokenProvider.getSubject(token);
 
 		if (artRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		// 작가 체크
-		artistService.checkArtist(userSeq);
 
-		LocalDateTime artRegDate = LocalDateTime.now();
-		// 이미지 파일 저장
-		if (!ObjectUtils.isEmpty(artFile)) {
-			fileDto = fileService.saveFile(fileDto, artRegDate);
-		} else {
-			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
-		}
-		// 썸네일 생성
-		fileDto = fileService.makeAndSaveThumbnail(fileDto);
+		// 작가 체크
+		Artist artist = artistService.checkArtist(userSeq);
 
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		Artist artist = artistRepository.findById(artRequest.getUserSeq())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
 		Art art = Art.builder()
-			.artImg(fileDto.getNewArtName())
-			.artThumbnail(fileDto.getNewThumbnailName())
+			.artImg(awsS3Service.uploadArtImage(userSeq, artFile))
+			.artThumbnail(awsS3Service.uploadArtThumbnail(userSeq, artFile))
 			.artName(artRequest.getArtName())
 			.artDescription(artRequest.getArtDescription())
 			.artCategory(artCategory)
 			.artist(artist)
-			.artRegDate(artRegDate)
+			.artRegDate(LocalDateTime.now())
 			.build();
 
 		artRepository.save(art);
+
 		return art;
 	}
 
