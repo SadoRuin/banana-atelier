@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
-// import { faHeart as faHearEmpty } from '@fortawesome/free-regular-svg-icons'
 import ProfileImg from "./ProfileImg";
 import { LikeBtn } from "./buttons";
 import './artItem.css'
@@ -18,7 +16,7 @@ function ArtItem({nickname, profile_img, art_name, art_seq, art_hit, art_like_co
         <div className="art-thumbnail" style={{backgroundImage : `url("file:///back/images/art/thumbnail/${art_thumbnail})"`}} />
         <div className="hidden">
           <div>{art_name}</div>
-          <LikeBtn><FontAwesomeIcon icon={faHeart} /></LikeBtn>
+          <LikeBtn isLike={false} />
         </div>
       </Link>
 

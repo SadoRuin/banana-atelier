@@ -76,8 +76,7 @@ function ArtsDetail() {
             </div>
             <div className="art-detail__btns">
               {/* 좋아요 누른 버튼이랑 안누른 버튼 */}
-              <LikeBtn><FontAwesomeIcon icon={faHeart} /></LikeBtn>
-              <LikeBtn><FontAwesomeIcon icon={faHearEmpty} /></LikeBtn>
+              <LikeBtn isLike={true} />
               {/* 이미지 다운로드는 아직인듯? */}
               <YellowBtn width="150px">다운로드</YellowBtn>
             </div>

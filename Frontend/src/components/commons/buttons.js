@@ -1,5 +1,10 @@
 import styled from 'styled-components'
 
+import React from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart, faBookmark } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as faHeartEmpty, faBookmark as faBookmarkEmpty } from '@fortawesome/free-regular-svg-icons'
+
 export const YellowBtn = styled.button`
   width: ${props => props.width || "auto"};
   border: none;
@@ -69,38 +74,35 @@ export const WhiteBtn = styled.button`
   }
 `
 
-export const LikeBtn = styled.button`
+const Btn = styled.button`
+  background-color: white;
   border: 1px solid #EBEBEB;
   border-radius: 50%;
-  color: #EB5353;
-  background-color: white;
   cursor: pointer;
-  
-  padding: 7px;
+
   font-size: 13px;
+  padding: 7px;
+  box-sizing: border-box;
   width: 31px;
   height: 31px;
-  box-sizing: border-box;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
 `
 
-export const BookmarkBtn = styled.button`
-  border: 1px solid #EBEBEB;
-  border-radius: 50%;
-  color: #EB5353;
-  background-color: white;
-  cursor: pointer;
+export function BookmarkBtn ({ isBookmark=false }) {
+  return (
+    <Btn>
+        <FontAwesomeIcon icon={ isBookmark? faBookmark : faBookmarkEmpty } style={{ color: '#187498' }} />
+    </Btn>
+  );
+}
 
-  padding: 7px;
-  font-size: 13px;
-  width: 31px;
-  height: 31px;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
+export function LikeBtn ({ isLike=false }) {
+  return (
+    <Btn>
+      <FontAwesomeIcon icon={ isLike? faHeart : faHeartEmpty } style={{ color: '#EB5353' }} />
+    </Btn>
+  );
+}
