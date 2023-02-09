@@ -44,9 +44,9 @@ function CurationsMain() {
     { name: '오래된 순', content: [...onAirCurationsList]
         .sort((a, b) =>
           a.curationStartTime[0] - b.curationStartTime[0] ||
+          a.curationStartTime[1] - b.curationStartTime[1] ||
           a.curationStartTime[2] - b.curationStartTime[2] ||
           a.curationStartTime[3] - b.curationStartTime[3] ||
-          a.curationStartTime[1] - b.curationStartTime[1] ||
           a.curationStartTime[4] - b.curationStartTime[4] ||
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
@@ -63,9 +63,9 @@ function CurationsMain() {
     { name: '오래된 순', content: [...upcommingCurationsList]
         .sort((a, b) =>
           a.curationStartTime[0] - b.curationStartTime[0] ||
+          a.curationStartTime[1] - b.curationStartTime[1] ||
           a.curationStartTime[2] - b.curationStartTime[2] ||
           a.curationStartTime[3] - b.curationStartTime[3] ||
-          a.curationStartTime[1] - b.curationStartTime[1] ||
           a.curationStartTime[4] - b.curationStartTime[4] ||
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
@@ -82,9 +82,9 @@ function CurationsMain() {
     { name: '오래된 순', content: [...endCurationsList]
         .sort((a, b) =>
           a.curationStartTime[0] - b.curationStartTime[0] ||
+          a.curationStartTime[1] - b.curationStartTime[1] ||
           a.curationStartTime[2] - b.curationStartTime[2] ||
           a.curationStartTime[3] - b.curationStartTime[3] ||
-          a.curationStartTime[1] - b.curationStartTime[1] ||
           a.curationStartTime[4] - b.curationStartTime[4] ||
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
