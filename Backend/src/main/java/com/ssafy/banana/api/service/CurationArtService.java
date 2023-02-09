@@ -27,9 +27,7 @@ public class CurationArtService {
 
 
 	public List<CurationArtDataResponse.CurationArtSimple> getCurationArtList(long curationSeq) {
-		System.out.println("11111111111");
 		Curation curation = curationRepository.findById(curationSeq).orElse(null);
-		System.out.println("여기");
 		System.out.println(curation);
 		return curationArtRepository.findAllByCuration(curation).stream().map(CurationArtDataResponse.CurationArtSimple::new).collect(
 			Collectors.toList());

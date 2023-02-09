@@ -30,6 +30,9 @@ public class CurationDataResponse {
 		private LocalDateTime curationStartTime;
 
 		private CurationStatus curationStatus;
+		private Long id;
+
+		private String profileImg;
 
 
 		public CurationSimple(com.ssafy.banana.db.entity.Curation c){
@@ -40,6 +43,8 @@ public class CurationDataResponse {
 			this.curationHit = c.getCurationHit();
 			this.curationStartTime = c.getCurationStartTime();
 			this.curationStatus = c.getCurationStatus();
+			this.id = c.getId();
+			this.profileImg = c.getArtist().getUser().getProfileImg();
 		}
 	}
 	//큐레이션 하나만 조회
