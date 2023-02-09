@@ -116,11 +116,8 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getMyArtList(Long userSeq, Long tokenUserSeq) {
+	public List<ArtResponse> getMyArtList(Long userSeq) {
 
-		if (userSeq != tokenUserSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		List<ArtResponse> myArtList = artRepository.findMyArts(userSeq);
 		if (!CollectionUtils.isEmpty(myArtList)) {
 			return myArtList;
