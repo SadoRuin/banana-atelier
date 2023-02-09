@@ -148,6 +148,7 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	@Transactional
 	public void updateUser(UpdateUserRequest updateUserRequest, MultipartFile imageFile) {
 		User user = securityUtil.getCurrentUsername()
 			.flatMap(userRepository::findByEmail)
@@ -182,6 +183,7 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	@Transactional
 	public void deleteUser(String token) {
 		long id = tokenProvider.getSubject(token);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -196,6 +198,7 @@ public class UserService {
 		}
 	}
 
+	@Transactional
 	public void followArtist(String token, SeqRequest seqRequest) {
 		long userSeq = tokenProvider.getSubject(token);
 		long artistSeq = seqRequest.getUserSeq();
@@ -226,6 +229,7 @@ public class UserService {
 		artistRepository.save(artist);
 	}
 
+	@Transactional
 	public void unFollowArtist(String token, SeqRequest seqRequest) {
 		long userSeq = tokenProvider.getSubject(token);
 		long artistSeq = seqRequest.getUserSeq();
