@@ -5,22 +5,29 @@ import {
     CHECK_EMAIL,
     CHECK_EMAIL_CODE,
     CHECK_NICKNAME,
-    SEND_CODE
+    SEND_CODE,
+    LOGIN_CODE
 } from './types'
 
 
 export function loginUser(dataTosubmit) {
-
+    console.log("dataTosubmit", dataTosubmit)
     const request = axios.post('https://i8a108.p.ssafy.io/api/auth/login', dataTosubmit)
         .then(response => response)
         .catch(error => console.log('error', error))
-    console.log(request);
 
     return {
         type: LOGIN_USER,
         payload: request
     }
 
+}
+
+export function loginCode() {
+    return {
+        type: LOGIN_CODE,
+        payload: ""
+    }
 }
 
 

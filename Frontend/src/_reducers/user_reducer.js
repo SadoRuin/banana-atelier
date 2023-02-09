@@ -1,28 +1,35 @@
 import {
-    LOGIN_USER, SIGNUP_USER, CHECK_EMAIL, CHECK_EMAIL_CODE, CHECK_NICKNAME, SEND_CODE
+    LOGIN_USER, SIGNUP_USER, CHECK_EMAIL, CHECK_EMAIL_CODE, 
+    CHECK_NICKNAME, SEND_CODE, LOGIN_CODE
 } from '../_actions/types'
 
+const initialState = {
+    login_status: false
+}
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default function (state = {}, action) {
+export default function user (state = initialState, action) {
     switch (action.type) {
         case LOGIN_USER:
-            return { ...state, loginSuccess: action.payload }
+            return { ...state, payload: action.payload }
 
         case SIGNUP_USER:
-            return { ...state, register: action.payload }
+            return { ...state, payload: action.payload }
 
         case CHECK_EMAIL:
-            return { ...state, emailValid: action.payload }
+            return { ...state, payload: action.payload }
 
             case CHECK_EMAIL_CODE:
-            return { ...state, emailValid: action.payload }
+            return { ...state, payload: action.payload }
 
         case CHECK_NICKNAME:
-            return { ...state, nicknameVaild: action.payload }
+            return { ...state, payload: action.payload }
 
         case SEND_CODE:
-            return { ...state, sendCode: action.payload }
+            return { ...state, payload: action.payload }
+
+        case LOGIN_CODE:
+            return { ...state, login_status: true }
             
         default:
             return state
