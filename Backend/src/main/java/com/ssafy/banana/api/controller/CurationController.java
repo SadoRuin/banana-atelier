@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.CurationService;
+import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
+import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.CurationArtDataResponse;
 import com.ssafy.banana.dto.response.CurationDataResponse;
 import com.ssafy.banana.exception.CustomException;
@@ -51,6 +53,37 @@ public class CurationController {
 	public ResponseEntity<CurationDataResponse.Curation> getCuration(@PathVariable("curation_seq") long curation_seq){
 		return ResponseEntity.status(HttpStatus.OK).body(curationService.getCuration(curation_seq));
 	}
+	//
+	// @ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
+	// @PostMapping("/like")
+	// public ResponseEntity addArtLike(@RequestBody MyArtRequest myArtRequest,
+	// 	@RequestHeader(AUTHORIZATION) String token) {
+	//
+	// 	token = getToken(token);
+	// 	if (!tokenProvider.validateToken(token)) {
+	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+	// 	}
+	// 	Long userSeq = tokenProvider.getSubject(token);
+	// 	Art art = artService.addArtLike(myArtRequest, userSeq);
+	//
+	// 	return ResponseEntity.status(HttpStatus.OK).body(art);
+	// }
+	//
+	// @ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
+	// @DeleteMapping("/like")
+	// public ResponseEntity deleteArtLike(@RequestBody MyArtRequest myArtRequest,
+	// 	@RequestHeader(AUTHORIZATION) String token) {
+	//
+	// 	token = getToken(token);
+	// 	if (!tokenProvider.validateToken(token)) {
+	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+	// 	}
+	// 	Long userSeq = tokenProvider.getSubject(token);
+	// 	Art art = artService.deleteArtLike(myArtRequest, userSeq);
+	//
+	// 	return ResponseEntity.status(HttpStatus.OK).body(art);
+	// }
+
 
 	@PostMapping
 	@ApiOperation(value = "큐레이션 등록")
