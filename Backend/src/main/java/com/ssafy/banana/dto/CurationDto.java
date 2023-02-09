@@ -40,7 +40,7 @@ public class CurationDto implements Serializable {
 	private String curationSummary;
 	private String curationStatus;
 	private Artist artist;
-	private String curationHit;
+	private int curationHit;
 	private int curationBmCount;
 	private String curationThumbnail;
 
