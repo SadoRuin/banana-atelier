@@ -22,6 +22,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.exception.CustomException;
@@ -55,7 +56,7 @@ public class AwsS3Service {
 		String fileName = uploadImage(folderName, multipartFile);
 
 		String originalName = userRepository.findById(userSeq)
-			.map(user -> user.getProfileImg())
+			.map(User::getProfileImg)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
 		deleteImage(folderName, originalName);
