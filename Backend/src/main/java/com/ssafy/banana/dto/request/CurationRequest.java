@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.ssafy.banana.db.entity.Artist;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Data
 public class CurationRequest implements Serializable {
 	private Long id;
 	private LocalDateTime curationStartTime;

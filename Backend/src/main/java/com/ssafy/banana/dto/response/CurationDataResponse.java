@@ -1,9 +1,10 @@
 package com.ssafy.banana.dto.response;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 
 import com.ssafy.banana.db.entity.Artist;
+import com.ssafy.banana.db.entity.CurationArt;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
 
 import lombok.AllArgsConstructor;
@@ -17,37 +18,38 @@ import lombok.Setter;
 @NoArgsConstructor
 @Data
 public class CurationDataResponse {
+	//큐레이션 리스트에서 필요한 내용만 간략하게 조회
 	@Data
 	@NoArgsConstructor
 	public static class CurationSimple {
-		private String user_nickname;
-		private String curation_name;
-		private String curation_thumbnail;
-		private int curation_bm_count;
-		private String curation_hit;
-		private LocalDateTime curation_start_time;
+		private String userNickname;
+		private String curationName;
+		private String curationThumbnail;
+		private int curationBmCount;
+		private String curationHit;
+		private LocalDateTime curationStartTime;
 
-		private CurationStatus curation_status;
+		private CurationStatus curationStatus;
 
 
 		public CurationSimple(com.ssafy.banana.db.entity.Curation c){
-			this.user_nickname = c.getArtist().getUser().getNickname();
-			this.curation_name = c.getCurationName();
-			this.curation_thumbnail = c.getCurationThumbnail();
-			this.curation_bm_count = c.getCurationBmCount();
-			this.curation_hit = c.getCurationHit();
-			this.curation_start_time = c.getCurationStartTime();
-			this.curation_status = c.getCurationStatus();
+			this.userNickname = c.getArtist().getUser().getNickname();
+			this.curationName = c.getCurationName();
+			this.curationThumbnail = c.getCurationThumbnail();
+			this.curationBmCount = c.getCurationBmCount();
+			this.curationHit = c.getCurationHit();
+			this.curationStartTime = c.getCurationStartTime();
+			this.curationStatus = c.getCurationStatus();
 		}
 	}
-
+	//큐레이션 하나만 조회
 	@Data
 	public static class Curation extends CurationSimple{
-		private String curationSummary;
+		private String curation_summary;
 
 		public Curation(com.ssafy.banana.db.entity.Curation c){
 			super(c);
-			this.curationSummary = c.getCurationSummary();
+			this.curation_summary = c.getCurationSummary();
 		}
 
 	}

@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.CurationService;
-import com.ssafy.banana.db.repository.CurationRepository;
+import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
+import com.ssafy.banana.dto.response.CurationArtDataResponse;
 import com.ssafy.banana.dto.response.CurationDataResponse;
+import com.ssafy.banana.exception.CustomException;
+import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,18 +35,15 @@ public class CurationController {
 
 	private final CurationService curationService;
 
+	private static final String AUTHORIZATION = "Authorization";
+	private final TokenProvider tokenProvider;
+	private final CurationArtRepository curationArtService;
+
 	@GetMapping("/main")
 	@ApiOperation(value = "큐레이션 리스트")
 	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getList() {
 		List<CurationDataResponse.CurationSimple> curationList =  curationService.getCurationList();
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
-	}
-
-	@PostMapping
-	@ApiOperation(value = "큐레이션 등록")
-	public ResponseEntity<?> registerCuration(@RequestBody CurationRequest curationRequest){
-		curationService.registerCuration(curationRequest);
-		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 등록 성공");
 	}
 
 	@GetMapping("/details/{curation_seq}")
@@ -50,16 +52,37 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body(curationService.getCuration(curation_seq));
 	}
 
+	@PostMapping
+	@ApiOperation(value = "큐레이션 등록")
+	public ResponseEntity<?> registerCuration(@RequestBody CurationRequest curationRequest, @RequestHeader String Authorization){
+		String token = Authorization.split(" ")[1];
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		curationService.registerCuration(curationRequest);
+		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 등록 성공");
+	}
+
+
+
 	@PutMapping("/{curation_seq}")
 	@ApiOperation(value = "큐레이션 수정")
-	public ResponseEntity<?> updateCuration(@PathVariable long curation_seq, @RequestBody CurationRequest curationRequest){
+	public ResponseEntity<?> updateCuration(@PathVariable long curation_seq, @RequestBody CurationRequest curationRequest, @RequestHeader String Authorization){
+		String token = Authorization.split(" ")[1];
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		curationService.updateCuration(curation_seq, curationRequest);
 		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 수정 성공");
 	}
 
 	@DeleteMapping("/{curation_seq}")
 	@ApiOperation(value = "큐레이션 삭제")
-	public ResponseEntity<?> deleteCuration(@PathVariable long curation_seq){
+	public ResponseEntity<?> deleteCuration(@PathVariable long curation_seq, @RequestHeader String Authorization){
+		String token = Authorization.split(" ")[1];
+		if (!tokenProvider.validateToken(token)) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		curationService.deleteCuration(curation_seq);
 		return ResponseEntity.status(HttpStatus.OK).body("큐레이션 삭제 성공");
 	}
