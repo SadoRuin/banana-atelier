@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.coobird.thumbnailator.Thumbnails;
 
+import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
@@ -144,5 +145,36 @@ public class FileService {
 		}
 
 		return fileDto;
+	}
+
+	@Transactional
+	public void removeFile(Art art) {
+
+		String artImgSavePath = new StringBuilder()
+			.append(fileUtil.getArtImgPath())
+			.append(File.separator)
+			.append(art.getArtist().getId())
+			.toString();
+
+		String artThumbnailSavePath = new StringBuilder()
+			.append(fileUtil.getArtThumbnailPath())
+			.append(File.separator)
+			.append(art.getArtist().getId())
+			.toString();
+
+		File artImgFile = new File(artImgSavePath, art.getArtImg());
+		File artThumbnailFile = new File(artThumbnailSavePath, art.getArtThumbnail());
+
+		try {
+			if (artImgFile.exists() && artThumbnailFile.exists()) {
+				artImgFile.delete();
+				artThumbnailFile.delete();
+			} else {
+				throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
+			}
+		} catch (Exception e) {
+			throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
+		}
+
 	}
 }

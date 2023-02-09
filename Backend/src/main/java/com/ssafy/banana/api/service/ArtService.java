@@ -336,12 +336,9 @@ public class ArtService {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
 		Long artistSeq = art.getArtist().getId();
-		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
 		if (artistSeq == userSeq) {
 			art.setArtName(artRequest.getArtName());
-			// art.setArtImg(artRequest.getArtImg());
-			art.setArtThumbnail(artThumbnail);
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
 			artRepository.save(art);
@@ -366,7 +363,11 @@ public class ArtService {
 		//작품이 하나만 있다면 삭제 불가
 		int myArtCount = artRepository.countArtByArtistSeq(userSeq);
 		if (myArtCount > 1) {
+			// db record 삭제
 			artRepository.deleteById(artSeq);
+			// 실제 파일 삭제
+			fileService.removeFile(art);
+
 			return artSeq;
 		} else {
 			throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
