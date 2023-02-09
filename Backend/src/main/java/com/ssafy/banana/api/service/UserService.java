@@ -17,7 +17,6 @@ import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
-import com.ssafy.banana.dto.FileDto;
 import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
@@ -45,10 +44,8 @@ public class UserService {
 	private final RedisUtil redisUtil;
 	private final EmailUtil emailUtil;
 	private final FileService fileService;
+	private final AwsS3Service awsS3Service;
 	private final char[] specialChars = {'!', '@', '$', '%', '(', ')'};
-	private static final String EXTENSION_JPG = "jpg";
-	private static final String EXTENSION_PNG = "png";
-	private static final String EXTENSION_JPEG = "jpeg";
 	private final ArtistRepository artistRepository;
 
 	@Transactional
@@ -161,23 +158,7 @@ public class UserService {
 			user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
 		}
 		if (!imageFile.isEmpty()) {
-			String[] fileName = imageFile.getOriginalFilename().split("\\.");
-			if (!fileName[1].equalsIgnoreCase(EXTENSION_JPG)
-				&& !fileName[1].equalsIgnoreCase(EXTENSION_JPEG)
-				&& !fileName[1].equalsIgnoreCase(EXTENSION_PNG)) {
-				throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
-			}
-
-			FileDto fileDto = FileDto.builder()
-				.userSeq(user.getId())
-				.artFile(imageFile)
-				.originalArtName(fileName[0])
-				.extension(fileName[1])
-				.build();
-
-			fileDto = fileService.saveProfileImage(fileDto, user.getProfileImg());
-
-			user.setProfileImg(fileDto.getNewArtName());
+			user.setProfileImg(awsS3Service.uploadProfileImage(user.getId(), imageFile));
 		}
 
 		userRepository.save(user);
