@@ -17,6 +17,7 @@ import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
@@ -230,6 +231,11 @@ public class UserService {
 		int like = artist.getUser().getArtistLikeCount();
 		artist.getUser().setArtistLikeCount(like - 1);
 		artistRepository.save(artist);
+	}
+
+	public DownloladFileDto download(String token, String fileName) {
+		long userSeq = tokenProvider.getSubject(token);
+		return awsS3Service.downloadProfileImage(userSeq, fileName);
 	}
 
 	public String createCode(int digit) {

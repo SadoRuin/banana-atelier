@@ -2,10 +2,13 @@ package com.ssafy.banana.api.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,8 +16,14 @@ import org.springframework.web.server.ResponseStatusException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.IOUtils;
+import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
@@ -39,9 +48,19 @@ public class AwsS3Service {
 	private static final String EXTENSION_JPEG = ".jpeg";
 
 	private final AmazonS3 amazonS3;
+	private final UserRepository userRepository;
 
 	public String uploadProfileImage(long userSeq, MultipartFile multipartFile) {
-		return uploadImage(profileFolder + userSeq + "/", multipartFile);
+		String folderName = profileFolder + userSeq + "/";
+		String fileName = uploadImage(folderName, multipartFile);
+
+		String originalName = userRepository.findById(userSeq)
+			.map(user -> user.getProfileImg())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		deleteImage(folderName, originalName);
+
+		return fileName;
 	}
 
 	public String uploadImage(String folderName, MultipartFile multipartFile) {
@@ -60,8 +79,40 @@ public class AwsS3Service {
 		return fileName;
 	}
 
-	public void deleteImage(String fileName) {
-		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+	public DownloladFileDto downloadProfileImage(long userSeq, String fileName) {
+		String folderName;
+		if (fileName.contains("default_profile")) {
+			folderName = defaultProfileFolder;
+		} else {
+			folderName = profileFolder + userSeq + "/";
+		}
+		return downloadImage(folderName, fileName);
+	}
+
+	public DownloladFileDto downloadImage(String folderName, String fileName) {
+		S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucket, folderName + fileName));
+		S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
+		try {
+			byte[] imageFile = IOUtils.toByteArray(objectInputStream);
+
+			String urlFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
+			HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			httpHeaders.setContentLength(imageFile.length);
+			httpHeaders.setContentDispositionFormData("attachment", urlFileName);
+
+			return DownloladFileDto.builder()
+				.httpHeaders(httpHeaders)
+				.imageFile(imageFile)
+				.build();
+
+		} catch (IOException e) {
+			throw new CustomException(CustomExceptionType.FILE_DOWNLOAD_ERROR);
+		}
+	}
+
+	public void deleteImage(String folderName, String fileName) {
+		amazonS3.deleteObject(new DeleteObjectRequest(bucket, folderName + fileName));
 	}
 
 	private String createFileName(String fileName) {
