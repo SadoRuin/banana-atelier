@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +37,6 @@ import com.ssafy.banana.util.SymbolUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -53,7 +53,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
 	public ResponseEntity uploadArt(
-		@ApiParam(value = "art_file") @RequestPart(value = "art_file", required = false) MultipartFile artFile,
+		@RequestPart(value = "artFile", required = false) MultipartFile artFile,
 		@RequestPart ArtRequest artRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
@@ -65,15 +65,16 @@ public class ArtController {
 
 		String originalFilename = artFile.getOriginalFilename();
 		int dotIndex = originalFilename.lastIndexOf(SymbolUtil.DOT);
-		String originalArtName = originalFilename.substring(0, dotIndex);
-		String extension = originalFilename.substring(dotIndex + 1);
 
+		// 파일 확장자 check
+		String extension = originalFilename.substring(dotIndex + 1);
 		if (!extension.equalsIgnoreCase(FileUtil.EXTENSION_JPG)
 			&& !extension.equalsIgnoreCase(FileUtil.EXTENSION_JPEG)
 			&& !extension.equalsIgnoreCase(FileUtil.EXTENSION_PNG)) {
 			throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
 		}
 
+		String originalArtName = originalFilename.substring(0, dotIndex);
 		FileDto fileDto = FileDto.builder()
 			.userSeq(userSeq)
 			.artFile(artFile)
@@ -86,7 +87,7 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<List<ArtResponse>> getAllArtList() {
 
 		List<ArtResponse> artList = artService.getAllArtList();
@@ -103,24 +104,25 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
-	@ApiOperation(value = "나의 작품 리스트", notes = "작가 본인의 작품 목록을 반환합니다")
-	@GetMapping("/{user_seq}")
-	public ResponseEntity<List<ArtResponse>> getMyArtList(@PathVariable("user_seq") Long userSeq,
+	@ApiOperation(value = "나의 작품 리스트", notes = "작가의 작품 목록을 반환합니다")
+	@GetMapping("/{userSeq}")
+	public ResponseEntity<List<ArtResponse>> getMyArtList(
+		@PathVariable Long userSeq,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
 		if (!tokenProvider.validateToken(token)) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		Long tokenUserSeq = tokenProvider.getSubject(token);
-		List<ArtResponse> artList = artService.getMyArtList(userSeq, tokenUserSeq);
+		List<ArtResponse> artList = artService.getMyArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
-	@ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
-	@GetMapping("/{user_seq}/masterpiece")
-	public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq,
+	@ApiOperation(value = "대표 작품 리스트", notes = "작가의 대표작 목록을 반환합니다")
+	@GetMapping("/{userSeq}/masterpiece")
+	public ResponseEntity getMasterpieceList(
+		@PathVariable Long userSeq,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -134,8 +136,9 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
-	@GetMapping("/{user_seq}/like")
-	public ResponseEntity<List<ArtResponse>> getLikedArtList(@PathVariable("user_seq") Long userSeq,
+	@GetMapping("/{userSeq}/like")
+	public ResponseEntity<List<ArtResponse>> getLikedArtList(
+		@PathVariable Long userSeq,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -148,9 +151,11 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "대표 작품 설정", notes = "작가 본인의 대표작을 설정합니다")
 	@PutMapping("/masterpiece")
-	public ResponseEntity<?> setMasterpieceList(@RequestBody List<MasterpieceRequest> masterpieceRequestList,
+	public ResponseEntity<?> setMasterpieceList(
+		@RequestBody List<MasterpieceRequest> masterpieceRequestList,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -164,9 +169,9 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "카테고리별 작품 리스트", notes = "카테고리별 작품 목록을 반환합니다")
-	@GetMapping("/category/{art_category_seq}")
+	@GetMapping("/category/{artCategorySeq}")
 	public ResponseEntity<List<ArtResponse>> getArtListbyCategory(
-		@PathVariable("art_category_seq") Long artCategorySeq) {
+		@PathVariable Long artCategorySeq) {
 
 		List<ArtResponse> artList = artService.getArtListbyCategory(artCategorySeq);
 
@@ -192,9 +197,9 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
-	@GetMapping("/detail/{art_seq}")
-	// @PreAuthorize("hasRole('USER')")
-	public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq,
+	@GetMapping("/detail/{artSeq}")
+	public ResponseEntity getArt(
+		@PathVariable Long artSeq,
 		@RequestHeader(value = AUTHORIZATION, required = false) String token) {
 
 		if (StringUtils.isBlank(token)) {
@@ -211,7 +216,8 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
 	@PostMapping("/like")
-	public ResponseEntity addArtLike(@RequestBody MyArtRequest myArtRequest,
+	public ResponseEntity addArtLike(
+		@RequestBody MyArtRequest myArtRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -226,7 +232,8 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
 	@DeleteMapping("/like")
-	public ResponseEntity deleteArtLike(@RequestBody MyArtRequest myArtRequest,
+	public ResponseEntity deleteArtLike(
+		@RequestBody MyArtRequest myArtRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -241,7 +248,8 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 다운로드", notes = "작품을 다운로드합니다")
 	@PostMapping("/download")
-	public ResponseEntity downloadArt(@RequestBody MyArtRequest myArtRequest,
+	public ResponseEntity downloadArt(
+		@RequestBody MyArtRequest myArtRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -256,9 +264,11 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(resource);
 	}
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
 	@PutMapping
-	public ResponseEntity updateArt(@RequestBody ArtRequest artRequest,
+	public ResponseEntity updateArt(
+		@RequestBody ArtRequest artRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
@@ -271,9 +281,11 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
-	@DeleteMapping("/{art_seq}")
-	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq,
+	@DeleteMapping("/{artSeq}")
+	public ResponseEntity deleteArt(
+		@PathVariable Long artSeq,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
