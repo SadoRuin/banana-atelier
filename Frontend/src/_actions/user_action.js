@@ -6,7 +6,8 @@ import {
     CHECK_EMAIL_CODE,
     CHECK_NICKNAME,
     SEND_CODE,
-    LOGIN_CODE
+    LOGIN_CODE,
+    LOGOUT_CODE
 } from './types'
 
 
@@ -30,6 +31,12 @@ export function loginCode() {
     }
 }
 
+export function logoutCode() {
+    return {
+        type: LOGOUT_CODE,
+        payload: ""
+    }
+}
 
 export function signUpUser(dataTosubmit) {
 

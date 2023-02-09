@@ -1,6 +1,6 @@
 import {
     LOGIN_USER, SIGNUP_USER, CHECK_EMAIL, CHECK_EMAIL_CODE, 
-    CHECK_NICKNAME, SEND_CODE, LOGIN_CODE
+    CHECK_NICKNAME, SEND_CODE, LOGIN_CODE, LOGOUT_CODE
 } from '../_actions/types'
 
 const initialState = {
@@ -30,6 +30,9 @@ export default function user (state = initialState, action) {
 
         case LOGIN_CODE:
             return { ...state, login_status: true }
+
+        case LOGOUT_CODE:
+            return { ...state, login_status: false }
             
         default:
             return state
