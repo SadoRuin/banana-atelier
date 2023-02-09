@@ -7,9 +7,11 @@ import Footer from "./Footer/Footer";
 function Layout(props) {
   return (
     <div className="wrapper">
-      <div className="contentWrapper">
+      <div className="content-wrapper">
         <NavBar />
-        <Outlet />
+        <div className="content__container">
+          <Outlet />
+        </div>
       </div>
       <Footer />
     </div>

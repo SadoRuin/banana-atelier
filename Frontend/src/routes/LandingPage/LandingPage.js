@@ -24,32 +24,34 @@ function LandingPage() {
   const {arts} = useLoaderData();
 
   return (
-    <div className="content__container" >
+    <div>
       <button onClick={handleLogOut}>로그아웃</button>
       <div>
-        <h1><Link className='Link' to="curations">큐레이션🍌</Link></h1>
+        <h1><Link className='link' to="curations">큐레이션🍌</Link></h1>
         <p>현재 진행중인 큐레이션 -> 진행 예정 큐레이션 보여주기</p>
       </div>
 
       <div>
-        <h1><Link className='Link' to="commissions">요즘 뜨는 커미션 작가💰</Link></h1>
+        <h1><Link className='link' to="commissions">요즘 뜨는 커미션 작가💰</Link></h1>
         <p>이 곳에는 요즘 뜨는 커미션 작가가 들어간다</p>
       </div>
 
       <div >
-        <h1><Link className='Link' to="arts">트렌딩🔥</Link></h1>
-        <div className="grid__for-components">
-          {arts.data.map((art) => <div key={`art_item_${art.art_seq}`}>
-            <ArtItem
-              nickname={art.nickname}
-              profile_img={art.profile_img}
-              art_name={art.art_name}
-              art_seq={art.art_seq}
-              art_hit={art.art_hit}
-              art_like_count={art.art_like_count}
-              art_thumbnail={art.art_thumbnail}
-            />
-          </div>)}
+        <h1><Link className='link' to="arts">트렌딩🔥</Link></h1>
+        <div className="grid__main-components">
+          {arts.data.map((art) =>
+            <div key={`art_item_${art.art_seq}`}>
+              <ArtItem
+                nickname={art.nickname}
+                profile_img={art.profile_img}
+                art_name={art.art_name}
+                art_seq={art.art_seq}
+                art_hit={art.art_hit}
+                art_like_count={art.art_like_count}
+                art_thumbnail={art.art_thumbnail}
+              />
+            </div>
+          )}
         </div>
       </div>
       

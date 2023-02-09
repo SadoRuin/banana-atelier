@@ -28,10 +28,10 @@ export async function loader ({params}) {
 
 function ArtsDetail() {
   const artData = useLoaderData();
+  console.log(artData);
 
   return (
-    <div className="content__container" >
-
+    <div>
       <div className="art-detail__container grid__detail-page">
         {/* 작품 사진 */}
         {/*<img src={artData.art_img} alt="작품 이미지" className="art-img" />*/}
@@ -45,7 +45,7 @@ function ArtsDetail() {
         <div className="art-detail_content">
           <div className="art-detail__main-info">
             <h1>{artData.art_name}</h1>
-            <Link className="artist_profile Link" to={`../${artData.nickname}/arts`}>
+            <Link className="artist_profile link" to={`../${artData.nickname}/arts`}>
               {/* 프로필 이미지는 아직입니다!! src={artData.profile_img}*/}
               <ProfileImg height="30px" width="30px" />
               <div>{artData.nickname} <span className="jakka">작가</span></div>

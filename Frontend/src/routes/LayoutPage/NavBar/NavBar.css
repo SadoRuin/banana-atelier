@@ -5,6 +5,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 100px;
+    box-sizing: border-box;
 }
 @media (max-width: 992px) {
     #nav_bar {
@@ -12,12 +13,26 @@
     }
 }
 
-.menu-bar .link {
-    margin-right: 10px;
+.left-menu-bar {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+.left-menu-bar .link {
+    padding: 5px 2px;
+    margin-left: 15px;
+}
+.left-menu-bar .nav-active {
+    border-bottom: 3px solid #F9D923;
 }
 
-.right-menu-bar> * {
-    margin-left: 10px;
+
+.right-menu-bar {
+    display: flex;
+    align-items: center;
+}
+.right-menu-bar > * {
+    margin-left: 15px;
 }
 
 

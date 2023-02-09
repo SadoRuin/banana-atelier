@@ -18,15 +18,29 @@ body {
 
 /* 컨테이너 양 옆 여백 */
 .content__container {
-  padding-left: 100px;
-  padding-right: 100px;
+  margin-left: 100px;
+  margin-right: 100px;
+  padding: 0;
+}
+@media (max-width: 992px) {
+  .content__container {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
 }
 
-/* 반응형 웹페이지를 위해서... */
-.grid__for-components {
+/* 반응형 웹페이지용 */
+.grid__main-components {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+}
+@media (max-width: 992px) {
+  .grid__main-components {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
 }
 .grid__detail-page {
   display: grid;
@@ -40,27 +54,25 @@ body {
   flex-direction: column;
   height: 100vh;
 }
-.contentWrapper{
+.content-wrapper{
   flex: 1;
 }
 
 /* 현재 페이지에 있을 때 active 활성화 */
-.navActive {
+.nav-active {
   font-weight: bold !important;
 }
-
 /* 링크 보라색 되는거 꼴뵈기 싫어서 */
-.navLink, .Link {
+.link {
   text-decoration: none;
   color: #333333;
 }
-.navLink:visited, .Link:visited {
+.link:visited {
   text-decoration: none;
   color: #333333;
 }
-
 /* 링크에 마우스를 올렸을 때 굵어지면 좋겠다 싶은 것만 */
-.LinkHoverBold:hover {
+.link-bold:hover * {
   font-weight: bold
 }
 
@@ -77,18 +89,11 @@ body {
   margin-bottom: 30px;
 }
 
-
-@media (max-width: 992px) {
-  .content__container {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-  .grid__for-components {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
+/* 로고 오른쪽 마진 */
+.logo {
+  margin-right: 30px;
 }
+
 
 
 
