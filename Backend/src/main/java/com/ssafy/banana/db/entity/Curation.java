@@ -64,7 +64,7 @@ public class Curation {
 
 	@NotNull
 	@Column(name = "curation_hit", nullable = false)
-	private String curationHit;
+	private int curationHit;
 
 	@NotNull
 	@Column(name = "curation_bm_cnt", nullable = false)
