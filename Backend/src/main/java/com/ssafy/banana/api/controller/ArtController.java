@@ -86,7 +86,7 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<List<ArtResponse>> getAllArtList() {
 
 		List<ArtResponse> artList = artService.getAllArtList();
@@ -118,6 +118,7 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
+	// @PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "대표 작품 리스트", notes = "작가 본인의 대표작 목록을 반환합니다")
 	@GetMapping("/{user_seq}/masterpiece")
 	public ResponseEntity getMasterpieceList(@PathVariable("user_seq") Long userSeq,
@@ -148,6 +149,7 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
+	// @PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "대표 작품 설정", notes = "작가 본인의 대표작을 설정합니다")
 	@PutMapping("/masterpiece")
 	public ResponseEntity<?> setMasterpieceList(@RequestBody List<MasterpieceRequest> masterpieceRequestList,
@@ -193,7 +195,6 @@ public class ArtController {
 
 	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
 	@GetMapping("/detail/{art_seq}")
-	// @PreAuthorize("hasRole('USER')")
 	public ResponseEntity getArt(@PathVariable("art_seq") Long artSeq,
 		@RequestHeader(value = AUTHORIZATION, required = false) String token) {
 
@@ -256,6 +257,7 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(resource);
 	}
 
+	// @PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "작품 수정", notes = "등록된 작품을 수정합니다")
 	@PutMapping
 	public ResponseEntity updateArt(@RequestBody ArtRequest artRequest,
@@ -271,6 +273,7 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
 
+	// @PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
 	@DeleteMapping("/{art_seq}")
 	public ResponseEntity deleteArt(@PathVariable("art_seq") Long artSeq,
