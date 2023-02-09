@@ -34,7 +34,7 @@ import CurationsMain from "./routes/CurationsPage/CurationsMain";
 import { loader as curationListLoader } from "./routes/CurationsPage/CurationsMain";
 import CurationsOnAir from "./routes/CurationsPage/CurationsOnAir"
 import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
-import CurationsFinish from "./routes/CurationsPage/CurationsFinish";
+import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
 import CurationsDetail from "./routes/CurationsPage/CurationsDetail";
 import CurationsRegister from "./routes/CurationsPage/CurationsRegister";
 
@@ -106,7 +106,7 @@ const router = createBrowserRouter(
           <Route path="curations/on_air/CurationsOpenVidu" element={<CurationsOpenVidu/>}/>
 
           <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
-          <Route path="curations/finish" element={ <CurationsFinish /> } />
+          <Route path="curations/end" element={ <CurationsEnd /> } />
           <Route path="curations/detail" element={ <CurationsDetail /> } />
           <Route path="curations/register" element={ <CurationsRegister /> } />
 

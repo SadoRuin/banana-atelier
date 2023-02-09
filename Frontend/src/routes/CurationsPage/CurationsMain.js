@@ -3,13 +3,33 @@ import { Link, useLoaderData } from 'react-router-dom';
 import customAxios from '../../_actions/customAxios'
 
 export function loader() {
-  const curationsList = customAxios().get(`curations/main`);
+  const curationsList = customAxios().get(`curations/main`)
+    .then(response=>response.data)
+    .catch(error=>console.log(error))
   return curationsList;
 }
 
 function CurationsMain() {
   const curationsList = useLoaderData();
   console.log(curationsList);
+
+  const initCurationsList = [];
+  const onAirCurationsList = [];
+  const endCurationsList = [];
+
+  curationsList.map((curation) => {
+    if (curation.curationStatus === 'INIT') {
+      return initCurationsList.push(curation)
+    }
+    else if (curation.curationStatus === 'ONAIR') {
+      return onAirCurationsList.push(curation)
+    }
+    return endCurationsList.push(curation)
+  })
+
+  console.log(initCurationsList);
+  console.log(onAirCurationsList);
+  console.log(endCurationsList);
   return (
     <div>
 
@@ -26,7 +46,7 @@ function CurationsMain() {
       {/*</ul>*/}
 
       <div>
-        <Link to="on_air">
+        <Link to="on_air" className="link">
           <h2>진행중인 큐레이션</h2>
         </Link>
         <div className="sort_tab">
@@ -35,12 +55,12 @@ function CurationsMain() {
           <div>최근에 시작한 순</div>
         </div>
         <div>
-          진행중 큐레이션 컴포넌트들이 올 곳
+          { onAirCurationsList.map((curation, idx) => <div key={`curation_item_${idx}`}>{curation.curationName}</div> ) }
         </div>
       </div>
 
       <div>
-        <Link to="upcoming">
+        <Link to="upcoming" className="link">
           <h2>진행 예정인 큐레이션</h2>
         </Link>
         <div className="sort_tab">
@@ -49,13 +69,13 @@ function CurationsMain() {
           <div>최근에 시작한 순</div>
         </div>
         <div>
-          진행 예정인 큐레이션 컴포넌트들이 올 곳
+          { initCurationsList.map((curation, idx) => <div key={`curation_item_${idx}`}>{curation.curationName}</div> ) }
         </div>
       </div>
 
       <div>
-        <Link to="finish">
-          <h2>종료된 큐레이션</h2>
+        <Link to="end" className="link">
+          <h2>종료된 큐레이션 {`>`}</h2>
         </Link>
         <div className="sort_tab">
           <div>북마크를 많이 받은 순</div>
@@ -63,7 +83,7 @@ function CurationsMain() {
           <div>최근에 시작한 순</div>
         </div>
         <div>
-          종료된 큐레이션 컴포넌트들이 올 곳
+          { endCurationsList.map((curation, idx) => <div key={`curation_item_${idx}`}>{curation.curationName}</div> ) }
         </div>
       </div>
 

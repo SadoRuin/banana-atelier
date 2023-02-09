@@ -1,13 +1,13 @@
 import React from 'react';
 import {Link, useLoaderData} from 'react-router-dom';
-import axios from 'axios'
+import customAxios from "../../_actions/customAxios";
 import { logoutCode } from '../../_actions/user_action';
 
 import ArtItem from "../../components/commons/artItem";
 import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
-  const arts = await axios.get('https://i8a108.p.ssafy.io/api/arts' )
+  const arts = await customAxios().get('/arts' )
     .then(response=>response)
     .catch(error=>console.log(error))
   return { arts };
