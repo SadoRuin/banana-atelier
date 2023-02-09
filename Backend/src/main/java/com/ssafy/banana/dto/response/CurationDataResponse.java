@@ -26,7 +26,7 @@ public class CurationDataResponse {
 		private String curationName;
 		private String curationThumbnail;
 		private int curationBmCount;
-		private String curationHit;
+		private int curationHit;
 		private LocalDateTime curationStartTime;
 
 		private CurationStatus curationStatus;
