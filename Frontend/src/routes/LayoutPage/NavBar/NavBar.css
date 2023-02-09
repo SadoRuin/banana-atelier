@@ -12,6 +12,14 @@
     }
 }
 
+.menu-bar .link {
+    margin-right: 10px;
+}
+
+.right-menu-bar> * {
+    margin-left: 10px;
+}
+
 
 /* 여기 쓰는 NavLink는 추후 모든 페이지에서 접근할 수 있게 빼놓아야 함! */
 

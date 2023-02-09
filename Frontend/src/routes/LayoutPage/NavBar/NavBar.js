@@ -8,31 +8,36 @@ import { useSelector } from 'react-redux'
 import { YellowBtn, WhiteBtn } from '../../../components/commons/buttons'
 
 function NavBar() {
+
   const navigate = useNavigate();
-  const loginWonder = useSelector(state => state.user.login_status)
+  const loginWonder = useSelector(state => state.user.login_status);
+
   console.log("navbar에서 loginWonder", loginWonder)
   let content = null
 
   if (loginWonder) {
-    content = <div>
-      <Link className="Link" to="mypage/arts">나의 아뜰리에</Link>
-      <button>공지사항 아이콘</button>
-      <ProfileImg height="30px" width="30px" />
-    </div>
+    content =
+      <div className="right-menu-bar">
+        <Link className="link" to="mypage/arts">나의 아뜰리에</Link>
+        <button>공지사항 아이콘</button>
+        <ProfileImg height="30px" width="30px" />
+      </div>
   } else if (!loginWonder) {
-    content = <div>
-      <WhiteBtn><Link className="Link" to="/login">로그인</Link></WhiteBtn>
-      <YellowBtn><Link className="Link" to="/signup">회원가입</Link></YellowBtn>
-    </div>
+    content =
+      <div className="right-menu-bar">
+        <Link className="link link-bold" to="/login"><WhiteBtn>로그인</WhiteBtn></Link>
+        <Link className="link link-bold" to="/signup"><YellowBtn>회원가입</YellowBtn></Link>
+      </div>
   }
   return (
     <nav id="nav_bar">
-      <img src={logo} alt="logo" style={{cursor: 'pointer'}} onClick={event => { navigate("/")}} height='50px'/>
 
-      <div className="menu_bar">
-        <NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/arts">작품</NavLink>
-        <NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/curations">큐레이션</NavLink>
-        <NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/commissions">커미션</NavLink>
+      <div className="menu-bar" style={{display: 'flex', alignItems: 'center'}}>
+        <img src={logo} alt="logo" style={{cursor: 'pointer'}} onClick={event => { navigate("/")}} height='50px' className="logo"/>
+        {/*<NavLink className={({isActive}) => isActive? 'navLink navActive' : 'navLink'} to="/arts">작품</NavLink>*/}
+        <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/arts">작품</NavLink>
+        <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/curations">큐레이션</NavLink>
+        <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/commissions">커미션</NavLink>
       </div>
 
       <div className="search_bar">
