@@ -64,7 +64,7 @@ public class UserService {
 			.nickname(signupRequest.getNickname())
 			.profileImg(profileImg)
 			.artistLikeCount(0)
-			.role(Role.USER)
+			.role(Role.ROLE_USER)
 			.build();
 
 		userRepository.save(user);
