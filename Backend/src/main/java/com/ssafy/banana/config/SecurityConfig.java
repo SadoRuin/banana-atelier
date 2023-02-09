@@ -106,7 +106,8 @@ public class SecurityConfig {
 		return (web) -> web.ignoring().antMatchers(
 			"/swagger-ui/**",
 			"/swagger-resources/**",
-			"/v3/api-docs"
+			"/v3/api-docs",
+			"/static/**"
 		);
 	}
 }
