@@ -18,7 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/static/images/default-profile/**")
-			.addResourceLocations("file://" + fileUtil.getDefaultProfilePath() + "/**")
+			.addResourceLocations("file:" + fileUtil.getDefaultProfilePath() + "/**")
 			.setCachePeriod(3600)
 			.resourceChain(true)
 			.addResolver(new PathResourceResolver());
