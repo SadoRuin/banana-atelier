@@ -294,6 +294,45 @@ class App extends Component {
     }
 
 
+    joinSession2(){
+        this.OV = new OpenVidu();
+        this.setState(
+            {
+                sessionScreen: this.OV.initSession(),
+            },
+            ()=>{
+                var mySession = this.state.sessionScreen;
+                // var mySession = this.state.sessionScreen;d
+                this.getToken().then((token) => {
+                    mySession.connect(token).then(async () => {
+                        let publisher = await this.OV.initPublisherAsync("html-element-id", {
+                             videoSource: "screen" 
+                        });
+            
+                        publisher.once('accessAllowed', (event) => {
+                            publisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                                console.log('User pressed the "Stop sharing" button');
+                            });
+                            mySession.publish(publisher);
+            
+                        });
+            
+                        publisher.once('accessDenied', (event) => {
+                            console.log('ScreenShare: Access Denied');
+                        });
+            
+                    })
+                    .catch((error) => {
+                        console.log('There was an error connecting to the session:', error.code, error.message);
+                    });
+                });
+            },
+        );
+    }
+
+
+
+
     render() {
         const mySessionId = this.state.mySessionId;
         const myUserName = this.state.myUserName;
@@ -376,6 +415,15 @@ class App extends Component {
                                 value="aa"
                             >
                                 aa
+                            </button>
+                            <button
+                                className="btn btn-large btn-danger"
+                                type="button"
+                                id="buttonScreenShare"
+                                onClick={this.joinSession2}
+                                value="joinSession2"
+                            >
+                                joinSession2
                             </button>
                         </div>
 
