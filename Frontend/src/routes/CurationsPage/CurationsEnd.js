@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 
-function CurationsFinish(props) {
+function CurationsEnd(props) {
   const navigate = useNavigate();
   return (
     <div>
@@ -19,4 +19,4 @@ function CurationsFinish(props) {
   );
 }
 
-export default CurationsFinish;
+export default CurationsEnd;
