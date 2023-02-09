@@ -1,5 +1,5 @@
 package com.ssafy.banana.db.entity.enums;
 
 public enum Role {
-	ADMIN, USER, ARTIST
+	ROLE_ADMIN, ROLE_USER, ROLE_ARTIST
 }
