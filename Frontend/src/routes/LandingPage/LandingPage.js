@@ -42,11 +42,12 @@ function LandingPage() {
           {arts.data.map((art) => <div key={`art_item_${art.art_seq}`}>
             <ArtItem
               nickname={art.nickname}
+              profile_img={art.profile_img}
+              art_name={art.art_name}
               art_seq={art.art_seq}
               art_hit={art.art_hit}
-              art_name={art.art_name}
-              art_thumbnail={art.art_thumbnail}
               art_like_count={art.art_like_count}
+              art_thumbnail={art.art_thumbnail}
             />
           </div>)}
         </div>

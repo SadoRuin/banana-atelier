@@ -10,9 +10,10 @@
 import styled from 'styled-components'
 
 const ProfileImg = styled.div`
-  height: ${props => props.height || "150px"};
   width: ${props => props.width || "150px"};
-  background-image: url(${props => props.src || "https://mindlogic-metaverse-face.s3.ap-northeast-2.amazonaws.com/custom/22592-1634653713945.jpeg"});
+  height: ${props => props.height || "150px"};
+
+  background-image: url(${props => props.url?.slice(0, 15) === 'default_profile' ? `/back/images/default_profile/${props.url}` : `/back/images/profile/${props.url}`});
   background-size: cover;
   border-radius: 50%;
   box-sizing: border-box;
