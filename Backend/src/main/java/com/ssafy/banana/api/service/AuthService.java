@@ -53,6 +53,7 @@ public class AuthService {
 			.setAuthentication(new UsernamePasswordAuthenticationToken(userPrincipal, ""));
 
 		return LoginResponse.builder()
+			.userSeq(userPrincipal.getId())
 			.nickname(userPrincipal.getNickname())
 			.profileImg(userPrincipal.getProfileImg())
 			.role(userPrincipal.getRole())

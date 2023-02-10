@@ -1,24 +1,22 @@
 package com.ssafy.banana.api.service;
 
+import static java.time.LocalDateTime.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.banana.db.entity.Art;
+import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.Curation;
-import com.ssafy.banana.db.entity.MyArt;
-import com.ssafy.banana.db.entity.MyArtId;
-import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
-
+import com.ssafy.banana.db.repository.ArtRepository;
+import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.db.repository.CurationRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
-import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.CurationDataResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
@@ -29,14 +27,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CurationService {
 
-	@Autowired
-	CurationRepository curationRepository;
-	@Autowired
-	CurationArtRepository curationArtRepository;
+	private final CurationRepository curationRepository;
+
+	private final CurationArtRepository curationArtRepository;
+
+	private final ArtistRepository artistRepository;
+
+	private final ArtRepository artRepository;
 
 	//큐레이션 전체조회
 	public List<CurationDataResponse.CurationSimple> getCurationList() {
-		return curationRepository.findAll().stream().map(CurationDataResponse.CurationSimple::new).collect(Collectors.toList());
+		return curationRepository.findAll()
+			.stream()
+			.map(CurationDataResponse.CurationSimple::new)
+			.collect(Collectors.toList());
 	}
 
 	//큐레이션 디테일 조회
@@ -102,61 +106,73 @@ public class CurationService {
 
 	//큐레이션 등록
 	@Transactional
-	public void registerCuration(CurationRequest curationRequest){
-		CurationStatus status = null;
-		if(curationRequest.getCurationEndTime().isBefore(curationRequest.getCurationStartTime())&& curationRequest.getCurationStartTime().isAfter(
-			LocalDateTime.now())){
-			status = CurationStatus.INIT;
-		} else if (curationRequest.getCurationEndTime().isBefore(curationRequest.getCurationStartTime())
-			&& curationRequest.getCurationStartTime().isBefore(
-			LocalDateTime.now())) {
-			status = CurationStatus.ONAIR;
+	public void registerCuration(long userSeq, CurationRequest curationRequest) {
+
+		if (userSeq != curationRequest.getArtistSeq()) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		else if(curationRequest.getCurationStartTime().isBefore(curationRequest.getCurationEndTime())){
-			status = CurationStatus.END;
-		}
+		LocalDateTime endTime = LocalDateTime.now();
+		LocalDateTime startTime = curationRequest.getCurationStartTime();
+
+		Artist artist = artistRepository.findById(curationRequest.getArtistSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
 		Curation curation = Curation.builder()
 			.curationStartTime(curationRequest.getCurationStartTime())
-			.curationEndTime((curationRequest.getCurationEndTime()))
+			.curationEndTime(endTime)
 			.curationName(curationRequest.getCurationName())
 			.curationSummary(curationRequest.getCurationSummary())
-			.curationStatus(status)
-			.artist(curationRequest.getArtist())
+			.curationStatus(getStatus(endTime, startTime))
+			.curationThumbnail(
+				artRepository.findById(curationRequest.getArtSeqList().get(0)).orElse(null).getArtThumbnail())
+			.artist(artist)
 			.build();
+
 		curationRepository.save(curation);
 	}
 
-
-
 	//큐레이션 수정
 	@Transactional
-	public void updateCuration(long curation_seq, CurationRequest curationRequest){
-		CurationStatus status = null;
-		if(curationRequest.getCurationEndTime().isBefore(curationRequest.getCurationStartTime())&& curationRequest.getCurationStartTime().isAfter(
-			LocalDateTime.now())){
-			status = CurationStatus.INIT;
-		} else if (curationRequest.getCurationEndTime().isBefore(curationRequest.getCurationStartTime())
-			&& curationRequest.getCurationStartTime().isBefore(
-			LocalDateTime.now())) {
-			status = CurationStatus.ONAIR;
+	public void updateCuration(long userSeq, CurationRequest curationRequest, long curationSeq) {
+		if (userSeq != curationRequest.getArtistSeq()) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		else if(curationRequest.getCurationStartTime().isBefore(curationRequest.getCurationEndTime())){
-			status = CurationStatus.END;
-		}
-		Curation curation = curationRepository.findById(curation_seq).orElse(null);
-		curation.setCurationStartTime(curationRequest.getCurationStartTime());
-		curation.setCurationEndTime(curationRequest.getCurationEndTime());
+
+		LocalDateTime endTime = curationRequest.getCurationStartTime();
+		LocalDateTime startTime = curationRequest.getCurationStartTime();
+
+		Curation curation = curationRepository.findById(curationSeq).orElse(null);
+		curation.setId(curationSeq);
+		curation.setCurationStartTime(startTime);
+		curation.setCurationEndTime(endTime);
 		curation.setCurationName(curationRequest.getCurationName());
 		curation.setCurationSummary(curationRequest.getCurationSummary());
-		curation.setCurationStatus(status);
-		curation.setArtist(curationRequest.getArtist());
+		curation.setCurationStatus(getStatus(endTime, startTime));
+		curation.setArtist(artistRepository.findById(curationRequest.getArtistSeq()).orElse(null));
 		curationRepository.save(curation);
 	}
 
 	@Transactional
 	//큐레이션 삭제
-	public void deleteCuration(long curation_seq){
+	public void deleteCuration(long userSeq, long curation_seq) {
+		Curation curation = curationRepository.findById(curation_seq).orElse(null);
+
+		if (userSeq != curation.getArtist().getId()) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		curationRepository.deleteById(curation_seq);
+	}
+
+	CurationStatus getStatus(LocalDateTime endTime, LocalDateTime startTime) {
+		if (endTime.isBefore(startTime) && startTime.isAfter(
+			now())) {
+			return CurationStatus.INIT;
+		} else if (endTime.isBefore(startTime)
+			&& startTime.isBefore(
+			now())) {
+			return CurationStatus.ON;
+		}
+		return CurationStatus.END;
 	}
 
 }

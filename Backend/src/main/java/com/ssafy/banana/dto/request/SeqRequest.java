@@ -14,5 +14,5 @@ import lombok.Setter;
 @Setter
 @ApiModel("PK만 데이터로 사용하는 요청 DTO")
 public class SeqRequest implements Serializable {
-	private Long userSeq;
+	private Long seq;
 }

@@ -57,7 +57,6 @@ public class Curation {
 	@Column(name = "curation_summary", length = 1000)
 	private String curationSummary;
 
-	@Size(max = 10)
 	@Enumerated(EnumType.STRING)
 	@Column(name = "curation_status", length = 10)
 	private CurationStatus curationStatus;

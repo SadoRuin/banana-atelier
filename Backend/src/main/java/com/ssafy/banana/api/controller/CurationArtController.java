@@ -38,7 +38,7 @@ public class CurationArtController {
 
 	@GetMapping("/list/{curation_seq}")
 	@ApiOperation(value = "큐레이션 디테일 작품 리스트")
-	public ResponseEntity<List<CurationArtDataResponse.CurationArtSimple>> getList(@PathVariable("curation_seq") long curation_seq){
+	public ResponseEntity<List<CurationArtDataResponse>> getList(@PathVariable("curation_seq") long curation_seq){
 		return ResponseEntity.status(HttpStatus.OK).body(curationArtService.getCurationArtList(curation_seq));
 	}
 
