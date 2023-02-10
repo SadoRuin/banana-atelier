@@ -7,10 +7,10 @@ import ArtItem from "../../components/commons/artItem";
 import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
-  const arts = await customAxios().get('/arts' )
-    .then(response=>response)
+  const arts = await customAxios().get('/arts/all' )
+    .then(response=>response.data)
     .catch(error=>console.log(error))
-  return { arts };
+  return {arts};
 }
 
 function LandingPage() {
@@ -22,6 +22,7 @@ function LandingPage() {
     console.log("로그인 했나요?", loginWonder)
   }
   const {arts} = useLoaderData();
+  console.log(arts)
 
   return (
     <div>
@@ -39,16 +40,16 @@ function LandingPage() {
       <div >
         <h1><Link className='link' to="arts">트렌딩🔥</Link></h1>
         <div className="grid__main-components">
-          {arts.data.map((art) =>
-            <div key={`art_item_${art.art_seq}`}>
+          {arts.map((art) =>
+            <div key={`art-item_${art.artSeq}`}>
               <ArtItem
                 nickname={art.nickname}
-                profile_img={art.profile_img}
-                art_name={art.art_name}
-                art_seq={art.art_seq}
-                art_hit={art.art_hit}
-                art_like_count={art.art_like_count}
-                art_thumbnail={art.art_thumbnail}
+                profileImg={art.profileImg}
+                artName={art.artName}
+                artSeq={art.artSeq}
+                artHit={art.artHit}
+                artLikeCount={art.artLikeCount}
+                artThumbnail={art.artThumbnail}
               />
             </div>
           )}
