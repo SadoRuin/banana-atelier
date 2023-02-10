@@ -113,14 +113,14 @@ public class UserController {
 		return ResponseEntity.ok(userService.getMyUserInfo());
 	}
 
-	@GetMapping("/profile/{user_seq}")
+	@GetMapping("/profile/{userSeq}")
 	@ApiOperation(value = "회원정보 조회")
 	@ApiImplicitParam(name = "user_seq", value = "유저 회원번호", required = true)
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "회원정보 조회 성공", response = UserDto.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity getUserInfo(@PathVariable("user_seq") long userSeq) {
+	public ResponseEntity getUserInfo(@PathVariable long userSeq) {
 		return ResponseEntity.ok(userService.getUserInfo(userSeq));
 	}
 
@@ -158,7 +158,7 @@ public class UserController {
 
 	@PostMapping("/follow")
 	@ApiOperation(value = "작가 팔로우")
-	@ApiImplicitParam(name = "userSeq", value = "작가번호")
+	@ApiImplicitParam(name = "seq", value = "작가번호")
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "팔로우 성공", response = SuccessResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class),
@@ -172,6 +172,7 @@ public class UserController {
 
 	@DeleteMapping("/follow")
 	@ApiOperation(value = "작가 언팔로우")
+	@ApiImplicitParam(name = "seq", value = "작가번호")
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "언팔로우 성공", response = SuccessResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다. or 팔로우 정보가 없습니다.", response = ExceptionResponse.class)

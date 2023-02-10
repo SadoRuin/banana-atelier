@@ -128,6 +128,11 @@ public class AwsS3Service {
 		return fileName;
 	}
 
+	public DownloladFileDto downloadArtImage(long userSeq, String fileName) {
+		String folderName = artImageFolder + userSeq + "/";
+		return downloadImage(folderName, fileName);
+	}
+
 	public DownloladFileDto downloadProfileImage(long userSeq, String fileName) {
 		String folderName;
 		if (fileName.contains("default_profile")) {
@@ -158,6 +163,16 @@ public class AwsS3Service {
 		} catch (IOException e) {
 			throw new CustomException(CustomExceptionType.FILE_DOWNLOAD_ERROR);
 		}
+	}
+
+	public void deleteArtThumbnail(long userSeq, String fileName) {
+		String folderName = artThumbnailFolder + userSeq + "/";
+		amazonS3.deleteObject(new DeleteObjectRequest(bucket, folderName + fileName));
+	}
+
+	public void deleteArtImage(long userSeq, String fileName) {
+		String folderName = artImageFolder + userSeq + "/";
+		amazonS3.deleteObject(new DeleteObjectRequest(bucket, folderName + fileName));
 	}
 
 	public void deleteImage(String folderName, String fileName) {
