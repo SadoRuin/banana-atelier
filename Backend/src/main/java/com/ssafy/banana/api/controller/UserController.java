@@ -183,15 +183,16 @@ public class UserController {
 		return ResponseEntity.ok(new SuccessResponse("팔로우가 해제되었습니다."));
 	}
 
-	@GetMapping("/download/{fileName}")
+	@GetMapping("/download")
 	@ApiOperation(value = "프로필 이미지 다운로드")
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "다운로드 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 400, message = "다운로드 과정 중 오류", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다. or 팔로우 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity download(@RequestHeader String Authorization, @PathVariable String fileName) {
+	public ResponseEntity download(@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		DownloladFileDto downloladFileDto = userService.download(token, fileName);
+		DownloladFileDto downloladFileDto = userService.download(token);
 
 		return ResponseEntity.ok().headers(downloladFileDto.getHttpHeaders()).body(downloladFileDto.getImageFile());
 	}

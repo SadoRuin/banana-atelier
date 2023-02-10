@@ -232,8 +232,11 @@ public class UserService {
 		artistRepository.save(artist);
 	}
 
-	public DownloladFileDto download(String token, String fileName) {
+	public DownloladFileDto download(String token) {
 		long userSeq = tokenProvider.getSubject(token);
+		String fileName = userRepository.findById(userSeq)
+			.map(User::getProfileImg)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 		return awsS3Service.downloadProfileImage(userSeq, fileName);
 	}
 
