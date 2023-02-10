@@ -245,7 +245,12 @@ public class ArtService {
 		Art art = artRepository.findById(artSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		return awsS3Service.downloadArtImage(art.getArtist().getId(), art.getArtImg());
+		DownloladFileDto downloladFileDto = awsS3Service.downloadArtImage(art.getArtist().getId(), art.getArtImg());
+
+		art.setArtDownloadCount(art.getArtDownloadCount() + 1);
+		artRepository.save(art);
+
+		return downloladFileDto;
 	}
 
 	@Transactional
