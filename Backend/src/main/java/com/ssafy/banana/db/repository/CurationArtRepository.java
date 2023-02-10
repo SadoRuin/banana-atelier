@@ -15,3 +15,4 @@ public interface CurationArtRepository extends JpaRepository<CurationArt, Long> 
 
 	List<CurationArt> findByCuration_Id(Long curationSeq);
 }
+
