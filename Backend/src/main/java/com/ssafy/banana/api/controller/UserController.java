@@ -186,7 +186,7 @@ public class UserController {
 	@GetMapping("/download")
 	@ApiOperation(value = "프로필 이미지 다운로드")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "다운로드 성공", response = SuccessResponse.class),
+		@ApiResponse(code = 200, message = "다운로드 성공", response = byte[].class),
 		@ApiResponse(code = 400, message = "다운로드 과정 중 오류", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다. or 팔로우 정보가 없습니다.", response = ExceptionResponse.class)
 	})

@@ -18,6 +18,8 @@ import lombok.Setter;
 @ApiModel("로그인응답 DTO")
 public class LoginResponse {
 
+	@ApiModelProperty(name = "유저 번호", example = "123")
+	private long userSeq;
 	@ApiModelProperty(name = "유저 닉네임", example = "닉넴")
 	private String nickname;
 	@ApiModelProperty(name = "프로필 이미지명", example = "default_profile_1.png")
