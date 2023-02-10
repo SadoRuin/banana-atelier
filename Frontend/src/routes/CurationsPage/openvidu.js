@@ -8,8 +8,8 @@ import UserVideoComponent from './UserVideoComponent';
 
 // 어플리케이션 서버의 url
 // const APPLICATION_SERVER_URL = "http://localhost:4443/";
-const APPLICATION_SERVER_URL = "http://localhost:5000/";
-// const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447/";
+// const APPLICATION_SERVER_URL = "http://localhost:5000/";
+const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447/";
 // const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io/openvidu/";
 
 
@@ -31,7 +31,7 @@ class App extends Component {
 
         this.joinSession = this.joinSession.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
-        this.switchCamera = this.switchCamera.bind(this);
+        // this.switchCamera = this.switchCamera.bind(this);
         this.handleChangeSessionId = this.handleChangeSessionId.bind(this);
         this.handleChangeUserName = this.handleChangeUserName.bind(this);
         this.handleMainVideoStream = this.handleMainVideoStream.bind(this);
@@ -145,6 +145,7 @@ class App extends Component {
                                 frameRate: 30, // The frame rate of your video
                                 insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
                                 mirror: false, // Whether to mirror your local video or not
+                                
                             });
 
                             // --- 6) Publish your stream ---
@@ -194,118 +195,27 @@ class App extends Component {
         });
     }
 
-    async switchCamera() {
-        try {
-            const devices = await this.OV.getDevices()
-            var videoDevices = devices.filter(device => device.kind === 'videoinput');
-
-            if (videoDevices && videoDevices.length > 1) {
-
-                var newVideoDevice = videoDevices.filter(device => device.deviceId !== this.state.currentVideoDevice.deviceId)
-
-                if (newVideoDevice.length > 0) {
-                    // Creating a new publisher with specific videoSource
-                    // In mobile devices the default and first camera is the front one
-                    var newPublisher = this.OV.initPublisher(undefined, {
-                        videoSource: newVideoDevice[0].deviceId,
-                        publishAudio: true,
-                        publishVideo: true,
-                        mirror: true
-                    });
-
-                    //newPublisher.once("accessAllowed", () => {
-                    await this.state.session.unpublish(this.state.mainStreamManager)
-
-                    await this.state.session.publish(newPublisher)
-                    this.setState({
-                        currentVideoDevice: newVideoDevice[0],
-                        mainStreamManager: newPublisher,
-                        publisher: newPublisher,
-                    });
-                }
-            }
-        } catch (e) {
-            console.error(e);
-        }
+    async getToken() {
+        const sessionId = await this.createSession(this.state.mySessionId);
+        return await this.createToken(sessionId);
     }
 
-
-    async toggleScreenShare() {
-		// Disabling screenShare
-		if (this.oVSessionService.areBothConnected()) {
-			this.removeScreen();
-			return;
-		}
-
-		// Enabling screenShare
-		if (this.oVSessionService.isOnlyWebcamConnected()) {
-			const screenPublisher = this.initScreenPublisher();
-
-			screenPublisher.once('accessAllowed', (event) => {
-				this.log.d('ACCESS ALOWED screenPublisher');
-				this.oVSessionService.enableScreenUser(screenPublisher);
-				this.oVSessionService.publishScreen();
-				if (!this.oVSessionService.hasWebcamVideoActive()) {
-					// Disabling webcam
-					this.oVSessionService.disableWebcamUser();
-					this.oVSessionService.unpublishWebcam();
-				}
-			});
-
-			screenPublisher.once('accessDenied', (event) => {
-				this.log.w('ScreenShare: Access Denied');
-			});
-			return;
-		}
-
-		// Disabling screnShare and enabling webcam
-		const hasAudio = this.oVSessionService.hasScreenAudioActive();
-		await this.oVSessionService.publishWebcam();
-		this.oVSessionService.publishScreenAudio(false);
-		this.oVSessionService.publishWebcamAudio(hasAudio);
-		this.oVSessionService.enableWebcamUser();
-		this.removeScreen();
-	}
-
-    aa(){
-        var OV = new OpenVidu();
-        var sessionScreen = OV.initSession();
-        this.getToken().then((token) => {
-            sessionScreen.connect(token).then(() => {
-                var publisher = OV.initPublisher("html-element-id", { videoSource: "screen" });
-    
-                publisher.once('accessAllowed', (event) => {
-                    publisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
-                        console.log('User pressed the "Stop sharing" button');
-                    });
-                    sessionScreen.publish(publisher);
-    
-                });
-    
-                publisher.once('accessDenied', (event) => {
-                    console.warn('ScreenShare: Access Denied');
-                });
-    
-            }).catch((error => {
-                console.warn('There was an error connecting to the session:', error.code, error.message);
-    
-            }));
-        });
-    }
 
 
     joinSession2(){
-        this.OV = new OpenVidu();
+        console.log('start')
+        this.OVee = new OpenVidu();
+        console.log('start yet?')
         this.setState(
             {
-                sessionScreen: this.OV.initSession(),
+                sessionScreen: this.OVee.initSession(),
             },
             ()=>{
                 var mySession = this.state.sessionScreen;
                 // var mySession = this.state.sessionScreen;d
                 this.getToken().then((token) => {
                     mySession.connect(token).then(async () => {
-                        let publisher = await this.OV.initPublisherAsync("html-element-id", {
+                        let publisher = await this.OVee.initPublisherAsync("html-element-id", {
                              videoSource: "screen" 
                         });
             
@@ -330,6 +240,8 @@ class App extends Component {
         );
     }
 
+    
+
 
 
 
@@ -342,13 +254,13 @@ class App extends Component {
                 {this.state.session === undefined ? (
                     <div id="join">
                         <div id="img-div">
-                            <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="OpenVidu logo" />
+                            {/* <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="OpenVidu logo" /> */}
                         </div>
                         <div id="join-dialog" className="jumbotron vertical-center">
-                            <h1> Join a video session </h1>
+                            <h1> 큐레이션 개최 </h1>
                             <form className="form-group" onSubmit={this.joinSession}>
                                 <p>
-                                    <label>Participant: </label>
+                                    <label>사용자명: </label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -359,7 +271,7 @@ class App extends Component {
                                     />
                                 </p>
                                 <p>
-                                    <label> Session: </label>
+                                    <label> 세션명（이건 랜덤으로 생성하는게 맞을듯?）: </label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -370,7 +282,7 @@ class App extends Component {
                                     />
                                 </p>
                                 <p className="text-center">
-                                    <input className="btn btn-lg btn-success" name="commit" type="submit" value="JOIN" />
+                                    <input className="btn btn-lg btn-success" name="commit" type="submit" value="입장" />
                                 </p>
                             </form>
                         </div>
@@ -398,24 +310,8 @@ class App extends Component {
                             >
                                 나가기
                             </button>
-                            <button
-                                className="btn btn-large btn-danger"
-                                type="button"
-                                id="buttonScreenShare"
-                                onClick={this.toggleScreenShare}
-                                value="화면 공유"
-                            >
-                                화면 공유
-                            </button>
-                            <button
-                                className="btn btn-large btn-danger"
-                                type="button"
-                                id="buttonScreenShare"
-                                onClick={this.aa}
-                                value="aa"
-                            >
-                                aa
-                            </button>
+                            
+                            
                             <button
                                 className="btn btn-large btn-danger"
                                 type="button"
@@ -425,6 +321,7 @@ class App extends Component {
                             >
                                 joinSession2
                             </button>
+                        
                         </div>
 
                         {this.state.mainStreamManager !== undefined ? (
@@ -445,16 +342,16 @@ class App extends Component {
                                 <UserVideoComponent
                                 streamManager={this.state.publisher} />
                                 </div>
-                            ) : null} */}
-                            {/* {this.state.subscribers.map((sub, i) => (
+                            ) : null}
+                            {this.state.subscribers.map((sub, i) => (
                                 <div key={i} className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(sub)}>
                                 <UserVideoComponent streamManager={sub} />
                                 </div>
-                            ))} */}
-                            {/* {this.state.publisher !== undefined ? (
+                            ))}
+                            {this.state.publisher !== undefined ? (
                                 <div> {this.state.publisher} </div>
-                                ) : null} */}
-                            {/* {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
+                                ) : null}
+                            {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
                         </div>
                     </div>
                 ) : null}
@@ -478,10 +375,7 @@ class App extends Component {
      * Visit https://docs.openvidu.io/en/stable/application-server to learn
      * more about the integration of OpenVidu in your application server.
      */
-    async getToken() {
-        const sessionId = await this.createSession(this.state.mySessionId);
-        return await this.createToken(sessionId);
-    }
+
 
     async createSession(sessionId) {
         const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
