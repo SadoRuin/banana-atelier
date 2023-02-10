@@ -1,7 +1,8 @@
 import React from 'react'
 import {Link, useLoaderData} from 'react-router-dom'
 
-import customAxios from '../../_actions/customAxios';
+// import customAxios from '../../_actions/customAxios';
+import axios from 'axios'
 import ProfileImg from "../../components/commons/ProfileImg";
 import {YellowBtn , LikeBtn} from "../../components/commons/buttons";
 import {Category} from "../../components/commons/category";
@@ -9,11 +10,20 @@ import './ArtsDetail.css'
 
 export async function loader ({params}) {
   let artSeq = params.art_seq;
-  const artData = await customAxios().get(`arts/detail/${artSeq}`)
-    .then(response => response.data)
-    .catch(error => error)
 
-  console.log(artData)
+  const TOKEN = localStorage.getItem('token')
+  const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`,
+    {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`
+      }
+    }
+)
+  // const artData = await customAxios().get(`arts/detail/${+artSeq}`)
+    .then(response => response.data)
+    .catch(error => console.log(error))
+
+  console.log(artData);
   if (!artData) {
     throw new Response("", {
       status: 404,
@@ -27,13 +37,15 @@ function ArtsDetail() {
   const artData = useLoaderData();
   console.log(artData);
 
+  const IMG_BASE_URL = 'https://i8a108.s3.ap-northeast-2.amazonaws.com'
+
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
         {/* 작품 사진 */}
         {/*<img src={artData.art_img} alt="작품 이미지" className="art-img" />*/}
         <img
-          src={`https://mblogthumb-phinf.pstatic.net/MjAyMTEwMjlfMjQg/MDAxNjM1NDgyODkxNzUw.AgQ2-0DVikgp5EYhFIFpx3KCpUJQdOd3c-H8tfkOKVAg.Qy6YFcOTHyypdorn9Yy3q3CLcDK_3JCJnoUMCiH7Kzwg.PNG.yurang43/%EB%A7%9D%EA%B3%B011%EC%9B%94.png?type=w800`}
+          src={`${IMG_BASE_URL}/art/${artData.userSeq}/${artData.artSeq}`}
           alt="작품 이미지"
           className="art-img"
         />
@@ -41,18 +53,18 @@ function ArtsDetail() {
         {/* 작품 상세 정보 */}
         <div className="art-detail_content">
           <div className="art-detail__main-info">
-            <h1>{artData.art_name}</h1>
+            <h1>{artData.artName}</h1>
             <Link className="artist_profile link" to={`../${artData.nickname}/arts`}>
               {/* 프로필 이미지는 아직입니다!! src={artData.profile_img}*/}
               <ProfileImg height="30px" width="30px" />
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
-            <div className="upload_date">{`${artData.art_reg_date[0]}.${(artData.art_reg_date[1]+'').padStart(2, "0")}.${(artData.art_reg_date[2]+'').padStart(2, "0")}.`}</div>
+            <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>
             <div className="arts_description">
-              {artData.art_description}
+              {artData.artDescription}
             </div>
             <Category className="art-detail__category">
-              {artData.art_category.artCategoryName}
+              {artData.artCategory.artCategoryName}
             </Category>
           </div>
 
@@ -60,15 +72,15 @@ function ArtsDetail() {
             <div className="art-detail__sub-info">
               <div className="views">
                 <img src="ArtsMain" alt="" />
-                조회수 : {artData.art_hit}
+                조회수 : {artData.artHit}
               </div>
               <div className="downloaded">
                 <img src="ArtsMain" alt="" />
-                다운로드 : {artData.art_download_count}
+                다운로드 : {artData.artDownloadCount}
               </div>
               <div className="likes">
                 <img src="ArtsMain" alt="" />
-                좋아요 : {artData.art_like_count}
+                좋아요 : {artData.artLikeCount}
               </div>
             </div>
             <div className="art-detail__btns">
