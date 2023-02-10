@@ -18,10 +18,9 @@ export async function loader ({params}) {
 
 export default function Layout() {
   const [nickname, userSeq, userData] = useLoaderData();
-  console.log(userData);
 
   const isMyPage = nickname === localStorage.getItem('nickname')
-  const isArtist = userData.role === 'ROLE_ARTIST'
+  const isArtist = userData?.role === 'ROLE_ARTIST'
 
   return (
     // 얘는 Mypage의 layout임!!! 마이페이지 어디를 가든 변하지 않고 항상 있어야 함 (==사이드바랑 위의 메뉴탭 4개)
@@ -55,11 +54,11 @@ export default function Layout() {
 
       <div className="my-page__content">
         <nav>
-          <NavLink to='arts'>작품</NavLink>
+          <NavLink to='arts' className={({isActive}) => isActive? 'link nav-active' : 'link' } >작품</NavLink>
 
-          <NavLink to={ ( isMyPage && !isArtist) ? 'notices/following' : 'notices/mine' }>공지사항</NavLink>
-          <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' }>큐레이션</NavLink>
-          <NavLink to='commissions'>커미션</NavLink>
+          <NavLink to={ ( isMyPage && !isArtist) ? 'notices/following' : 'notices/mine'  } className={({isActive}) => isActive? 'link nav-active' : 'link' } >공지사항</NavLink>
+          <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' } className={({isActive}) => isActive? 'link nav-active' : 'link' } >큐레이션</NavLink>
+          <NavLink to='commissions' className={({isActive}) => isActive? 'link nav-active' : 'link' } >커미션</NavLink>
         </nav>
 
         {/* 여기가 진짜 렌더링 해야하는 곳인데..... */}
