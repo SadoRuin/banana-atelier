@@ -2,6 +2,7 @@ import React from 'react'
 import {Link, useLoaderData} from 'react-router-dom'
 import axiosAuth from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
+import { getArtImage } from "../../components/commons/imageModule";
 import {YellowBtn , LikeBtn} from "../../components/commons/buttons";
 import {Category} from "../../components/commons/category";
 import './ArtsDetail.css'
@@ -27,15 +28,13 @@ function ArtsDetail() {
   const artData = useLoaderData();
   console.log(artData);
 
-  const IMG_BASE_URL = 'https://i8a108.s3.ap-northeast-2.amazonaws.com'
-
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
         {/* 작품 사진 */}
         {/*<img src={artData.art_img} alt="작품 이미지" className="art-img" />*/}
         <img
-          src={`${IMG_BASE_URL}/art/${artData.userSeq}/${artData.artSeq}`}
+          src={`${getArtImage(artData.artImg, artData.userSeq)}`}
           alt="작품 이미지"
           className="art-img"
         />
@@ -45,8 +44,7 @@ function ArtsDetail() {
           <div className="art-detail__main-info">
             <h1>{artData.artName}</h1>
             <Link className="artist_profile link" to={`../${artData.nickname}/arts`}>
-              {/* 프로필 이미지는 아직입니다!! src={artData.profile_img}*/}
-              <ProfileImg height="30px" width="30px" />
+              <ProfileImg height="30px" width="30px" url={artData.profileImg} artistSeq={artData.userSeq} />
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
             <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>

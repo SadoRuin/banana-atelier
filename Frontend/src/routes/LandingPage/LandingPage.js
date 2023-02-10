@@ -50,11 +50,12 @@ function LandingPage() {
               <ArtItem
                 nickname={art.nickname}
                 profileImg={art.profileImg}
+                userSeq={art.userSeq}
+                artThumbnail={art.artThumbnail}
                 artName={art.artName}
                 artSeq={art.artSeq}
                 artHit={art.artHit}
                 artLikeCount={art.artLikeCount}
-                artThumbnail={art.artThumbnail}
               />
             </div>
           )}
