@@ -8,31 +8,35 @@ import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.entity.CurationArt;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class CurationArtDataResponse {
 	//큐레이션 디테일에서 필요한 작품 속성만 조회
-	@Data
-	@NoArgsConstructor
-	public static class CurationArtSimple {
+
 		private long id;
-		private boolean isAuction;
+		private int isAuction;
 		private String curationThumbnail;
 		private String artistNickName;
 		private int artLikes;
 		private int artHit;
 
 
-		public CurationArtSimple(com.ssafy.banana.db.entity.CurationArt ca){
+		public CurationArtDataResponse(com.ssafy.banana.db.entity.CurationArt ca){
 			this.id = ca.getId();
-			this.isAuction = ca.isAuction();
+			this.isAuction = ca.getIsAuction();
 			this.curationThumbnail = ca.getArt().getArtThumbnail();
 			this.artistNickName = ca.getArt().getArtist().getUser().getNickname();
 			this.artLikes = ca.getArt().getArtLikeCount();
 			this.artHit = ca.getArt().getArtHit();
-		}
 	}
 }

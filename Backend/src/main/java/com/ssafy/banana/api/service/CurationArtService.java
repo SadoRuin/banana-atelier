@@ -26,10 +26,10 @@ public class CurationArtService {
 	CurationRepository curationRepository;
 
 
-	public List<CurationArtDataResponse.CurationArtSimple> getCurationArtList(long curationSeq) {
+	public List<CurationArtDataResponse> getCurationArtList(long curationSeq) {
 		Curation curation = curationRepository.findById(curationSeq).orElse(null);
 		System.out.println(curation);
-		return curationArtRepository.findAllByCuration(curation).stream().map(CurationArtDataResponse.CurationArtSimple::new).collect(
+		return curationArtRepository.findAllByCuration(curation).stream().map(CurationArtDataResponse::new).collect(
 			Collectors.toList());
 	}
 }

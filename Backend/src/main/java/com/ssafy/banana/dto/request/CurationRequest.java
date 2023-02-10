@@ -17,10 +17,10 @@ import lombok.Setter;
 @Setter
 @Data
 public class CurationRequest implements Serializable {
-	private Long id;
+	private Long curationSeq;
 	private LocalDateTime curationStartTime;
-	private LocalDateTime curationEndTime;
 	private String curationName;
 	private String curationSummary;
-	private Artist artist;
+	private Long artistSeq;
+	private int isAuction;
 }
