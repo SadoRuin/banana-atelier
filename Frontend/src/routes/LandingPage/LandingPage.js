@@ -18,6 +18,11 @@ function LandingPage() {
   const loginWonder = useSelector(state => state.user.login_status)
   const handleLogOut = event => {
     event.preventDefault()
+    localStorage.removeItem("token")
+    localStorage.removeItem("expiration")
+    localStorage.removeItem("nickname")
+    localStorage.removeItem("profileImg")
+    localStorage.removeItem("role")
     dispatch(logoutCode())
     console.log("로그인 했나요?", loginWonder)
   }
