@@ -4,6 +4,7 @@ import {Link, useLoaderData} from 'react-router-dom'
 // import customAxios from '../../_actions/customAxios';
 import axios from 'axios'
 import ProfileImg from "../../components/commons/ProfileImg";
+import { getArtImage } from "../../components/commons/imageModule";
 import {YellowBtn , LikeBtn} from "../../components/commons/buttons";
 import {Category} from "../../components/commons/category";
 import './ArtsDetail.css'
@@ -11,6 +12,7 @@ import './ArtsDetail.css'
 export async function loader ({params}) {
   let artSeq = params.art_seq;
 
+  // customAxios 바뀌기 전까지 쓸 것
   const TOKEN = localStorage.getItem('token')
   const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`,
     {
@@ -37,15 +39,13 @@ function ArtsDetail() {
   const artData = useLoaderData();
   console.log(artData);
 
-  const IMG_BASE_URL = 'https://i8a108.s3.ap-northeast-2.amazonaws.com'
-
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
         {/* 작품 사진 */}
         {/*<img src={artData.art_img} alt="작품 이미지" className="art-img" />*/}
         <img
-          src={`${IMG_BASE_URL}/art/${artData.userSeq}/${artData.artSeq}`}
+          src={`${getArtImage(artData.artImg, artData.userSeq)}`}
           alt="작품 이미지"
           className="art-img"
         />
@@ -55,8 +55,7 @@ function ArtsDetail() {
           <div className="art-detail__main-info">
             <h1>{artData.artName}</h1>
             <Link className="artist_profile link" to={`../${artData.nickname}/arts`}>
-              {/* 프로필 이미지는 아직입니다!! src={artData.profile_img}*/}
-              <ProfileImg height="30px" width="30px" />
+              <ProfileImg height="30px" width="30px" url={artData.profileImg} artistSeq={artData.userSeq} />
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
             <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>

@@ -17,7 +17,7 @@ function ArtsMain() {
 
       {/* 정렬 탭도.. */}
       <div className="sort_tab">
-        <div>요즘 뜨는 작품</div>ㄴ
+        <div>요즘 뜨는 작품</div>
         <div>새로 나온 작품</div>
         <div>인기 작품</div>
       </div>
