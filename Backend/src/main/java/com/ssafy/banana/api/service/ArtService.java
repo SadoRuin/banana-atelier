@@ -55,9 +55,11 @@ public class ArtService {
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
+		String artFileName = awsS3Service.uploadArtImage(userSeq, artFile);
+
 		Art art = Art.builder()
-			.artImg(awsS3Service.uploadArtImage(userSeq, artFile))
-			.artThumbnail(awsS3Service.uploadArtThumbnail(userSeq, artFile))
+			.artImg(artFileName)
+			.artThumbnail(awsS3Service.uploadArtThumbnail(userSeq, artFileName, artFile))
 			.artName(artRequest.getArtName())
 			.artDescription(artRequest.getArtDescription())
 			.artCategory(artCategory)

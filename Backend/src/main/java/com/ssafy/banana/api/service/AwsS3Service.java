@@ -59,33 +59,39 @@ public class AwsS3Service {
 	private final AmazonS3 amazonS3;
 	private final UserRepository userRepository;
 
-	public String uploadArtThumbnail(long userSeq, MultipartFile multipartFile) {
-		String fileName = "s_" + createFileName(multipartFile.getOriginalFilename());
+	public String uploadArtThumbnail(long userSeq, String artFileName, MultipartFile multipartFile) {
+		String fileName = "thumb_" + artFileName;
 		String folderName = artThumbnailFolder + userSeq + "/";
+
 		try (InputStream inputStream = multipartFile.getInputStream()) {
 			BufferedImage originalImage = ImageIO.read(inputStream);
+			if (originalImage.getWidth() < 400) {
+				uploadImage(folderName, fileName, multipartFile);
+			} else {
+				double ratio = (double)originalImage.getHeight() / originalImage.getWidth();
+				int width = 400;
+				int height = (int)(400 * ratio);
+				System.out.println("ratio = " + ratio);
+				System.out.println("height = " + height);
 
-			double ratio = 3;
-			int width = (int)(originalImage.getWidth() / ratio);
-			int height = (int)(originalImage.getHeight() / ratio);
+				BufferedImage thumbImage = Thumbnails.of(originalImage)
+					.size(width, height)
+					.outputQuality(1.0f)
+					.outputFormat("png")
+					.asBufferedImage();
 
-			BufferedImage thumbImage = Thumbnails.of(originalImage)
-				.size(width, height)
-				.outputQuality(1.0f)
-				.outputFormat("png")
-				.asBufferedImage();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				ImageIO.write(thumbImage, "png", os);
+				byte[] buffer = os.toByteArray();
+				InputStream is = new ByteArrayInputStream(buffer);
 
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			ImageIO.write(thumbImage, "png", os);
-			byte[] buffer = os.toByteArray();
-			InputStream is = new ByteArrayInputStream(buffer);
+				ObjectMetadata objectMetadata = new ObjectMetadata();
+				objectMetadata.setContentLength(buffer.length);
+				objectMetadata.setContentType("image/png");
 
-			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setContentLength(buffer.length);
-			objectMetadata.setContentType("image/png");
-
-			amazonS3.putObject(new PutObjectRequest(bucket, folderName + fileName, is, objectMetadata)
-				.withCannedAcl(CannedAccessControlList.PublicRead));
+				amazonS3.putObject(new PutObjectRequest(bucket, folderName + fileName, is, objectMetadata)
+					.withCannedAcl(CannedAccessControlList.PublicRead));
+			}
 
 			return fileName;
 
@@ -126,6 +132,19 @@ public class AwsS3Service {
 		}
 
 		return fileName;
+	}
+
+	public void uploadImage(String folderName, String fileName, MultipartFile multipartFile) {
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.setContentLength(multipartFile.getSize());
+		objectMetadata.setContentType(multipartFile.getContentType());
+
+		try (InputStream inputStream = multipartFile.getInputStream()) {
+			amazonS3.putObject(new PutObjectRequest(bucket, folderName + fileName, inputStream, objectMetadata)
+				.withCannedAcl(CannedAccessControlList.PublicRead));
+		} catch (IOException e) {
+			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
+		}
 	}
 
 	public DownloladFileDto downloadArtImage(long userSeq, String fileName) {
