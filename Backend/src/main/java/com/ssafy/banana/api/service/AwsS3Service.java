@@ -1,9 +1,15 @@
 package com.ssafy.banana.api.service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -51,6 +59,46 @@ public class AwsS3Service {
 	private final AmazonS3 amazonS3;
 	private final UserRepository userRepository;
 
+	public String uploadArtThumbnail(long userSeq, MultipartFile multipartFile) {
+		String fileName = "s_" + createFileName(multipartFile.getOriginalFilename());
+		String folderName = artThumbnailFolder + userSeq + "/";
+		try (InputStream inputStream = multipartFile.getInputStream()) {
+			BufferedImage originalImage = ImageIO.read(inputStream);
+
+			double ratio = 3;
+			int width = (int)(originalImage.getWidth() / ratio);
+			int height = (int)(originalImage.getHeight() / ratio);
+
+			BufferedImage thumbImage = Thumbnails.of(originalImage)
+				.size(width, height)
+				.outputQuality(1.0f)
+				.outputFormat("png")
+				.asBufferedImage();
+
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			ImageIO.write(thumbImage, "png", os);
+			byte[] buffer = os.toByteArray();
+			InputStream is = new ByteArrayInputStream(buffer);
+
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setContentLength(buffer.length);
+			objectMetadata.setContentType("image/png");
+
+			amazonS3.putObject(new PutObjectRequest(bucket, folderName + fileName, is, objectMetadata)
+				.withCannedAcl(CannedAccessControlList.PublicRead));
+
+			return fileName;
+
+		} catch (IOException e) {
+			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
+		}
+	}
+
+	public String uploadArtImage(long userSeq, MultipartFile multipartFile) {
+		String folderName = artImageFolder + userSeq + "/";
+		return uploadImage(folderName, multipartFile);
+	}
+
 	public String uploadProfileImage(long userSeq, MultipartFile multipartFile) {
 		String folderName = profileFolder + userSeq + "/";
 		String fileName = uploadImage(folderName, multipartFile);
@@ -80,6 +128,11 @@ public class AwsS3Service {
 		return fileName;
 	}
 
+	public DownloladFileDto downloadArtImage(long userSeq, String fileName) {
+		String folderName = artImageFolder + userSeq + "/";
+		return downloadImage(folderName, fileName);
+	}
+
 	public DownloladFileDto downloadProfileImage(long userSeq, String fileName) {
 		String folderName;
 		if (fileName.contains("default_profile")) {
@@ -96,7 +149,7 @@ public class AwsS3Service {
 		try {
 			byte[] imageFile = IOUtils.toByteArray(objectInputStream);
 
-			String urlFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
+			String urlFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
 			HttpHeaders httpHeaders = new HttpHeaders();
 			httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 			httpHeaders.setContentLength(imageFile.length);
@@ -112,6 +165,16 @@ public class AwsS3Service {
 		}
 	}
 
+	public void deleteArtThumbnail(long userSeq, String fileName) {
+		String folderName = artThumbnailFolder + userSeq + "/";
+		amazonS3.deleteObject(new DeleteObjectRequest(bucket, folderName + fileName));
+	}
+
+	public void deleteArtImage(long userSeq, String fileName) {
+		String folderName = artImageFolder + userSeq + "/";
+		amazonS3.deleteObject(new DeleteObjectRequest(bucket, folderName + fileName));
+	}
+
 	public void deleteImage(String folderName, String fileName) {
 		amazonS3.deleteObject(new DeleteObjectRequest(bucket, folderName + fileName));
 	}
@@ -123,7 +186,6 @@ public class AwsS3Service {
 	private String getFileExtension(String fileName) {
 		try {
 			String extension = fileName.substring(fileName.lastIndexOf("."));
-			System.out.println("extension = " + extension);
 			if (!extension.equalsIgnoreCase(EXTENSION_JPG)
 				&& !extension.equalsIgnoreCase(EXTENSION_JPEG)
 				&& !extension.equalsIgnoreCase(EXTENSION_PNG)) {

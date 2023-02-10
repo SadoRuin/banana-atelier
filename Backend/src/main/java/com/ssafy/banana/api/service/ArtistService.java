@@ -21,6 +21,7 @@ public class ArtistService {
 		User user = userRepository.findById(userSeq).orElse(null);
 		Artist artist = artistRepository.findById(userSeq).orElse(null);
 		if (user.getRole() == Role.ROLE_USER || artist == null) {
+			artist = new Artist();
 			user.setRole(Role.ROLE_ARTIST);
 			artist.setUser(user);
 			userRepository.save(user);

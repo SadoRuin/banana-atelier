@@ -2,8 +2,6 @@ package com.ssafy.banana.api.controller;
 
 import java.util.List;
 
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,20 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.db.entity.Art;
-import com.ssafy.banana.dto.FileDto;
+import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
+import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
-import com.ssafy.banana.dto.response.FileResponse;
+import com.ssafy.banana.dto.response.SuccessResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
-import com.ssafy.banana.util.FileUtil;
-import com.ssafy.banana.util.SymbolUtil;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -48,7 +46,6 @@ public class ArtController {
 	private static final String AUTHORIZATION = "Authorization";
 	private final TokenProvider tokenProvider;
 	private final ArtService artService;
-	private final FileUtil fileUtil;
 
 	@ApiOperation(value = "작품 업로드", notes = "나의 작품을 업로드합니다")
 	@PostMapping
@@ -58,32 +55,10 @@ public class ArtController {
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long userSeq = tokenProvider.getSubject(token);
 
-		String originalFilename = artFile.getOriginalFilename();
-		int dotIndex = originalFilename.lastIndexOf(SymbolUtil.DOT);
+		artService.uploadArt(artFile, artRequest, token);
 
-		// 파일 확장자 check
-		String extension = originalFilename.substring(dotIndex + 1);
-		if (!extension.equalsIgnoreCase(FileUtil.EXTENSION_JPG)
-			&& !extension.equalsIgnoreCase(FileUtil.EXTENSION_JPEG)
-			&& !extension.equalsIgnoreCase(FileUtil.EXTENSION_PNG)) {
-			throw new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR);
-		}
-
-		String originalArtName = originalFilename.substring(0, dotIndex);
-		FileDto fileDto = FileDto.builder()
-			.userSeq(userSeq)
-			.artFile(artFile)
-			.originalArtName(originalArtName)
-			.extension(extension)
-			.build();
-		Art art = artService.uploadArt(artRequest, fileDto);
-
-		return ResponseEntity.status(HttpStatus.OK).body(art);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("작품이 업로드되었습니다."));
 	}
 
 	@ApiOperation(value = "전체 작품 리스트", notes = "전체 작품 목록을 반환합니다")
@@ -247,21 +222,12 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "작품 다운로드", notes = "작품을 다운로드합니다")
-	@PostMapping("/download")
-	public ResponseEntity downloadArt(
-		@RequestBody MyArtRequest myArtRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+	@GetMapping("/download/{artSeq}")
+	public ResponseEntity downloadArt(@PathVariable long artSeq) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long userSeq = tokenProvider.getSubject(token);
-		FileResponse fileResponse = artService.downloadArt(myArtRequest, userSeq);
-		HttpHeaders headers = fileResponse.getHeaders();
-		Resource resource = fileResponse.getResource();
+		DownloladFileDto downloladFileDto = artService.downloadArt(artSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(resource);
+		return ResponseEntity.ok().headers(downloladFileDto.getHttpHeaders()).body(downloladFileDto.getImageFile());
 	}
 
 	@PreAuthorize("hasRole('ARTIST')")
@@ -283,19 +249,16 @@ public class ArtController {
 
 	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "작품 삭제", notes = "등록된 작품을 삭제합니다")
-	@DeleteMapping("/{artSeq}")
+	@ApiImplicitParam(name = "seq", value = "작품번호")
+	@DeleteMapping("/delete")
 	public ResponseEntity deleteArt(
-		@PathVariable Long artSeq,
+		@RequestBody SeqRequest seqRequest,
 		@RequestHeader(AUTHORIZATION) String token) {
 
 		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long userSeq = tokenProvider.getSubject(token);
-		Long result = artService.deleteArt(artSeq, userSeq);
+		artService.deleteArt(seqRequest.getSeq(), token);
 
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		return ResponseEntity.ok(new SuccessResponse("작품이 삭제되었습니다."));
 	}
 
 	private static String getToken(String token) {

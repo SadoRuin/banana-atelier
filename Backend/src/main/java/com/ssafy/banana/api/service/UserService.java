@@ -44,7 +44,6 @@ public class UserService {
 	private final SecurityUtil securityUtil;
 	private final RedisUtil redisUtil;
 	private final EmailUtil emailUtil;
-	private final FileService fileService;
 	private final AwsS3Service awsS3Service;
 	private final char[] specialChars = {'!', '@', '$', '%', '(', ')'};
 	private final ArtistRepository artistRepository;
@@ -183,7 +182,7 @@ public class UserService {
 	@Transactional
 	public void followArtist(String token, SeqRequest seqRequest) {
 		long userSeq = tokenProvider.getSubject(token);
-		long artistSeq = seqRequest.getUserSeq();
+		long artistSeq = seqRequest.getSeq();
 		User user = userRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
@@ -214,7 +213,7 @@ public class UserService {
 	@Transactional
 	public void unFollowArtist(String token, SeqRequest seqRequest) {
 		long userSeq = tokenProvider.getSubject(token);
-		long artistSeq = seqRequest.getUserSeq();
+		long artistSeq = seqRequest.getSeq();
 
 		Artist artist = artistRepository.findById(artistSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
