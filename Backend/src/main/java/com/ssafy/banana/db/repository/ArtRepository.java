@@ -22,8 +22,9 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) "
 		+ "from Art a join User u "
 		+ "on a.artist.id = u.id "
+		+ "where a.artRegDate >= :twoWeeksAgo "
 		+ "order by a.artRegDate desc ")
-	List<ArtResponse> findNewArts();
+	List<ArtResponse> findNewArts(@Param("twoWeeksAgo") LocalDateTime twoWeeksAgo);
 
 	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) "
 		+ "from Art a join User u "

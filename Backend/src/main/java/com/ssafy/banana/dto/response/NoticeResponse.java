@@ -18,19 +18,15 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class NoticeResponse {
 
-	@JsonProperty(value = "notice_seq")
+	@JsonProperty(value = "noticeSeq")
 	private Long id;
 
-	@JsonProperty(value = "notice_title")
 	private String noticeTitle;
 
-	@JsonProperty(value = "notice_content")
 	private String noticeContent;
 
-	@JsonProperty(value = "notice_time")
 	private LocalDateTime noticeTime;
 
-	@JsonProperty(value = "user_seq")
 	private Long userSeq;
 
 	public NoticeResponse(Notice notice) {

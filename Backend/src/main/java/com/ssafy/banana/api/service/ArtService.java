@@ -1,16 +1,8 @@
 package com.ssafy.banana.api.service;
 
-import java.io.File;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -28,16 +20,15 @@ import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.MyArtRepository;
 import com.ssafy.banana.db.repository.UserRepository;
-import com.ssafy.banana.dto.FileDto;
+import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
-import com.ssafy.banana.dto.response.FileResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
-import com.ssafy.banana.util.FileUtil;
+import com.ssafy.banana.security.jwt.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -51,48 +42,33 @@ public class ArtService {
 	private final MyArtRepository myArtRepository;
 	private final ArtistRepository artistRepository;
 	private final ArtistService artistService;
-	private final FileService fileService;
-	private final FileUtil fileUtil;
+	private final TokenProvider tokenProvider;
+	private final AwsS3Service awsS3Service;
 
 	@Transactional
-	public Art uploadArt(ArtRequest artRequest, FileDto fileDto) {
+	public Art uploadArt(MultipartFile artFile, ArtRequest artRequest, String token) {
+		long userSeq = tokenProvider.getSubject(token);
 
-		Long userSeq = fileDto.getUserSeq();
-		MultipartFile artFile = fileDto.getArtFile();
-
-		if (artRequest.getUserSeq() != userSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		// 작가 체크
-		artistService.checkArtist(userSeq);
+		Artist artist = artistService.checkArtist(userSeq);
 
-		LocalDateTime artRegDate = LocalDateTime.now();
-		// 이미지 파일 저장
-		if (!ObjectUtils.isEmpty(artFile)) {
-			fileDto = fileService.saveFile(fileDto, artRegDate);
-		} else {
-			throw new CustomException(CustomExceptionType.FILE_UPLOAD_ERROR);
-		}
-		// 썸네일 생성
-		fileDto = fileService.makeAndSaveThumbnail(fileDto);
+		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq()).orElse(null);
-		Artist artist = artistRepository.findById(artRequest.getUserSeq()).orElse(null);
+		String artFileName = awsS3Service.uploadArtImage(userSeq, artFile);
 
-		if (artCategory == null || artist == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
 		Art art = Art.builder()
-			.artImg(fileDto.getNewArtName())
-			.artThumbnail(fileDto.getNewThumbnailName())
+			.artImg(artFileName)
+			.artThumbnail(awsS3Service.uploadArtThumbnail(userSeq, artFileName, artFile))
 			.artName(artRequest.getArtName())
 			.artDescription(artRequest.getArtDescription())
 			.artCategory(artCategory)
 			.artist(artist)
-			.artRegDate(artRegDate)
+			.artRegDate(LocalDateTime.now())
 			.build();
 
 		artRepository.save(art);
+
 		return art;
 	}
 
@@ -108,7 +84,8 @@ public class ArtService {
 
 	public List<ArtResponse> getNewArtList() {
 
-		List<ArtResponse> newArtList = artRepository.findNewArts();
+		LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
+		List<ArtResponse> newArtList = artRepository.findNewArts(twoWeeksAgo);
 		if (!CollectionUtils.isEmpty(newArtList)) {
 			return newArtList;
 		} else {
@@ -116,11 +93,8 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getMyArtList(Long userSeq, Long tokenUserSeq) {
+	public List<ArtResponse> getMyArtList(Long userSeq) {
 
-		if (userSeq != tokenUserSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		List<ArtResponse> myArtList = artRepository.findMyArts(userSeq);
 		if (!CollectionUtils.isEmpty(myArtList)) {
 			return myArtList;
@@ -167,11 +141,9 @@ public class ArtService {
 				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 			}
 			isRepresent = masterpieceRequest.isRepresent();
-			art = artRepository.findById(masterpieceRequest.getArtSeq()).orElse(null);
+			art = artRepository.findById(masterpieceRequest.getArtSeq())
+				.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
-			if (art == null) {
-				throw new CustomException(CustomExceptionType.NO_CONTENT);
-			}
 			art.setRepresent(isRepresent);
 			artRepository.save(art);
 		}
@@ -210,10 +182,8 @@ public class ArtService {
 
 	public ArtDetailResponse getArt(Long artSeq) {
 
-		Art art = artRepository.findById(artSeq).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.NO_CONTENT);
-		}
+		Art art = artRepository.findById(artSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 		User artist = art.getArtist().getUser();
 
 		return new ArtDetailResponse(art, artist);
@@ -225,14 +195,11 @@ public class ArtService {
 		if (myArtRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
-		User user = userRepository.findById(myArtRequest.getUserSeq()).orElse(null);
+		Art art = artRepository.findById(myArtRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+		User user = userRepository.findById(myArtRequest.getUserSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.NO_CONTENT);
-		} else if (user == null) {
-			throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
-		}
 		MyArtId myArtId = MyArtId.builder()
 			.userSeq(user.getId())
 			.artSeq(art.getId())
@@ -258,15 +225,14 @@ public class ArtService {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		MyArt myArt = myArtRepository.findMyArt(myArtRequest.getArtSeq(), myArtRequest.getUserSeq());
-		if (myArt == null) {
+		if (ObjectUtils.isEmpty(myArt)) {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
 		myArtRepository.delete(myArt);
 
-		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
+		Art art = artRepository.findById(myArtRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
 		int artLikeCount = myArtRepository.countArtLike(art.getId());
 		art.setArtLikeCount(artLikeCount);
 		artRepository.save(art);
@@ -274,55 +240,12 @@ public class ArtService {
 		return art;
 	}
 
-	public FileResponse downloadArt(MyArtRequest myArtRequest, Long userSeq) {
+	public DownloladFileDto downloadArt(long artSeq) {
 
-		if (myArtRequest.getUserSeq() != userSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Art art = artRepository.findById(myArtRequest.getArtSeq()).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
-		String path = new StringBuilder()
-			.append(fileUtil.getArtImgPath())
-			.append(File.separator)
-			.append(userSeq)
-			.append(File.separator)
-			.append(art.getArtImg())
-			.toString();
+		Art art = artRepository.findById(artSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		try {
-			// path = URLDecoder.decode(path, "UTF-8");
-			Path artImgPath = Paths.get(path);
-			Resource resource = new InputStreamResource(Files.newInputStream(artImgPath));
-
-			HttpHeaders headers = new HttpHeaders();
-
-			// 파일명 인코딩
-			String artImg = URLEncoder.encode(art.getArtImg(), fileUtil.UTF_8);
-			// String artImg = new String(art.getArtImg().getBytes("utf-8"), "iso-8859-1");
-
-			// 다른 이름으로 저장 설정
-			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + artImg + "\"");
-			// headers.setContentDisposition(ContentDisposition.builder("attachment").filename(artImg).build());
-
-			// 파일의 타입으로 Content-type 설정
-			String contentType = Files.probeContentType(artImgPath);
-			headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-
-			headers.add(HttpHeaders.CONTENT_ENCODING, fileUtil.BINARY);
-
-			// 다운로드 수 증가
-			art.setArtDownloadCount(art.getArtDownloadCount() + 1);
-			artRepository.save(art);
-
-			return FileResponse.builder()
-				.headers(headers)
-				.resource(resource)
-				.build();
-		} catch (Exception e) {
-			throw new CustomException(CustomExceptionType.FILE_DOWNLOAD_ERROR);
-		}
+		return awsS3Service.downloadArtImage(art.getArtist().getId(), art.getArtImg());
 	}
 
 	@Transactional
@@ -331,17 +254,12 @@ public class ArtService {
 		if (artRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		Art art = artRepository.findById(artRequest.getArtSeq()).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
+		Art art = artRepository.findById(artRequest.getArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		Long artistSeq = art.getArtist().getId();
-		String artThumbnail = "artThumbnail 구해오기";    // 수정 예정
 
 		if (artistSeq == userSeq) {
 			art.setArtName(artRequest.getArtName());
-			// art.setArtImg(artRequest.getArtImg());
-			art.setArtThumbnail(artThumbnail);
 			art.setArtDescription(artRequest.getArtDescription());
 			art.getArtCategory().setId(artRequest.getArtCategorySeq());
 			artRepository.save(art);
@@ -352,22 +270,24 @@ public class ArtService {
 	}
 
 	@Transactional
-	public Long deleteArt(Long artSeq, Long userSeq) {
-
-		Art art = artRepository.findById(artSeq).orElse(null);
-		if (art == null) {
-			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
-		}
-		Long artistSeq = art.getArtist().getId();
+	public void deleteArt(long artSeq, String token) {
+		long userSeq = tokenProvider.getSubject(token);
+		Art art = artRepository.findById(artSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+		long artistSeq = art.getArtist().getId();
 
 		if (userSeq != artistSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
+
 		//작품이 하나만 있다면 삭제 불가
-		int myArtCount = artRepository.countArtByArtistSeq(userSeq);
+		int myArtCount = artRepository.countArtByArtistSeq(artistSeq);
 		if (myArtCount > 1) {
+			// db record 삭제
 			artRepository.deleteById(artSeq);
-			return artSeq;
+			// 실제 파일 삭제
+			awsS3Service.deleteArtImage(artistSeq, art.getArtImg());
+			awsS3Service.deleteArtThumbnail(artistSeq, art.getArtThumbnail());
 		} else {
 			throw new CustomException(CustomExceptionType.DO_NOT_DELETE);
 		}

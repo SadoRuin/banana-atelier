@@ -68,7 +68,11 @@ public class SecurityConfig {
 				"/users/verify/**",
 				"/users/check/**",
 				"/users/find-password",
-				"/arts/**",
+				"/arts/all",
+				"/arts/new",
+				"/arts/category/*",
+				"/arts/trend",
+				"/arts/popular",
 				"/curations/main",
 				"/curations/details/**",
 				"/notices/**",
@@ -103,8 +107,7 @@ public class SecurityConfig {
 		return (web) -> web.ignoring().antMatchers(
 			"/swagger-ui/**",
 			"/swagger-resources/**",
-			"/v3/api-docs",
-			"/static/**"
+			"/v3/api-docs"
 		);
 	}
 }

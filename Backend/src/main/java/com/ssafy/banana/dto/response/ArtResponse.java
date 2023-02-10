@@ -20,26 +20,21 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ArtResponse {
 
-	@JsonProperty(value = "art_seq")
+	@JsonProperty(value = "artSeq")
 	private Long id;
 
-	@JsonProperty(value = "art_name")
 	private String artName;
 
 	//    private String artDescription;
 
 	//    private LocalDateTime artRegDate;
 
-	@JsonProperty(value = "art_hit")
 	private int artHit;
 
-	@JsonProperty(value = "art_like_count")
 	private int artLikeCount;
 
-	@JsonProperty(value = "art_thumbnail")
 	private String artThumbnail;
 
-	@JsonProperty(value = "art_img")
 	private String artImg;
 
 	//    private boolean isDigital;
@@ -48,19 +43,16 @@ public class ArtResponse {
 
 	//    private boolean isRepresent;
 
-	@JsonProperty(value = "art_category")
 	private ArtCategory artCategory;
 
-	@JsonProperty(value = "user_seq")
+	@JsonProperty(value = "userSeq")
 	private Long artistSeq;
 
-	@JsonProperty(value = "profile_img")
 	private String profileImg;
 
 	@JsonProperty(value = "nickname")
 	private String artistNickname;
 
-	@JsonProperty(value = "artist_like_count")
 	private int artistLikeCount;
 
 	public ArtResponse(Art art, User user) {
