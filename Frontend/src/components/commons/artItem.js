@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 
 import { getArtThumbnail } from "./imageModule";
 import ProfileImg from "./ProfileImg";
@@ -25,8 +27,8 @@ function ArtItem({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, 
             {nickname}<span className="jakka">작가</span>
           </Link>
           <div className="art-info__sub">
-            <div>조회수 {artHit}</div>
-            <div>좋아요 {artLikeCount}</div>
+            <div><FontAwesomeIcon icon={ faEye } /> {artHit}</div>
+            <div><FontAwesomeIcon icon={ faThumbsUp } /> {artLikeCount}</div>
           </div>
       </div>
 
