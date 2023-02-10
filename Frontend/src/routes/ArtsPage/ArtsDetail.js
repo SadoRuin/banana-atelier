@@ -26,20 +26,10 @@ export async function loader ({params}) {
 }
 
 
-// const handleDownload = (artSeq) => {
-//   axiosAuth.get(`arts/download/${artSeq}`)
-//     .then(response => {
-//       let imageLink = response
-//       console.log("imageLink", imageLink)
-//       }
-//     )  
-// }
-
-
 function ArtsDetail() {
   const artData = useLoaderData();
   // console.log('artData', artData);
-  // let artSeq = artData.artSeq
+  // let artData = artData.artSeq
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
@@ -84,8 +74,7 @@ function ArtsDetail() {
             <div className="art-detail__btns">
               {/* 좋아요 누른 버튼이랑 안누른 버튼 */}
               <LikeBtn isLike={true} />
-              {/* 이미지 다운로드는 아직인듯? */}
-              <a href={getArtImage(artData.artImg, artData.userSeq)} download ><YellowBtn width="150px" >다운로드!</YellowBtn></a>
+              <a href={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`}><YellowBtn>다운로드</YellowBtn></a>
             </div>
           </div>
         </div>
