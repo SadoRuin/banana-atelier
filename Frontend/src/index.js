@@ -50,10 +50,11 @@ import MyPageLayout from "./routes/MyPage/Layout";
 import { loader as myPageLoader } from "./routes/MyPage/Layout"
 
 // 작품탭
-import ArtsRoot from "./routes/MyPage/ArtsRoot"
-import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
-import ArtsIndex from "./routes/MyPage/ArtsIndex";
-import ArtsMyCollections from "./routes/MyPage/ArtsMyCollections";
+// import ArtsRoot from "./routes/MyPage/ArtsRoot"
+import ArtsMyPage from "./routes/MyPage/ArtsMyPage";
+// import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
+// import ArtsIndex from "./routes/MyPage/ArtsIndex";
+// import ArtsMyCollections from "./routes/MyPage/ArtsMyCollections";
 // 공지사항탭
 import NoticesRoot from "./routes/MyPage/NoticesRoot";
 import NoticesMine from "./routes/MyPage/NoticesMine";
@@ -125,14 +126,14 @@ const router = createBrowserRouter(
           >
 
             <Route
-              path="arts"
-              element={<ArtsRoot />}
+              index
+              element={<ArtsMyPage />}
             >
-              <Route index element={ <ArtsIndex /> }>
-                {/* 대표작품 설정 페이지 들어갈거임 */}
-              </Route>
-              <Route path="favorite" element={ <ArtsFavorite /> }/>
-              <Route path="owns" element={ <ArtsMyCollections /> } />
+              {/*<Route index element={ <ArtsIndex /> }>*/}
+              {/*  /!* 대표작품 설정 페이지 들어갈거임 *!/*/}
+              {/*</Route>*/}
+              {/*<Route path="favorite" element={ <ArtsFavorite /> }/>*/}
+              {/*<Route path="owns" element={ <ArtsMyCollections /> } />*/}
             </Route>
 
             <Route
