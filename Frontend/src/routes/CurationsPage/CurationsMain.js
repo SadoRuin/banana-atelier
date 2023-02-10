@@ -5,7 +5,7 @@ import axiosAuth from '../../_actions/axiosAuth'
 import {TabMenu, TabContent} from "../../components/commons/tabMenu";
 
 export function loader() {
-  const curationsList = axiosAuth().get(`curations/main`)
+  const curationsList = axiosAuth.get(`curations/main`)
     .then(response=>response.data)
     .catch(error=>console.log(error))
   return curationsList;

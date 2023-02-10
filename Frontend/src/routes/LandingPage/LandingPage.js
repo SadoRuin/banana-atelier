@@ -7,7 +7,7 @@ import ArtItem from "../../components/commons/artItem";
 import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
-  const arts = await axiosAuth().get('/arts/all' )
+  const arts = await axiosAuth.get('/arts/all' )
     .then(response=>response.data)
     .catch(error=>console.log(error))
   return {arts};
