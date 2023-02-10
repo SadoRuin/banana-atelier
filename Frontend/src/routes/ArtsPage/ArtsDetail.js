@@ -7,13 +7,14 @@ import {YellowBtn , LikeBtn} from "../../components/commons/buttons";
 import {Category} from "../../components/commons/category";
 import './ArtsDetail.css'
 
+
 export async function loader ({params}) {
   let artSeq = params.art_seq;
-
+  
   const artData = await axiosAuth.get(`arts/detail/${artSeq}`)
-    .then(response => response.data)
-    .catch(error => console.log(error))
-
+  .then(response => response.data)
+  .catch(error => console.log(error))
+  
   console.log(artData);
   if (!artData) {
     throw new Response("", {
@@ -24,10 +25,21 @@ export async function loader ({params}) {
   return artData;
 }
 
+
+// const handleDownload = (artSeq) => {
+//   axiosAuth.get(`arts/download/${artSeq}`)
+//     .then(response => {
+//       let imageLink = response
+//       console.log("imageLink", imageLink)
+//       }
+//     )  
+// }
+
+
 function ArtsDetail() {
   const artData = useLoaderData();
-  console.log(artData);
-
+  // console.log('artData', artData);
+  // let artSeq = artData.artSeq
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
@@ -75,7 +87,7 @@ function ArtsDetail() {
               {/* 좋아요 누른 버튼이랑 안누른 버튼 */}
               <LikeBtn isLike={true} />
               {/* 이미지 다운로드는 아직인듯? */}
-              <YellowBtn width="150px">다운로드</YellowBtn>
+              <a href={getArtImage(artData.artImg, artData.userSeq)} download ><YellowBtn width="150px" >고맙다^^</YellowBtn></a>
             </div>
           </div>
         </div>

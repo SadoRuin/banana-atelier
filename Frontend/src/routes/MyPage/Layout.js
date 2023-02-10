@@ -1,20 +1,15 @@
 import React from 'react';
 import {Outlet, NavLink, Form, useLoaderData} from "react-router-dom";
 import axios from 'axios';
+import axiosAuth from '../../_actions/axiosAuth';
 
 import ProfileImg from "../../components/commons/ProfileImg";
 import './Layout.css'
 
 export async function loader ({params}) {
   const [nickname, userSeq] = params.nickname_user_seq.split('@');
-  const TOKEN = localStorage.getItem('token')
-  const userData = await axios.get(`https://i8a108.p.ssafy.io/api/users/profile/${userSeq}`,
-    {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`
-      }
-    }
-  )
+  // const TOKEN = localStorage.getItem('token')
+  const userData = await axiosAuth.get(`users/profile/${userSeq}`)
     // const artData = await customAxios().get(`arts/detail/${+artSeq}`)
     .then(response => response.data)
     .catch(error => console.log(error))

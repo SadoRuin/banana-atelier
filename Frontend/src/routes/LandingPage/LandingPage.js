@@ -1,13 +1,13 @@
 import React from 'react';
 import {Link, useLoaderData} from 'react-router-dom';
-import axiosAuth from "../../_actions/axiosAuth";
+import axiosCustom from "../../_actions/axiosCustom";
 import { logoutCode } from '../../_actions/user_action';
 
 import ArtItem from "../../components/commons/artItem";
 import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
-  const arts = await axiosAuth.get('/arts/all' )
+  const arts = await axiosCustom.get('/arts/all' )
     .then(response=>response.data)
     .catch(error=>console.log(error))
   return {arts};
