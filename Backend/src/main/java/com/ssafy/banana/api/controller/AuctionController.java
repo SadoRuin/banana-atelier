@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.AuctionService;
 import com.ssafy.banana.db.entity.AuctionJoin;
-import com.ssafy.banana.exception.CustomException;
-import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuctionController {
 
-	private static final String AUTHORIZATION = "Authorization";
 	private final TokenProvider tokenProvider;
 	private final AuctionService auctionService;
 
@@ -32,22 +29,13 @@ public class AuctionController {
 	@PostMapping("/{curationArtSeq}")
 	public ResponseEntity joinAuction(
 		@PathVariable Long curationArtSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(" ")[1];
 		Long userSeq = tokenProvider.getSubject(token);
 		AuctionJoin auctionJoin = auctionService.joinAuction(curationArtSeq, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(auctionJoin);
 	}
 
-	private static String getToken(String token) {
-		if (token.substring(0, 7).equals("Bearer ")) {
-			token = token.substring("Bearer ".length());
-		}
-		return token;
-	}
 }
