@@ -47,6 +47,8 @@ import CommissionsDetail from "./routes/CommissionsPage/CommissionsDetail";
 
 // 마이페이지
 import MyPageLayout from "./routes/MyPage/Layout";
+import { loader as myPageLoader } from "./routes/MyPage/Layout"
+
 // 작품탭
 import ArtsRoot from "./routes/MyPage/ArtsRoot"
 import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
@@ -117,8 +119,9 @@ const router = createBrowserRouter(
 
           {/*마이페이지*/}
           <Route
-            path=":nickname"
+            path=":nickname_user_seq"
             element={<MyPageLayout />}
+            loader={myPageLoader}
           >
 
             <Route
