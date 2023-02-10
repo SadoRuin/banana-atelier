@@ -89,14 +89,6 @@ function CurationsMain() {
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
 
-  const handlerUpcommingIndex = (index) => {
-
-  };
-  const handlerEndIndex = (index) => {
-    setEndIndex(index);
-  };
-
-
   return (
     <div>
 
