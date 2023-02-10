@@ -1,6 +1,5 @@
 import React from 'react';
 import {Outlet, NavLink, Form, useLoaderData} from "react-router-dom";
-import axios from 'axios';
 import axiosAuth from '../../_actions/axiosAuth';
 
 import ProfileImg from "../../components/commons/ProfileImg";

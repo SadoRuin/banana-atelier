@@ -87,7 +87,7 @@ function ArtsDetail() {
               {/* 좋아요 누른 버튼이랑 안누른 버튼 */}
               <LikeBtn isLike={true} />
               {/* 이미지 다운로드는 아직인듯? */}
-              <a href={getArtImage(artData.artImg, artData.userSeq)} download ><YellowBtn width="150px" >고맙다^^</YellowBtn></a>
+              <a href={getArtImage(artData.artImg, artData.userSeq)} download ><YellowBtn width="150px" >다운로드!</YellowBtn></a>
             </div>
           </div>
         </div>
