@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.CurationService;
+import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
+import com.ssafy.banana.dto.request.MyCurationRequest;
 import com.ssafy.banana.dto.response.CurationDataResponse;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
@@ -50,39 +52,10 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body(curationService.getCuration(curation_seq));
 	}
 
-	// @ApiOperation(value = "북마크 추가하기", notes = "큐레이션에 북마크를 설정합니다")
-	// @PostMapping("/bookmark")
-	// public ResponseEntity addArtLike(@RequestBody MyArtRequest myArtRequest,
-	// 	@RequestHeader String Authorization) {
-	// 	String token = Authorization.split(" ")[1];
-	// 	if (!tokenProvider.validateToken(token)) {
-	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-	// 	}
-	// 	Long userSeq = tokenProvider.getSubject(token);
-	// 	Curation curation = curationService.addArtLike(myArtRequest, userSeq);
-	//
-	// 	return ResponseEntity.status(HttpStatus.OK).body(curation);
-	// }
-	// //
-	// @ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
-	// @DeleteMapping("/like")
-	// public ResponseEntity deleteArtLike(@RequestBody MyArtRequest myArtRequest,
-	// 	@RequestHeader(AUTHORIZATION) String token) {
-	//
-	// 	token = getToken(token);
-	// 	if (!tokenProvider.validateToken(token)) {
-	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-	// 	}
-	// 	Long userSeq = tokenProvider.getSubject(token);
-	// 	Art art = artService.deleteArtLike(myArtRequest, userSeq);
-	//
-	// 	return ResponseEntity.status(HttpStatus.OK).body(art);
-	// }
-
 	@PreAuthorize("hasRole('ARTIST')")
 	@PostMapping
 	@ApiOperation(value = "큐레이션 등록")
-	public ResponseEntity<?> registerCuration(@RequestBody CurationRequest curationRequest,
+	public ResponseEntity registerCuration(@RequestBody CurationRequest curationRequest,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		Long userSeq = tokenProvider.getSubject(token);
@@ -95,7 +68,7 @@ public class CurationController {
 	@PreAuthorize("hasRole('ARTIST')")
 	@PutMapping("/{curation_seq}")
 	@ApiOperation(value = "큐레이션 수정")
-	public ResponseEntity<?> updateCuration(@PathVariable long curation_seq,
+	public ResponseEntity updateCuration(@PathVariable long curation_seq,
 		@RequestBody CurationRequest curationRequest,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
@@ -108,12 +81,35 @@ public class CurationController {
 	@PreAuthorize("hasRole('ARTIST')")
 	@DeleteMapping("/{curation_seq}")
 	@ApiOperation(value = "큐레이션 삭제")
-	public ResponseEntity<?> deleteCuration(@PathVariable long curation_seq, @RequestHeader String Authorization) {
+	public ResponseEntity deleteCuration(@PathVariable long curation_seq, @RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		Long userSeq = tokenProvider.getSubject(token);
 
 		curationService.deleteCuration(userSeq, curation_seq);
 		return ResponseEntity.status(HttpStatus.OK).body("delete complete");
+	}
+
+	@ApiOperation(value = "북마크 추가하기", notes = "큐레이션에 북마크를 설정합니다")
+	@PostMapping("/bookmark")
+	public ResponseEntity addCurationBookmark(@RequestBody MyCurationRequest myCurationRequest,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+
+		Long userSeq = tokenProvider.getSubject(token);
+		Curation curation = curationService.addCurationBookmark(myCurationRequest, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(curation);
+	}
+
+	@ApiOperation(value = "큐레이션 북마크 삭제하기", notes = "큐레이션에 북마크를 취소합니다")
+	@DeleteMapping("/bookmark")
+	public ResponseEntity deleteArtLike(@RequestBody MyCurationRequest myCurationRequest,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		Long userSeq = tokenProvider.getSubject(token);
+		Curation curation = curationService.deleteCurationBookmark(myCurationRequest, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(curation);
 	}
 
 }
