@@ -16,11 +16,12 @@ import lombok.Setter;
 
 
 @NoArgsConstructor
-@Data
+@Builder
+@Getter
+@Setter
 public class CurationDataResponse {
 	//큐레이션 리스트에서 필요한 내용만 간략하게 조회
-	@Data
-	@NoArgsConstructor
+
 	public static class CurationSimple {
 		private String userNickname;
 		private String curationName;
@@ -48,7 +49,7 @@ public class CurationDataResponse {
 		}
 	}
 	//큐레이션 하나만 조회
-	@Data
+
 	public static class Curation extends CurationSimple{
 		private String curation_summary;
 

@@ -35,7 +35,7 @@ public class CurationArt {
 	private Long id;
 
 	@Column(name = "is_auction", nullable = false)
-	private boolean isAuction;
+	private int isAuction;
 
 	@Size(max = 255)
 	@Column(name = "auction_people_cnt")
