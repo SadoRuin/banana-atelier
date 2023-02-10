@@ -1,8 +1,6 @@
 import React from 'react'
 import {Link, useLoaderData} from 'react-router-dom'
-
-// import customAxios from '../../_actions/customAxios';
-import axios from 'axios'
+import axiosAuth from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import {YellowBtn , LikeBtn} from "../../components/commons/buttons";
@@ -12,16 +10,7 @@ import './ArtsDetail.css'
 export async function loader ({params}) {
   let artSeq = params.art_seq;
 
-  // customAxios 바뀌기 전까지 쓸 것
-  const TOKEN = localStorage.getItem('token')
-  const artData = await axios.get(`https://i8a108.p.ssafy.io/api/arts/detail/${artSeq}`,
-    {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`
-      }
-    }
-)
-  // const artData = await customAxios().get(`arts/detail/${+artSeq}`)
+  const artData = await axiosAuth.get(`arts/detail/${artSeq}`)
     .then(response => response.data)
     .catch(error => console.log(error))
 

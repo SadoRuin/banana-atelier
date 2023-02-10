@@ -1,13 +1,13 @@
 import React from 'react';
 import {Link, useLoaderData} from 'react-router-dom';
-import customAxios from "../../_actions/customAxios";
+import axiosAuth from "../../_actions/axiosAuth";
 import { logoutCode } from '../../_actions/user_action';
 
 import ArtItem from "../../components/commons/artItem";
 import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
-  const arts = await customAxios().get('/arts/all' )
+  const arts = await axiosAuth().get('/arts/all' )
     .then(response=>response.data)
     .catch(error=>console.log(error))
   return {arts};
@@ -34,7 +34,7 @@ function LandingPage() {
       <button onClick={handleLogOut}>로그아웃</button>
       <div>
         <h1><Link className='link' to="curations">큐레이션🍌</Link></h1>
-        <p>현재 진행중인 큐레이션 -> 진행 예정 큐레이션 보여주기</p>
+        <p>현재 진행중인 큐레이션 {`->`} 진행 예정 큐레이션 보여주기</p>
       </div>
 
       <div>
