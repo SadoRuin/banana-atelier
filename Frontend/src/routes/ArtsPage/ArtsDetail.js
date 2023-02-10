@@ -1,8 +1,5 @@
 import React from 'react'
 import {Link, useLoaderData} from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
-import { faHeart as faHearEmpty } from '@fortawesome/free-regular-svg-icons'
 
 import customAxios from '../../_actions/customAxios';
 import ProfileImg from "../../components/commons/ProfileImg";
