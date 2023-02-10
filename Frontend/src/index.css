@@ -16,36 +16,51 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 /* 컨테이너 양 옆 여백 */
 .content__container {
   margin-left: 100px;
   margin-right: 100px;
   padding: 0;
 }
-@media (max-width: 992px) {
-  .content__container {
-    margin-left: 30px;
-    margin-right: 30px;
-  }
-}
 
-/* 반응형 웹페이지용 */
+/* 반응형 웹페이지용 그리드 모음 */
+/* 컴포넌트용 그리드 */
 .grid__main-components {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
-@media (max-width: 992px) {
-  .grid__main-components {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-}
+/* 디테일 페이지 그리드 */
 .grid__detail-page {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+}
+/* 마이페이지 그리드 */
+.grid_my-page-layout {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+@media (max-width: 1024px) {
+  /* 여백 */
+  .content__container {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  /* 반응형 그리드 */
+  .grid__main-components {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .grid_my-page-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
 }
 
 /* Nav바를 바닥에 고정하기 위함 */
