@@ -43,8 +43,6 @@ function ArtsDetail() {
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
-        {/* 작품 사진 */}
-        {/*<img src={artData.art_img} alt="작품 이미지" className="art-img" />*/}
         <img
           src={`${getArtImage(artData.artImg, artData.userSeq)}`}
           alt="작품 이미지"
@@ -55,8 +53,8 @@ function ArtsDetail() {
         <div className="art-detail_content">
           <div className="art-detail__main-info">
             <h1>{artData.artName}</h1>
-            <Link className="artist_profile link" to={`../${artData.nickname}/arts`}>
-              <ProfileImg height="30px" width="30px" url={artData.profileImg} artistSeq={artData.userSeq} />
+            <Link className="artist_profile link" to={`../${artData.nickname}@${artData.userSeq}`}>
+              <ProfileImg height="30px" width="30px" url={artData.profileImg} usersSeq={artData.userSeq} />
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
             <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>

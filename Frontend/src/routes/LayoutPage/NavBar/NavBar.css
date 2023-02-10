@@ -7,7 +7,7 @@
     padding: 10px 100px;
     box-sizing: border-box;
 }
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
     #nav_bar {
         padding: 10px 30px;
     }

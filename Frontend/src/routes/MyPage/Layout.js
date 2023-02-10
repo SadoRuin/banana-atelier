@@ -1,15 +1,14 @@
 import React from 'react';
 import {Outlet, NavLink, Form, useLoaderData} from "react-router-dom";
-import axiosAuth from '../../_actions/axiosAuth';
+import axiosAuth from "../../_actions/axiosAuth";
 
 import ProfileImg from "../../components/commons/ProfileImg";
 import './Layout.css'
 
 export async function loader ({params}) {
   const [nickname, userSeq] = params.nickname_user_seq.split('@');
-  // const TOKEN = localStorage.getItem('token')
+
   const userData = await axiosAuth.get(`users/profile/${userSeq}`)
-    // const artData = await customAxios().get(`arts/detail/${+artSeq}`)
     .then(response => response.data)
     .catch(error => console.log(error))
 
@@ -22,12 +21,12 @@ export default function Layout() {
   console.log(userData);
 
   const isMyPage = nickname === localStorage.getItem('nickname')
-  const isArtist = userData.role === 'USER_ARTIST'
+  const isArtist = userData.role === 'ROLE_ARTIST'
 
   return (
     // 얘는 Mypage의 layout임!!! 마이페이지 어디를 가든 변하지 않고 항상 있어야 함 (==사이드바랑 위의 메뉴탭 4개)
-    <div id="my_page__layout">
-      <div id="my_page__profile">
+    <div className="grid_my-page-layout">
+      <div className="my-page__side">
         <ProfileImg url={userData.profileImg} userSeq={userSeq} />
         <h3 id="artist_name">{userData.nickname}</h3>
         <div id="introduction">한 줄 자기소개.. 아직 구현 안된듯</div>
@@ -54,7 +53,7 @@ export default function Layout() {
           }
       </div>
 
-      <div id="my_page__content">
+      <div className="my-page__content">
         <nav>
           <NavLink to='arts'>작품</NavLink>
 
