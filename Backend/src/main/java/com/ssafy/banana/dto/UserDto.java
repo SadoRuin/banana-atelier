@@ -6,10 +6,10 @@ import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * A DTO for the {@link com.ssafy.banana.db.entity.User} entity
@@ -18,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 public class UserDto implements Serializable {
 	private String email;
 	private String nickname;
