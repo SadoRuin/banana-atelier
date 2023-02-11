@@ -1,40 +1,45 @@
 import React, { useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom';
-import { axiosAuth } from '../../_actions/axiosAuth'
+import {axiosAuth} from '../../_actions/axiosAuth'
 
-import {TabMenu, TabContent} from "../../components/commons/tabMenu";
+import TabMenuComponent, {TabMenu, TabContent } from "../../components/commons/TabMenuComponent";
 
 export async function loader() {
-  const curationsList = await axiosAuth.get(`curations/main`)
+  const curationsInitList = await axiosAuth.get(`curations/init`)
     .then(response=>response.data)
     .catch(error=>console.log(error))
-  console.log(curationsList)
-  return curationsList || null;
+  const curationsOnList = await axiosAuth.get('curations/on')
+    .then(response=>response.data)
+    .catch(error=>console.log(error))
+  const curationsEndList = await axiosAuth.get('curations/end')
+    .then(response=>response.data)
+    .catch(error=>console.log(error))
+  return { curationsInitList, curationsOnList, curationsEndList }
 }
 
 function CurationsMain() {
-  const curationsList = useLoaderData();
+  const { curationsInitList, curationsOnList, curationsEndList } = useLoaderData();
 
-  const upcommingCurationsList = [];
-  const onAirCurationsList = [];
-  const endCurationsList = [];
-  curationsList.map((curation) => {
-    if (curation.curationStatus === 'INIT') {
-      return upcommingCurationsList.push(curation)
-    }
-    else if (curation.curationStatus === 'ONAIR') {
-      return onAirCurationsList.push(curation)
-    }
-    return endCurationsList.push(curation)
-  })
+  // const upcommingCurationsList = [];
+  // const onAirCurationsList = [];
+  // const endCurationsList = [];
+  // curationsList.map((curation) => {
+  //   if (curation.curationStatus === 'INIT') {
+  //     return upcommingCurationsList.push(curation)
+  //   }
+  //   else if (curation.curationStatus === 'ONAIR') {
+  //     return onAirCurationsList.push(curation)
+  //   }
+  //   return endCurationsList.push(curation)
+  // })
 
   const [onAirIndex, setOnAirIndex] = useState(0);
-  const [upcommingIndex, setUpcommingIndex] = useState(0);
+  const [initIndex, setInitIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(0);
 
   const onAirCurations = [
-    { name: '북마크를 많이 받은 순', content: [...onAirCurationsList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
-    { name: '최신순', content: [...onAirCurationsList]
+    { name: '북마크를 많이 받은 순', content: [...curationsOnList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
+    { name: '최신순', content: [...curationsOnList]
         .sort((a, b) =>
           b.curationStartTime[0] - a.curationStartTime[0] ||
           b.curationStartTime[1] - a.curationStartTime[1] ||
@@ -42,7 +47,7 @@ function CurationsMain() {
           b.curationStartTime[3] - a.curationStartTime[3] ||
           b.curationStartTime[4] - a.curationStartTime[4] ||
           b.curationStartTime[5] - a.curationStartTime[5] )},
-    { name: '오래된 순', content: [...onAirCurationsList]
+    { name: '오래된 순', content: [...curationsOnList]
         .sort((a, b) =>
           a.curationStartTime[0] - b.curationStartTime[0] ||
           a.curationStartTime[1] - b.curationStartTime[1] ||
@@ -51,9 +56,9 @@ function CurationsMain() {
           a.curationStartTime[4] - b.curationStartTime[4] ||
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
-  const upcommingCurations = [
-    { name: '북마크를 많이 받은 순', content: [...upcommingCurationsList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
-    { name: '최신순', content: [...upcommingCurationsList]
+  const initCurations = [
+    { name: '북마크를 많이 받은 순', content: [...curationsInitList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
+    { name: '최신순', content: [...curationsInitList]
         .sort((a, b) =>
           b.curationStartTime[0] - a.curationStartTime[0] ||
           b.curationStartTime[1] - a.curationStartTime[1] ||
@@ -61,7 +66,7 @@ function CurationsMain() {
           b.curationStartTime[3] - a.curationStartTime[3] ||
           b.curationStartTime[4] - a.curationStartTime[4] ||
           b.curationStartTime[5] - a.curationStartTime[5] )},
-    { name: '오래된 순', content: [...upcommingCurationsList]
+    { name: '오래된 순', content: [...curationsInitList]
         .sort((a, b) =>
           a.curationStartTime[0] - b.curationStartTime[0] ||
           a.curationStartTime[1] - b.curationStartTime[1] ||
@@ -71,8 +76,8 @@ function CurationsMain() {
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
   const endCurations = [
-    { name: '북마크를 많이 받은 순', content: [...endCurationsList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
-    { name: '최신순', content: [...endCurationsList]
+    { name: '북마크를 많이 받은 순', content: [...curationsEndList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
+    { name: '최신순', content: [...curationsEndList]
         .sort((a, b) =>
           b.curationStartTime[0] - a.curationStartTime[0] ||
           b.curationStartTime[1] - a.curationStartTime[1] ||
@@ -80,7 +85,7 @@ function CurationsMain() {
           b.curationStartTime[3] - a.curationStartTime[3] ||
           b.curationStartTime[4] - a.curationStartTime[4] ||
           b.curationStartTime[5] - a.curationStartTime[5] )},
-    { name: '오래된 순', content: [...endCurationsList]
+    { name: '오래된 순', content: [...curationsEndList]
         .sort((a, b) =>
           a.curationStartTime[0] - b.curationStartTime[0] ||
           a.curationStartTime[1] - b.curationStartTime[1] ||
@@ -90,8 +95,15 @@ function CurationsMain() {
           a.curationStartTime[5] - b.curationStartTime[5] )},
   ];
 
+
+
   return (
     <div>
+
+      <div>
+        <h2>테스트</h2>
+        <TabMenuComponent menuData={onAirCurations} onAirIndex={onAirIndex} setOnAirIndex={setOnAirIndex} />
+      </div>
 
       <div>
         <Link to="on_air" className="link">
@@ -124,17 +136,17 @@ function CurationsMain() {
         </Link>
         <div>
           <TabMenu>
-            { upcommingCurations.map((tab, index) =>
+            { initCurations.map((tab, index) =>
               <li
-                className={index === upcommingIndex ? "submenu focused" : "submenu" }
-                onClick={ () => setUpcommingIndex(index) }
+                className={index === initIndex ? "submenu focused" : "submenu" }
+                onClick={ () => setInitIndex(index) }
               >
                 {tab.name}
               </li>
             )}
           </TabMenu>
           <TabContent>
-            { upcommingCurations[upcommingIndex].content.map((curation) =>
+            { initCurations[initIndex].content.map((curation) =>
               <div>
                 {curation.curationName} | {curation.curationStartTime} | {curation.curationBmCount}
               </div>
