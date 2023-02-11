@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom';
-import axiosCustom from '../../_actions/axiosCustom'
+import axiosAuth from '../../_actions/axiosAuth'
 
 import {TabMenu, TabContent} from "../../components/commons/tabMenu";
 
-export function loader() {
-  const curationsList = axiosCustom.get(`curations/main`)
+export async function loader() {
+  const curationsList = await axiosAuth.get(`curations/main`)
     .then(response=>response.data)
     .catch(error=>console.log(error))
-  return curationsList;
+  console.log(curationsList)
+  return curationsList || null;
 }
 
 function CurationsMain() {
