@@ -41,9 +41,17 @@ public class CurationService {
 	private final UserRepository userRepository;
 	private final CurationBookmarkRepository curationBookmarkRepository;
 
-	//큐레이션 전체조회
+	//큐레이션 상태별 조회
 	public List<CurationDataResponse.CurationSimple> getCurationList(CurationStatus curationStatus) {
 		return curationRepository.findAllByCurationStatus(curationStatus)
+			.stream()
+			.map(CurationDataResponse.CurationSimple::new)
+			.collect(Collectors.toList());
+	}
+
+	//특정 사용자의 큐레이션 조회
+	public List<CurationDataResponse.CurationSimple> getUSerCurationList(Long userSeq) {
+		return curationRepository.findAllByArtist_Id(userSeq)
 			.stream()
 			.map(CurationDataResponse.CurationSimple::new)
 			.collect(Collectors.toList());

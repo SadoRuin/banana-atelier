@@ -59,6 +59,14 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
 
+	@GetMapping("/{user_seq}")
+	@ApiOperation(value = "특정 사용자의 큐레이션 리스트")
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getUserCurationList(
+		@PathVariable("user_seq") long user_seq) {
+		List<CurationDataResponse.CurationSimple> curationList = curationService.getUSerCurationList(user_seq);
+		return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	}
+
 	@GetMapping("/details/{curation_seq}")
 	@ApiOperation(value = "큐레이션 디테일 조회")
 	public ResponseEntity<CurationDataResponse.Curation> getCuration(@PathVariable("curation_seq") long curation_seq) {
