@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom';
-import axiosAuth from '../../_actions/axiosAuth'
+import { axiosAuth } from '../../_actions/axiosAuth'
 
 import {TabMenu, TabContent} from "../../components/commons/tabMenu";
 
