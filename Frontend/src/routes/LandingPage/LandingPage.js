@@ -23,6 +23,7 @@ function LandingPage() {
     localStorage.removeItem("nickname")
     localStorage.removeItem("profileImg")
     localStorage.removeItem("role")
+    localStorage.removeItem("userSeq")
     dispatch(logoutCode())
     console.log("로그인 했나요?", loginWonder)
   }
