@@ -19,6 +19,7 @@ import com.ssafy.banana.db.repository.MyArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.ArtistDto;
 import com.ssafy.banana.dto.DownloladFileDto;
+import com.ssafy.banana.dto.UserBoxDto;
 import com.ssafy.banana.dto.UserDto;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.request.SignupRequest;
@@ -69,31 +70,31 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserDto getUserInfo(long id) {
+	public UserBoxDto getUserInfo(long id) {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (user.getRole().equals("ROLE_ARTIST")) {
+		if (user.getRole() == Role.ROLE_ARTIST) {
 			Artist artist = artistRepository.findById(user.getId())
 				.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
-			return ArtistDto.from(artist);
+			return new UserBoxDto<>(ArtistDto.from(artist));
 		} else {
-			return UserDto.from(user);
+			return new UserBoxDto<>(UserDto.from(user));
 		}
 	}
 
 	@Transactional(readOnly = true)
-	public UserDto getMyUserInfo() {
+	public UserBoxDto getMyUserInfo() {
 		User user = securityUtil.getCurrentUsername()
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (user.getRole().equals("ROLE_ARTIST")) {
+		if (user.getRole() == Role.ROLE_ARTIST) {
 			Artist artist = artistRepository.findById(user.getId())
 				.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
-			return ArtistDto.from(artist);
+			return new UserBoxDto<>(ArtistDto.from(artist));
 		} else {
-			return UserDto.from(user);
+			return new UserBoxDto<>(UserDto.from(user));
 		}
 	}
 

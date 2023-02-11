@@ -7,6 +7,8 @@ import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.exception.CustomException;
+import com.ssafy.banana.exception.CustomExceptionType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,12 +20,21 @@ public class ArtistService {
 	private final UserRepository userRepository;
 
 	public Artist checkArtist(Long userSeq) {
-		User user = userRepository.findById(userSeq).orElse(null);
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 		Artist artist = artistRepository.findById(userSeq).orElse(null);
 		if (user.getRole() == Role.ROLE_USER || artist == null) {
-			artist = new Artist();
+			String intro = "안녕하세요. 작가 " + user.getNickname() + "입니다.";
+			artist = Artist.builder()
+				.user(user)
+				.instagramLink("")
+				.twitterLink("")
+				.youtubeLink("")
+				.blogLink("")
+				.artistIntro(intro)
+				.artistCommissionAvg((double)0)
+				.build();
 			user.setRole(Role.ROLE_ARTIST);
-			artist.setUser(user);
 			userRepository.save(user);
 			artistRepository.save(artist);
 			return artist;

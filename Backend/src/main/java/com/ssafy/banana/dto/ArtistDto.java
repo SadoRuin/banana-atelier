@@ -9,14 +9,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 /**
  * A DTO for the {@link Artist} entity
  */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 @Accessors(chain = true)
 public class ArtistDto extends UserDto implements Serializable {
 	private String instagramLink;
@@ -28,11 +31,16 @@ public class ArtistDto extends UserDto implements Serializable {
 		if (artist == null)
 			return null;
 
-		ArtistDto artistDto = (ArtistDto)UserDto.from(artist.getUser());
-
-		return artistDto.setInstagramLink(artist.getInstagramLink())
-			.setTwitterLink(artistDto.getTwitterLink())
-			.setBlogLink(artistDto.getBlogLink())
-			.setArtistIntro(artistDto.getArtistIntro());
+		return ArtistDto.builder()
+			.email(artist.getUser().getEmail())
+			.nickname(artist.getUser().getNickname())
+			.profileImg(artist.getUser().getProfileImg())
+			.artistLikeCount(artist.getUser().getArtistLikeCount())
+			.role(artist.getUser().getRole())
+			.instagramLink(artist.getInstagramLink())
+			.twitterLink(artist.getTwitterLink())
+			.blogLink(artist.getBlogLink())
+			.artistIntro(artist.getArtistIntro())
+			.build();
 	}
 }

@@ -110,7 +110,7 @@ public class UserController {
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
 	public ResponseEntity getMyUserInfo() {
-		return ResponseEntity.ok(userService.getMyUserInfo());
+		return ResponseEntity.ok(userService.getMyUserInfo().getT());
 	}
 
 	@GetMapping("/profile/{userSeq}")
@@ -121,7 +121,7 @@ public class UserController {
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
 	public ResponseEntity getUserInfo(@PathVariable long userSeq) {
-		return ResponseEntity.ok(userService.getUserInfo(userSeq));
+		return ResponseEntity.ok(userService.getUserInfo(userSeq).getT());
 	}
 
 	@PatchMapping("/update")
