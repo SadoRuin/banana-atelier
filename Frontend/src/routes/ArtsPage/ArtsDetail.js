@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link, useLoaderData} from 'react-router-dom'
+import {Link, useLoaderData, redirect } from 'react-router-dom'
 import { axiosAuth } from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
@@ -13,14 +13,17 @@ export async function loader ({params}) {
   
   const artData = await axiosAuth.get(`arts/detail/${artSeq}`)
   .then(response => response.data)
-  .catch(error => console.log(error))
+  .catch(error => error.response.status)
   
-  // console.log(artData);
-  if (!artData) {
+  console.log(artData);
+  if (artData === 404) {
     throw new Response("", {
       status: 404,
-      statusText: "Not Found",
+      statusText: "작품을 찾을 수 없습니다!",
     });
+  }
+  else if (artData === 401) {
+    return redirect('/login');
   }
   return artData;
 }
