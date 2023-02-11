@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -37,9 +36,11 @@ public class CurationArt {
 	@Column(name = "is_auction", nullable = false)
 	private int isAuction;
 
-	@Size(max = 255)
+	@Column(name = "auction_gap", nullable = false)
+	private int auctionGap;
+
 	@Column(name = "auction_people_cnt")
-	private String auctionPeopleCnt;
+	private int auctionPeopleCnt;
 
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

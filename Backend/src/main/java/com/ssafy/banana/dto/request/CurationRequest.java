@@ -21,6 +21,5 @@ public class CurationRequest implements Serializable {
 	private String curationName;
 	private String curationSummary;
 	private Long artistSeq;
-	private int isAuction;
-	private List<Long> artSeqList;
+	private List<CurationArtRequest> curationArtList;
 }
