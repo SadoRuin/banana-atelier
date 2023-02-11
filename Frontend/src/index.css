@@ -94,7 +94,7 @@ body {
 /* OOO 작가 할 때 작가 이름 작게 보이게 할 것 */
 .jakka {
   color: #656565;
-  font-size: 13px;
+  font-size: 13px !important;
   margin-left: 2px;
 }
 /* 업로드 날짜 */
