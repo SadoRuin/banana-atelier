@@ -16,6 +16,15 @@ if (diffTime < 30) {
         localStorage.setItem("token", response.data.token)
         localStorage.setItem("expiration", response.data.expiration)
     })
+    .catch(error => {
+        console.log(error)
+        localStorage.removeItem("token")
+        localStorage.removeItem("expiration")
+        localStorage.removeItem("nickname")
+        localStorage.removeItem("profileImg")
+        localStorage.removeItem("role")
+        localStorage.removeItem("userSeq")
+    })
 }
 const Token = localStorage.getItem("token")
 
