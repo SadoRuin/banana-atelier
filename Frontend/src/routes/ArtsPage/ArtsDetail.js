@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link, useLoaderData, redirect } from 'react-router-dom'
-import axiosAuth from '../../_actions/axiosAuth';
+import { axiosAuth } from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import {YellowBtn , LikeBtn} from "../../components/commons/buttons";
@@ -77,7 +77,9 @@ function ArtsDetail() {
             <div className="art-detail__btns">
               {/* 좋아요 누른 버튼이랑 안누른 버튼 */}
               <LikeBtn isLike={true} />
-              <a href={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`}><YellowBtn>다운로드</YellowBtn></a>
+              <form action={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`} method="get">
+                <YellowBtn type="submit">다운로드</YellowBtn>
+              </form>
             </div>
           </div>
         </div>
