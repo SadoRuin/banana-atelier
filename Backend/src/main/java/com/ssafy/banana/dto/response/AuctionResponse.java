@@ -7,16 +7,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Builder
 @Accessors(chain = true)
 public class AuctionResponse {
-	
+
 	@JsonProperty(value = "userSeq")
 	private Long artistSeq;
 	@JsonProperty(value = "nickname")
@@ -25,6 +27,7 @@ public class AuctionResponse {
 	private String artName;
 	private String artDescription;
 	private int auctionStartPrice;
+	private int auctionCurrentPrice;
 	private int auctionBidPrice;
-	private String auctionHost;
+	private String message;
 }

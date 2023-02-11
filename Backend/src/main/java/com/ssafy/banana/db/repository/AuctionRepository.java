@@ -6,5 +6,5 @@ import com.ssafy.banana.db.entity.Auction;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
-	Auction findByCurationArt_Id(Long id);
+	Auction findByCurationArt_IdOrderByCurationArt_Id(Long id);
 }
