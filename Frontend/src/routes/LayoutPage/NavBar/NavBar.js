@@ -14,7 +14,7 @@ function NavBar() {
 
   const userSeq = localStorage.getItem('userSeq');
   const profileImg = localStorage.getItem('profileImg');
-  // const nickname = localStorage.getItem('nickname')
+  const nickname = localStorage.getItem('nickname')
   const navigate = useNavigate();
   const loginWonder = useSelector(state => state.user.login_status);
 
@@ -24,7 +24,7 @@ function NavBar() {
   if (loginWonder) {
     content =
       <div className="right-menu-bar">
-        <Link className="link link-bold" to={`/mypage/arts`}><YellowBtn>나의 아뜰리에</YellowBtn></Link>
+        <Link className="link link-bold" to={`${nickname}@${userSeq}`}><YellowBtn>나의 아뜰리에</YellowBtn></Link>
         <div style={{ color: '#F9D923', fontSize: '20px' }}><FontAwesomeIcon icon={ faBell }/></div>
         <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq}/>
       </div>
