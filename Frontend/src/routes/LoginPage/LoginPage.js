@@ -60,6 +60,7 @@ export default function LoginPage(props) {
         localStorage.setItem("nickname", response.payload.data.nickname)
         localStorage.setItem("role", response.payload.data.role)
         localStorage.setItem("profileImg", response.payload.data.profileImg)
+        localStorage.setItem("userSeq", response.payload.data.userSeq)
         let token = localStorage.getItem("token")
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         navigate('/')
