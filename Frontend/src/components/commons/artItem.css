@@ -40,6 +40,12 @@
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0) 50%);
     color: white;
 }
+.hidden > button {
+    visibility: hidden;
+}
+.hidden:hover > button {
+    visibility: visible;
+}
 
 
 .art-info__container {
@@ -58,10 +64,13 @@
     flex-direction: row;
     align-items: center;
 }
-.art-info__artist * {
+.art-info__artist > * {
     display: flex;
     flex-direction: row;
     align-items: center;
+    font-size: 14px;
+}
+.art-info__artist > div:first-child {
     margin-right: 7px;
 }
 

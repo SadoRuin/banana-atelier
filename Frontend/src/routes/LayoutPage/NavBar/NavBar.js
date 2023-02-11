@@ -12,6 +12,9 @@ import logo from '../../../assets/글씨X_470.png'
 
 function NavBar() {
 
+  const userSeq = localStorage.getItem('userSeq');
+  const profileImg = localStorage.getItem('profileImg');
+  const nickname = localStorage.getItem('nickname')
   const navigate = useNavigate();
   const loginWonder = useSelector(state => state.user.login_status);
 
@@ -21,9 +24,9 @@ function NavBar() {
   if (loginWonder) {
     content =
       <div className="right-menu-bar">
-        <Link className="link link-bold" to={`${localStorage.getItem('nickname')}/arts`}><YellowBtn>나의 아뜰리에</YellowBtn></Link>
+        <Link className="link link-bold" to={`${nickname}@${userSeq}`}><YellowBtn>나의 아뜰리에</YellowBtn></Link>
         <div style={{ color: '#F9D923', fontSize: '20px' }}><FontAwesomeIcon icon={ faBell }/></div>
-        <ProfileImg height="30px" width="30px" />
+        <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq}/>
       </div>
   } else if (!loginWonder) {
     content =
@@ -36,7 +39,7 @@ function NavBar() {
     <nav id="nav_bar">
 
       <div className="left-menu-bar">
-        <img src={logo} alt="logo" style={{cursor: 'pointer'}} onClick={event => { navigate("/")}} height='50px' className="logo"/>
+        <img src={logo} alt="logo" style={{cursor: 'pointer'}} onClick={ navigate("/")} height='50px' className="logo"/>
         <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/arts">작품</NavLink>
         <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/curations">큐레이션</NavLink>
         <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/commissions">커미션</NavLink>
