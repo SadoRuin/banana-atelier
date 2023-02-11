@@ -15,6 +15,7 @@ import com.ssafy.banana.db.entity.AuctionJoinId;
 import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.entity.CurationArt;
 import com.ssafy.banana.db.entity.User;
+import com.ssafy.banana.db.entity.enums.AuctionStatus;
 import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.AuctionBidLogRepository;
 import com.ssafy.banana.db.repository.AuctionJoinRepository;
@@ -73,18 +74,37 @@ public class AuctionService {
 		return auctionJoin;
 	}
 
-	public void createAuction(Long curationArtSeq) {
+	@Transactional
+	public int createAuction(Long curationSeq) {
 
-		CurationArt curationArt = curationArtRepository.findById(curationArtSeq)
+		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+		List<CurationArt> curationArtList = curationArtRepository.findByCuration_Id(curation.getId());
+		Auction auction = null;
 
-		Auction auction = Auction.builder()
-			.id(curationArtSeq)
-			.curationArt(curationArt)
-			// .auctionStartPrice(curationArt.isAuction())
-			// .auctionGap(curationArt.getAuctionGap())
-			.build();
-		auctionRepository.save(auction);
+		int artCount = 0;
+		for (int i = 0; i < curationArtList.size(); i++) {
+			CurationArt curationArt = curationArtList.get(i);
+			if (curationArt.getIsAuction() == 0) {
+				continue;
+			}
+			auction = auctionRepository.findById(curationArt.getId()).orElse(null);
+
+			if (auction == null) {
+				auction = Auction.builder()
+					.id(curationArt.getId())
+					.curationArt(curationArt)
+					.auctionStartPrice(curationArt.getIsAuction())
+					.auctionGap(500)
+					.auctionEndPrice(curationArt.getIsAuction())
+					.auctionStatus(AuctionStatus.INIT)
+					.user(curation.getArtist().getUser())
+					.build();
+				auctionRepository.save(auction);
+				artCount++;
+			}
+		}
+		return artCount;
 	}
 
 	public List<AuctionResponse> getAuctionInfo(Long curationSeq) {
