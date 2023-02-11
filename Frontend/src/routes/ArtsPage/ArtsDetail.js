@@ -47,7 +47,7 @@ function ArtsDetail() {
           <div className="art-detail__main-info">
             <h1>{artData.artName}</h1>
             <Link className="artist_profile link" to={`../${artData.nickname}@${artData.userSeq}`}>
-              <ProfileImg height="30px" width="30px" url={artData.profileImg} usersSeq={artData.userSeq} />
+              <ProfileImg height="30px" width="30px" url={artData.profileImg} userSeq={artData.userSeq} />
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
             <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>

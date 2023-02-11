@@ -1,11 +1,11 @@
 import React from 'react';
-import { Form, useNavigate } from 'react-router-dom'
+import { Form, useNavigate, redirect } from 'react-router-dom'
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
 
-export async function action({request}) {
+export async function action({request, params}) {
   const formData = await request.formData();
-  const updates = Object.fromEntries(formData);
-  console.log(updates);
+  // const updates = Object.fromEntries(formData);
+  // console.log(updates);
   // 이렇게 하면 내가 입력한 정보가 객체로 잘 넘어오거든?
   // {
   //   artCategorySeq : "3"
@@ -16,8 +16,25 @@ export async function action({request}) {
   // 넘어오는게 다 문자열이라 숫자로 바꿀건 바꾸고...
   // 이렇게 가져온 정보를 어떻게 해서 어떻게 axios로 보내야 할지 모르겠어!!
 
+
+  // 못하겠어욘 ㅠㅠ
+  // postman 도 안되고...모르겠어요
   axiosReissue();
-  await axiosAuth('arts');
+  await axiosAuth.post('arts', {
+            artFile: formData.get("artFile"),
+            artRequest: {
+              "artCategorySeq": +formData.get("artCategorySeq"),
+              "artDescription": formData.get("artDescription"),
+              "artName": formData.get("artName")
+          }
+  })
+    .then(() => {
+      const [nickname, userSeq] = params.nickname_user_seq;
+      redirect(`/${nickname}@${userSeq}`)
+    })
+    .catch(error => console.log(error))
+
+  return null
 }
 
 function Upload() {

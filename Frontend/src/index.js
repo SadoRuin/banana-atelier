@@ -53,6 +53,7 @@ import { loader as myPageLoader } from "./routes/MyPage/Layout"
 // 작품탭
 // import ArtsRoot from "./routes/MyPage/ArtsRoot"
 import ArtsMyPage from "./routes/MyPage/ArtsMyPage";
+import { loader as ArtsMyPageLoader } from "./routes/MyPage/ArtsMyPage";
 // import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
 // import ArtsIndex from "./routes/MyPage/ArtsIndex";
 // import ArtsMyCollections from "./routes/MyPage/ArtsMyCollections";
@@ -131,6 +132,7 @@ const router = createBrowserRouter(
             <Route
               index
               element={<ArtsMyPage />}
+              loader={ArtsMyPageLoader}
             >
               {/*<Route index element={ <ArtsIndex /> }>*/}
               {/*  /!* 대표작품 설정 페이지 들어갈거임 *!/*/}

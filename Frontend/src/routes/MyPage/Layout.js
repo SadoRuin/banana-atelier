@@ -18,7 +18,7 @@ export async function loader ({params}) {
 
 export default function Layout() {
   const [nickname, userSeq, userData] = useLoaderData();
-
+  console.log(userData);
   const isMyPage = nickname === localStorage.getItem('nickname')
   const isArtist = userData.role === 'ROLE_ARTIST'
 
@@ -54,7 +54,7 @@ export default function Layout() {
 
       <div className="my-page__content">
         <nav>
-          <NavLink to='.' className={({isActive}) => isActive? 'link nav-active' : 'link' } >작품</NavLink>
+          <NavLink to='.' className={({isActive}) => isActive? 'link nav-active' : 'link' } end>작품</NavLink>
 
           <NavLink to={ ( isMyPage && !isArtist) ? 'notices/following' : 'notices/mine'  } className={({isActive}) => isActive? 'link nav-active' : 'link' } >공지사항</NavLink>
           <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' } className={({isActive}) => isActive? 'link nav-active' : 'link' } >큐레이션</NavLink>
