@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.CurationService;
 import com.ssafy.banana.db.entity.Curation;
-import com.ssafy.banana.db.repository.CurationArtRepository;
+import com.ssafy.banana.db.entity.enums.CurationStatus;
 import com.ssafy.banana.dto.request.CurationRequest;
 import com.ssafy.banana.dto.request.MyCurationRequest;
 import com.ssafy.banana.dto.response.CurationDataResponse;
@@ -37,12 +37,25 @@ public class CurationController {
 
 	private static final String AUTHORIZATION = "Authorization";
 	private final TokenProvider tokenProvider;
-	private final CurationArtRepository curationArtService;
 
-	@GetMapping("/main")
-	@ApiOperation(value = "큐레이션 리스트")
-	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getList() {
-		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationList();
+	@GetMapping("/init")
+	@ApiOperation(value = "진행예정 큐레이션 리스트")
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getInitList() {
+		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationList(CurationStatus.INIT);
+		return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	}
+
+	@GetMapping("/on")
+	@ApiOperation(value = "진행중인 큐레이션 리스트")
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getOnList() {
+		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationList(CurationStatus.ON);
+		return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	}
+
+	@GetMapping("/end")
+	@ApiOperation(value = "종료된 큐레이션 리스트")
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getEndList() {
+		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationList(CurationStatus.END);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
 

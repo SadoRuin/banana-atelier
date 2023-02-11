@@ -42,8 +42,8 @@ public class CurationService {
 	private final CurationBookmarkRepository curationBookmarkRepository;
 
 	//큐레이션 전체조회
-	public List<CurationDataResponse.CurationSimple> getCurationList() {
-		return curationRepository.findAll()
+	public List<CurationDataResponse.CurationSimple> getCurationList(CurationStatus curationStatus) {
+		return curationRepository.findAllByCurationStatus(curationStatus)
 			.stream()
 			.map(CurationDataResponse.CurationSimple::new)
 			.collect(Collectors.toList());
