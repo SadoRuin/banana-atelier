@@ -7,7 +7,8 @@ import { applyMiddleware, createStore } from 'redux';
 import promiseMiddleware from 'redux-promise'
 import ReduxThunk from 'redux-thunk'
 import rootReducer from './_reducers'
-
+import { persistStore } from "redux-persist"
+import { PersistGate } from "redux-persist/integration/react"
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
 
 // 로그인 & 회원가입
@@ -181,9 +182,10 @@ const router = createBrowserRouter(
   )
 )
 let store = createStoreWithMiddleware(rootReducer,
-  window.__REDUX_DEVTOOLS_EXTIONSION__ &&
-  window.__REDUX_DEVTOOLS_EXTIONSION__()
+  window.__REDUX_DEVTOOLS_EXTENSION__ &&
+  window.__REDUX_DEVTOOLS_EXTENSION__()
   )
+let persistor = persistStore(store)
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -192,7 +194,9 @@ root.render(
     <Provider
       store = {store}
     >
-      <RouterProvider router={router} />
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );
