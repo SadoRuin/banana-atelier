@@ -1,10 +1,11 @@
 package com.ssafy.banana.api.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import static java.time.LocalDateTime.*;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.Auction;
@@ -39,14 +40,18 @@ public class AuctionService {
 	private final CurationRepository curationRepository;
 	private final AuctionBidLogRepository auctionBidLogRepository;
 
+	@Transactional
 	public AuctionJoin joinAuction(Long curationArtSeq, Long userSeq) {
 
 		User user = userRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		CurationArt curationArt = curationArtRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		LocalDateTime auctionJoinTime = LocalDateTime.now();
 
+		// 본인 작품은 경매 참여 불가
+		if (curationArt.getCuration().getArtist().getId() == userSeq) {
+			return null;
+		}
 		// 경매 참가 신청 추가
 		AuctionJoinId auctionJoinId = AuctionJoinId.builder()
 			.userSeq(user.getId())
@@ -56,13 +61,13 @@ public class AuctionService {
 			.id(auctionJoinId)
 			.user(user)
 			.curationArt(curationArt)
-			.auctionJoinTime(auctionJoinTime)
+			.auctionJoinTime(now())
 			.build();
 		auctionJoinRepository.save(auctionJoin);
 
-		// 큐레이션 등록 작품 경매 신청자 수 기록
+		// 큐레이션 등록 작품 - 경매 신청자 수 기록
 		int auctionPeopleCount = auctionJoinRepository.countAuctionJoinPeople(curationArtSeq);
-		curationArt.setAuctionPeopleCnt(auctionPeopleCount + "");
+		curationArt.setAuctionPeopleCnt(auctionPeopleCount);
 		curationArtRepository.save(curationArt);
 
 		return auctionJoin;

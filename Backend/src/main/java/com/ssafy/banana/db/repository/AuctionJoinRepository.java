@@ -9,8 +9,8 @@ import com.ssafy.banana.db.entity.AuctionJoin;
 @Repository
 public interface AuctionJoinRepository extends JpaRepository<AuctionJoin, Long> {
 
-	@Query("select count(aj.id)"
-		+ "from CurationArt ca, AuctionJoin aj "
+	@Query("select count(aj) "
+		+ "from AuctionJoin aj "
 		+ "where aj.curationArt.id = :curationArtSeq")
 	int countAuctionJoinPeople(Long curationArtSeq);
 }

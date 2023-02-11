@@ -31,7 +31,7 @@ public class AuctionController {
 	private final AuctionService auctionService;
 
 	@ApiOperation(value = "경매 참가 신청", notes = "해당 큐레이션 작품에 대해 경매 참가 신청합니다")
-	@PostMapping("/{curationArtSeq}")
+	@PostMapping("/join/{curationArtSeq}")
 	public ResponseEntity joinAuction(
 		@PathVariable Long curationArtSeq,
 		@RequestHeader String Authorization) {
@@ -39,7 +39,6 @@ public class AuctionController {
 		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
 		AuctionJoin auctionJoin = auctionService.joinAuction(curationArtSeq, userSeq);
-		auctionService.createAuction(curationArtSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(auctionJoin);
 	}
