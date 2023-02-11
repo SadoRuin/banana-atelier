@@ -12,7 +12,7 @@ import {
 
 
 export function loginUser(dataTosubmit) {
-    console.log("dataTosubmit", dataTosubmit)
+    // console.log("dataTosubmit", dataTosubmit)
     const request = axios.post('https://i8a108.p.ssafy.io/api/auth/login', dataTosubmit)
         .then(response => response)
         .catch(error => console.log('error', error))

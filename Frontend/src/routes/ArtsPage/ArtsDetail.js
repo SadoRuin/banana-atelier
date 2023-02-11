@@ -15,7 +15,7 @@ export async function loader ({params}) {
   .then(response => response.data)
   .catch(error => console.log(error))
   
-  console.log(artData);
+  // console.log(artData);
   if (!artData) {
     throw new Response("", {
       status: 404,
