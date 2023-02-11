@@ -5,7 +5,7 @@ import { loginUser, loginCode } from '../../_actions/user_action'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 
 export default function LoginPage(props) {
   const dispatch = useDispatch()
