@@ -31,22 +31,22 @@ export const TabContent = styled.div`
   text-align: center;
 `;
 
-export default function TabMenuComponent({menuData, onAirIndex, setOnAirIndex}) {
+export default function TabMenuComponent({menuData, index, setIndex}) {
 
   return (
     <div>
       <TabMenu>
-        { menuData.map((tab, index) =>
+        { menuData.map((tab, idx) =>
           <li
-            className={index === onAirIndex ? "submenu focused" : "submenu" }
-            onClick={ () => setOnAirIndex(index) }
+            className={idx === index ? "submenu focused" : "submenu" }
+            onClick={ () => setIndex(idx) }
           >
             {tab.name}
           </li>
         )}
       </TabMenu>
       <TabContent>
-        { menuData[onAirIndex].content.map((curation) =>
+        { menuData[index].content.map((curation) =>
           <div>
             {curation.curationName} | {curation.curationStartTime} | {curation.curationBmCount}
           </div>
