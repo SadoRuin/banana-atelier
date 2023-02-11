@@ -18,7 +18,7 @@ function NavBar() {
   const navigate = useNavigate();
   const loginWonder = useSelector(state => state.user.login_status);
 
-  console.log("navbar에서 loginWonder", loginWonder)
+  // console.log("navbar에서 loginWonder", loginWonder)
   let content = null
 
   if (loginWonder) {

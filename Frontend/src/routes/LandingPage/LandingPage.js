@@ -4,7 +4,8 @@ import axiosCustom from "../../_actions/axiosCustom";
 import { logoutCode } from '../../_actions/user_action';
 
 import ArtItem from "../../components/commons/artItem";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
   const arts = await axiosCustom.get('/arts/all' )
@@ -15,7 +16,7 @@ export async function loader () {
 
 function LandingPage() {
   const dispatch = useDispatch()
-  const loginWonder = useSelector(state => state.user.login_status)
+  // const loginWonder = useSelector(state => state.user.login_status)
   const handleLogOut = event => {
     event.preventDefault()
     localStorage.removeItem("token")
@@ -25,10 +26,10 @@ function LandingPage() {
     localStorage.removeItem("role")
     localStorage.removeItem("userSeq")
     dispatch(logoutCode())
-    console.log("로그인 했나요?", loginWonder)
+    // console.log("로그인 했나요?", loginWonder)
   }
   const {arts} = useLoaderData();
-  console.log(arts)
+  // console.log(arts)
 
   return (
     <div>
