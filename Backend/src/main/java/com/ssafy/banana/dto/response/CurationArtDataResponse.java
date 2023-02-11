@@ -16,6 +16,7 @@ public class CurationArtDataResponse {
 
 	private long id;
 	private int isAuction;
+	private int auctionGap;
 	private int auctionPeopleCnt;
 	private String curationThumbnail;
 	private String artistNickName;
@@ -25,6 +26,7 @@ public class CurationArtDataResponse {
 	public CurationArtDataResponse(com.ssafy.banana.db.entity.CurationArt ca) {
 		this.id = ca.getId();
 		this.isAuction = ca.getIsAuction();
+		this.auctionGap = ca.getAuctionGap();
 		this.auctionPeopleCnt = ca.getAuctionPeopleCnt();
 		this.curationThumbnail = ca.getArt().getArtThumbnail();
 		this.artistNickName = ca.getArt().getArtist().getUser().getNickname();
