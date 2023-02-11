@@ -13,11 +13,11 @@ export default function LoginPage(props) {
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
   const [pwMessage, setPwMessage] = useState('')
-  const userExample = useSelector(state => state.user)
-  console.log("useSelector 해서 state 가져온 것", userExample)
-  const loginWonder = useSelector(state => state.user.login_status)
-  console.log("로그인 했나요?", loginWonder)
-  console.log("겁나 빡세네", loginWonder === true)
+  // const userExample = useSelector(state => state.user)
+  // console.log("useSelector 해서 state 가져온 것", userExample)
+  // const loginWonder = useSelector(state => state.user.login_status)
+  // console.log("로그인 했나요?", loginWonder)
+  // console.log("겁나 빡세네", loginWonder === true)
 
   const handleFindPw = (event) => {
     event.preventDefault()
