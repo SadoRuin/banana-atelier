@@ -12,4 +12,6 @@ import com.ssafy.banana.db.entity.enums.CurationStatus;
 public interface CurationRepository extends JpaRepository<Curation, Long> {
 	List<Curation> findAllByCurationStatus(CurationStatus curationStatus);
 
+	List<Curation> findAllByArtist_Id(Long artist_id);
+
 }
