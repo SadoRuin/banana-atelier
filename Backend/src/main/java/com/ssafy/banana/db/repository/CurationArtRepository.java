@@ -11,5 +11,7 @@ import com.ssafy.banana.db.entity.CurationArt;
 @Repository
 public interface CurationArtRepository extends JpaRepository<CurationArt, Long> {
 	List<CurationArt> findAllByCuration(Curation curation);
+
+	void deleteAllByCuration_Id(Long curationSeq);
 }
 

@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.banana.db.entity.Artist;
 import com.ssafy.banana.db.entity.Curation;
+import com.ssafy.banana.db.entity.CurationArt;
 import com.ssafy.banana.db.entity.CurationBookmark;
 import com.ssafy.banana.db.entity.CurationBookmarkId;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
 import com.ssafy.banana.db.repository.ArtRepository;
 import com.ssafy.banana.db.repository.ArtistRepository;
+import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.db.repository.CurationBookmarkRepository;
 import com.ssafy.banana.db.repository.CurationRepository;
 import com.ssafy.banana.db.repository.UserRepository;
@@ -33,13 +35,11 @@ import lombok.RequiredArgsConstructor;
 public class CurationService {
 
 	private final CurationRepository curationRepository;
-
 	private final ArtistRepository artistRepository;
-
 	private final ArtRepository artRepository;
-
 	private final UserRepository userRepository;
 	private final CurationBookmarkRepository curationBookmarkRepository;
+	private final CurationArtRepository curationArtRepository;
 
 	//큐레이션 상태별 조회
 	public List<CurationDataResponse.CurationSimple> getCurationList(CurationStatus curationStatus) {
@@ -83,11 +83,23 @@ public class CurationService {
 			.curationSummary(curationRequest.getCurationSummary())
 			.curationStatus(getStatus(endTime, startTime))
 			.curationThumbnail(
-				artRepository.findById(curationRequest.getArtSeqList().get(0)).orElse(null).getArtThumbnail())
+				artRepository.findById(curationRequest.getCurationArtList().get(0).getArtSeq())
+					.orElse(null)
+					.getArtThumbnail())
 			.artist(artist)
 			.build();
-
 		curationRepository.save(curation);
+
+		for (int i = 0; i < curationRequest.getCurationArtList().size(); i++) {
+			CurationArt curationArt = CurationArt.builder()
+				.isAuction(curationRequest.getCurationArtList().get(i).getIsAuction())
+				.auctionGap(curationRequest.getCurationArtList().get(i).getAuctionGap())
+				.art(artRepository.findById(curationRequest.getCurationArtList().get(i).getArtSeq()).orElse(null))
+				.curation(curationRepository.findById(curation.getId())
+					.orElse(null))
+				.build();
+			curationArtRepository.save(curationArt);
+		}
 	}
 
 	//큐레이션 수정
@@ -109,6 +121,18 @@ public class CurationService {
 		curation.setCurationStatus(getStatus(endTime, startTime));
 		curation.setArtist(artistRepository.findById(curationRequest.getArtistSeq()).orElse(null));
 		curationRepository.save(curation);
+		curationArtRepository.deleteAllByCuration_Id(curation.getId());
+		
+		for (int i = 0; i < curationRequest.getCurationArtList().size(); i++) {
+			CurationArt curationArt = CurationArt.builder()
+				.isAuction(curationRequest.getCurationArtList().get(i).getIsAuction())
+				.auctionGap(curationRequest.getCurationArtList().get(i).getAuctionGap())
+				.art(artRepository.findById(curationRequest.getCurationArtList().get(i).getArtSeq()).orElse(null))
+				.curation(curationRepository.findById(curation.getId())
+					.orElse(null))
+				.build();
+			curationArtRepository.save(curationArt);
+		}
 	}
 
 	@Transactional
@@ -120,6 +144,7 @@ public class CurationService {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		curationRepository.deleteById(curation_seq);
+		curationArtRepository.deleteAllByCuration_Id(curation_seq);
 	}
 
 	CurationStatus getStatus(LocalDateTime endTime, LocalDateTime startTime) {
