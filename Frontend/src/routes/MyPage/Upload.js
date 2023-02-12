@@ -37,17 +37,12 @@ export async function action({request, params}) {
   } )
     .then((response) => {
       console.log(response)
-
-      // return redirect(`${nickname}@${userSeq}`);
-    })
-    .then(()=> {
-      const [nickname, userSeq] = params.nickname_user_seq.split('@');
-      console.log(nickname, userSeq);
-      redirect('../login')
     })
     .catch(error => console.log(error))
 
-  return null
+  const [nickname, userSeq] = params.nickname_user_seq.split('@');
+  const encodedNickname = encodeURI(nickname)
+  return redirect(`/${encodedNickname}@${userSeq}`)
 }
 
 function Upload() {
