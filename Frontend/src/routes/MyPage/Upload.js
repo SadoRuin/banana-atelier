@@ -9,6 +9,7 @@ export async function action({request, params}) {
   const formData = await request.formData();
   const artData = Object.fromEntries(formData);
   delete artData.artFile;
+  artData.artCategorySeq = +artData.artCategorySeq
 
   // 혹시 JSON으로 만들어야 하나 싶어서 만들어봣음??? 나도모름
   // const artJSON = JSON.stringify(artData);
@@ -18,21 +19,31 @@ export async function action({request, params}) {
   const artFile= document.querySelector('#artFile').files[0];
 
   // 이건 body에 들어가는 값
-  const body = {
-    "artFile": artFile,
-    "artRequest": artData
-  }
-  console.log(body)
+  // const body = {
+  //   "artFile": artFile,
+  //   "artRequest": JSON.stringify(artData)
+  // }
+
+  const body = new FormData();
+  body.append('artFile', artFile);
+  body.append('artRequest', new Blob([JSON.stringify(artData)], {type: "application/json"}))
+  console.log(body);
 
   axiosReissue();
   await axiosAuth.post('arts', body, {
     headers : {
-      'Content-Type' : 'multipart/form-data'
+      'content-type' : 'multipart/form-data'
     }
   } )
-    .then(() => {
-      const [nickname, userSeq] = params.nickname_user_seq;
-      redirect(`/${nickname}@${userSeq}`)
+    .then((response) => {
+      console.log(response)
+
+      // return redirect(`${nickname}@${userSeq}`);
+    })
+    .then(()=> {
+      const [nickname, userSeq] = params.nickname_user_seq.split('@');
+      console.log(nickname, userSeq);
+      redirect('../login')
     })
     .catch(error => console.log(error))
 
