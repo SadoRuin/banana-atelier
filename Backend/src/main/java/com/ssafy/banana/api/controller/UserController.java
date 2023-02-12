@@ -49,7 +49,7 @@ public class UserController {
 		@ApiImplicitParam(name = "password", value = "비밀번호", required = true),
 		@ApiImplicitParam(name = "nickname", value = "닉네임", required = true)
 	})
-	public ResponseEntity signup(@Valid @RequestBody SignupRequest signupRequest) {
+	public ResponseEntity<SuccessResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
 		userService.signup(signupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("회원가입이 완료되었습니다."));
 	}
@@ -61,7 +61,7 @@ public class UserController {
 		@ApiResponse(code = 200, message = "중복체크 통과"),
 		@ApiResponse(code = 409, message = "이미 가입된 이메일 존재", response = ExceptionResponse.class)
 	})
-	public ResponseEntity checkEmail(@PathVariable String email) {
+	public ResponseEntity<SuccessResponse> checkEmail(@PathVariable String email) {
 		userService.checkEmail(email);
 		return ResponseEntity.ok(new SuccessResponse("사용가능한 이메일입니다."));
 	}
@@ -73,7 +73,7 @@ public class UserController {
 		@ApiResponse(code = 200, message = "인증코드 발송"),
 		@ApiResponse(code = 400, message = "메일 발송 오류", response = ExceptionResponse.class)
 	})
-	public ResponseEntity verify(@PathVariable String email) {
+	public ResponseEntity<SuccessResponse> verify(@PathVariable String email) {
 		userService.sendVerificationMail(email);
 		return ResponseEntity.ok(new SuccessResponse("인증 메일이 발송되었습니다."));
 	}
@@ -85,7 +85,7 @@ public class UserController {
 		@ApiResponse(code = 200, message = "중복체크 통과", response = SuccessResponse.class),
 		@ApiResponse(code = 409, message = "이미 가입된 닉네임 존재", response = ExceptionResponse.class)
 	})
-	public ResponseEntity checkNickname(@PathVariable String nickname) {
+	public ResponseEntity<SuccessResponse> checkNickname(@PathVariable String nickname) {
 		userService.checkNickname(nickname);
 		return ResponseEntity.ok(new SuccessResponse("사용가능한 닉네임입니다."));
 	}
@@ -98,7 +98,7 @@ public class UserController {
 		@ApiResponse(code = 400, message = "이메일 발송 오류 발생", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity findPassword(@RequestBody EmailRequest emailRequest) {
+	public ResponseEntity<SuccessResponse> findPassword(@RequestBody EmailRequest emailRequest) {
 		userService.findPassword(emailRequest.getEmail());
 		return ResponseEntity.ok(new SuccessResponse("임시비밀번호가 발송되었습니다."));
 	}
@@ -109,7 +109,7 @@ public class UserController {
 		@ApiResponse(code = 200, message = "회원정보 조회 성공", response = UserDto.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity getMyUserInfo() {
+	public ResponseEntity<? extends UserDto> getMyUserInfo() {
 		return ResponseEntity.ok(userService.getMyUserInfo().getT());
 	}
 
@@ -120,7 +120,7 @@ public class UserController {
 		@ApiResponse(code = 200, message = "회원정보 조회 성공", response = UserDto.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity getUserInfo(@PathVariable long userSeq) {
+	public ResponseEntity<? extends UserDto> getUserInfo(@PathVariable long userSeq) {
 		return ResponseEntity.ok(userService.getUserInfo(userSeq).getT());
 	}
 
@@ -137,7 +137,7 @@ public class UserController {
 		@ApiResponse(code = 403, message = "파일 확장자 오류.", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity updateUser(@RequestPart UpdateUserRequest updateUserRequest,
+	public ResponseEntity<SuccessResponse> updateUser(@RequestPart UpdateUserRequest updateUserRequest,
 		@RequestPart MultipartFile imageFile) {
 		userService.updateUser(updateUserRequest, imageFile);
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("회원정보가 수정되었습니다."));
@@ -150,7 +150,7 @@ public class UserController {
 		@ApiResponse(code = 401, message = "액세스토큰 오류", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity deleteUser(@RequestHeader String Authorization) {
+	public ResponseEntity<SuccessResponse> deleteUser(@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		userService.deleteUser(token);
 		return ResponseEntity.ok(new SuccessResponse("탈퇴되었습니다."));
@@ -164,7 +164,8 @@ public class UserController {
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class),
 		@ApiResponse(code = 409, message = "이미 팔로우한 작가입니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity followArtist(@RequestHeader String Authorization, @RequestBody SeqRequest seqRequest) {
+	public ResponseEntity<SuccessResponse> followArtist(@RequestHeader String Authorization,
+		@RequestBody SeqRequest seqRequest) {
 		String token = Authorization.split(" ")[1];
 		userService.followArtist(token, seqRequest);
 		return ResponseEntity.ok(new SuccessResponse("팔로우 되었습니다."));
@@ -177,7 +178,8 @@ public class UserController {
 		@ApiResponse(code = 200, message = "언팔로우 성공", response = SuccessResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다. or 팔로우 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity unFollowArtist(@RequestHeader String Authorization, @RequestBody SeqRequest seqRequest) {
+	public ResponseEntity<SuccessResponse> unFollowArtist(@RequestHeader String Authorization,
+		@RequestBody SeqRequest seqRequest) {
 		String token = Authorization.split(" ")[1];
 		userService.unFollowArtist(token, seqRequest);
 		return ResponseEntity.ok(new SuccessResponse("팔로우가 해제되었습니다."));
@@ -190,7 +192,7 @@ public class UserController {
 		@ApiResponse(code = 400, message = "다운로드 과정 중 오류", response = ExceptionResponse.class),
 		@ApiResponse(code = 404, message = "회원 정보가 없습니다. or 팔로우 정보가 없습니다.", response = ExceptionResponse.class)
 	})
-	public ResponseEntity download(@RequestHeader String Authorization) {
+	public ResponseEntity<byte[]> download(@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		DownloladFileDto downloladFileDto = userService.download(token);
 
