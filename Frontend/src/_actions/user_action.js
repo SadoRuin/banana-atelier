@@ -9,7 +9,8 @@ import {
     LOGIN_CODE,
     LOGOUT_CODE,
     LANDING_RENDERING,
-    LANDING_RENDERING_LOGOUT
+    LANDING_RENDERING_LOGOUT,
+    LANDING_RENDERING_RESET
 } from './types'
 
 
@@ -115,6 +116,13 @@ export function landingRendering() {
 export function landingRenderingLogout() {
     return {
         type: LANDING_RENDERING_LOGOUT,
+        payload: ""
+    }
+}
+
+export function landingRenderingReset() {
+    return {
+        type: LANDING_RENDERING_RESET,
         payload: ""
     }
 }

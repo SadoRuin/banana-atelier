@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import axiosCustom from "../../_actions/axiosCustom";
 import { logoutCode } from '../../_actions/user_action';
-import { landingRenderingLogout } from '../../_actions/user_action' 
+import { landingRenderingLogout, landingRenderingReset } from '../../_actions/user_action' 
 import ArtItem from "../../components/commons/artItem";
 import { useDispatch } from 'react-redux';
 // import { useDispatch, useSelector } from 'react-redux';
@@ -20,8 +20,13 @@ export async function loader () {
 function LandingPage() {
   const dispatch = useDispatch()
   const landingStatus = useSelector(state => state.user.landing_status);
-  if (landingStatus) {
-    dispatch(landingRenderingLogout())
+  if (landingStatus === 2) {
+    dispatch(landingRenderingReset())
+      .then(
+        window.location.reload()
+      )
+  } else if (landingStatus === 3) {
+    dispatch(landingRenderingReset())
       .then(
         window.location.reload()
       )
@@ -34,6 +39,7 @@ function LandingPage() {
     localStorage.removeItem("profileImg")
     localStorage.removeItem("role")
     localStorage.removeItem("userSeq")
+    dispatch(landingRenderingLogout())
     dispatch(logoutCode())
     // console.log("로그인 했나요?", loginWonder)
   }
