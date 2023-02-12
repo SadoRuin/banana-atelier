@@ -70,7 +70,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserBoxDto getUserInfo(long id) {
+	public UserBoxDto<? extends UserDto> getUserInfo(long id) {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
@@ -84,7 +84,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserBoxDto getMyUserInfo() {
+	public UserBoxDto<? extends UserDto> getMyUserInfo() {
 		User user = securityUtil.getCurrentUsername()
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
@@ -165,10 +165,10 @@ public class UserService {
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (!updateUserRequest.getNickname().equals("")) {
+		if (!"".equals(updateUserRequest.getNickname()) && updateUserRequest.getNickname() != null) {
 			user.setNickname(updateUserRequest.getNickname());
 		}
-		if (!updateUserRequest.getPassword().equals("")) {
+		if (!"".equals(updateUserRequest.getPassword()) && updateUserRequest.getPassword() != null) {
 			user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
 		}
 		if (!imageFile.isEmpty()) {
