@@ -5,9 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ssafy.banana.db.entity.AuctionJoin;
+import com.ssafy.banana.db.entity.AuctionJoinId;
 
 @Repository
-public interface AuctionJoinRepository extends JpaRepository<AuctionJoin, Long> {
+public interface AuctionJoinRepository extends JpaRepository<AuctionJoin, AuctionJoinId> {
 
 	@Query("select count(aj) "
 		+ "from AuctionJoin aj "

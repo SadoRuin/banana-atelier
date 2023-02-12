@@ -43,6 +43,12 @@ public class AuctionService {
 	private final CurationRepository curationRepository;
 	private final AuctionBidLogRepository auctionBidLogRepository;
 
+	/**
+	 * 경매 참여
+	 * @param curationArtSeq 경매 작품 pk
+	 * @param userSeq 경매 참여 신청 유저 pk
+	 * @return
+	 */
 	@Transactional
 	public AuctionJoin joinAuction(Long curationArtSeq, Long userSeq) {
 
@@ -51,15 +57,19 @@ public class AuctionService {
 		CurationArt curationArt = curationArtRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		// 본인 작품은 경매 참여 불가
-		if (curationArt.getCuration().getArtist().getId() == userSeq) {
-			return null;
+		// 작가 본인 작품, 또는 작가가 경매를 원하지 않는 작품은 경매 참여 불가
+		if (curationArt.getCuration().getArtist().getId() == userSeq
+			|| curationArt.getIsAuction() == 0) {
+			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
 		// 경매 참가 신청 추가
 		AuctionJoinId auctionJoinId = AuctionJoinId.builder()
 			.userSeq(user.getId())
 			.curationArtSeq(curationArt.getId())
 			.build();
+		if (auctionJoinRepository.findById(auctionJoinId).isPresent()) {
+			throw new CustomException(CustomExceptionType.AUCTION_JOIN_CONFLICT);
+		}
 		AuctionJoin auctionJoin = AuctionJoin.builder()
 			.id(auctionJoinId)
 			.user(user)
