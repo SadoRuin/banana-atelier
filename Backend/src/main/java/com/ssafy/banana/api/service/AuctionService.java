@@ -138,38 +138,54 @@ public class AuctionService {
 		}
 	}
 
+	/**
+	 * 경매 정보
+	 * @param curationSeq 큐레이션 pk
+	 * @param userSeq 로그인 유저 pk
+	 * @return 경매 정보 응답 DTO
+	 */
 	@Transactional
 	public AuctionResponse getAuctionInfo(Long curationSeq, Long userSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		User artist = userRepository.findById(curation.getArtist().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
-		List<CurationArt> curationArtList = curationArtRepository.findByCuration_Id(curationSeq);
+		// 경매 가능한 작품 중, 경매가 진행되지 않은 작품
+		Auction auction = auctionRepository.findAuctionInfo(curationSeq, AuctionStatus.INIT)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
 
-		for (int i = 0; i < curationArtList.size(); i++) {
-			CurationArt curationArt = curationArtList.get(i);
-			Auction auction = auctionRepository.findByCurationArt_IdOrderByCurationArt_Id(curationArt.getId());
+		log.error("auction = {}", auction);
 
-			// 작가가 경매를 원하지 않거나 경매시작 이후의 상태라면 넘김
-			if (curationArt.getIsAuction() == 0 || auction.getAuctionStatus() != AuctionStatus.INIT) {
-				continue;
-			}
-			Art art = artRepository.findById(curationArt.getArt().getId())
-				.orElseThrow(() -> new CustomException(CustomExceptionType.FILE_EXTENSION_ERROR));
+		CurationArt curationArt = auction.getCurationArt();
+		// 현재 나타낼 경매 작품 정보
+		Art art = artRepository.findById(curationArt.getArt().getId())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
-			AuctionResponse auctionResponse = AuctionResponse.builder()
-				.artistSeq(artist.getId())
-				.artistNickname(artist.getNickname())
-				.artImg(art.getArtImg())
-				.artName(art.getArtName())
-				.artDescription(art.getArtDescription())
-				.auctionStartPrice(auction.getAuctionStartPrice())
-				.auctionCurrentPrice(auction.getAuctionStartPrice())
-				.auctionBidPrice(auction.getAuctionStartPrice() + curationArt.getAuctionGap())
-				.message("[HOST] 경매를 시작하겠습니다.")
-				.build();
+		// 입찰 로그 초기화 (초기 입찰자는 작가로 세팅)
+		AuctionBidLog auctionBidLog = AuctionBidLog.builder()
+			.auctionBidPrice(auction.getAuctionStartPrice())
+			.auctionBidTime(now())
+			.user(artist)
+			.auction(auction)
+			.build();
+		auctionBidLogRepository.save(auctionBidLog);
+
+		AuctionResponse auctionResponse = AuctionResponse.builder()
+			.artistSeq(artist.getId())
+			.artistNickname(artist.getNickname())
+			.artImg(art.getArtImg())
+			.artName(art.getArtName())
+			.artDescription(art.getArtDescription())
+			.auctionStartPrice(auction.getAuctionStartPrice())
+			.auctionCurrentPrice(auction.getAuctionStartPrice())
+			.auctionBidPrice(auction.getAuctionStartPrice() + curationArt.getAuctionGap())
+			.message("[HOST] 경매를 시작하겠습니다.")
+			.build();
+
+		return auctionResponse;
+	}
 
 	/**
 	 * 경매 입찰 정보 업데이트
