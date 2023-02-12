@@ -7,7 +7,9 @@ import {
     CHECK_NICKNAME,
     SEND_CODE,
     LOGIN_CODE,
-    LOGOUT_CODE
+    LOGOUT_CODE,
+    LANDING_RENDERING,
+    LANDING_RENDERING_LOGOUT
 } from './types'
 
 
@@ -100,5 +102,19 @@ export function send_code(dataTosubmit) {
     return {
         type: SEND_CODE,
         payload: request
+    }
+}
+
+export function landingRendering() {
+    return {
+        type: LANDING_RENDERING,
+        payload: ""
+    }
+}
+
+export function landingRenderingLogout() {
+    return {
+        type: LANDING_RENDERING_LOGOUT,
+        payload: ""
     }
 }

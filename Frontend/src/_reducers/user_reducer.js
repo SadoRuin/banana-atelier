@@ -1,10 +1,12 @@
 import {
     LOGIN_USER, SIGNUP_USER, CHECK_EMAIL, CHECK_EMAIL_CODE, 
-    CHECK_NICKNAME, SEND_CODE, LOGIN_CODE, LOGOUT_CODE
+    CHECK_NICKNAME, SEND_CODE, LOGIN_CODE, LOGOUT_CODE, LANDING_RENDERING,
+    LANDING_RENDERING_LOGOUT
 } from '../_actions/types'
 
 const initialState = {
-    login_status: false
+    login_status: false,
+    landing_status: false
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -33,6 +35,12 @@ export default function user (state = initialState, action) {
 
         case LOGOUT_CODE:
             return { ...state, login_status: false }
+
+        case LANDING_RENDERING:
+            return { ...state, landing_status: true }
+
+        case LANDING_RENDERING_LOGOUT:
+            return { ...state, landing_status: false }
             
         default:
             return state

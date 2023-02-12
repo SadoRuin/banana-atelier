@@ -5,6 +5,7 @@ import { loginUser, loginCode } from '../../_actions/user_action'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
 import axios from 'axios'
+import { landingRendering } from '../../_actions/user_action'
 // import { useSelector } from 'react-redux'
 
 export default function LoginPage(props) {
@@ -55,6 +56,7 @@ export default function LoginPage(props) {
 
     dispatch(loginUser(body))
       .then(response => {
+        dispatch(landingRendering())
         localStorage.setItem("token", response.payload.data.token)
         localStorage.setItem("expiration", response.payload.data.expiration)
         localStorage.setItem("nickname", response.payload.data.nickname)
