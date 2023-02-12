@@ -35,8 +35,8 @@ public class ArtistController {
 		@ApiImplicitParam(name = "instagramLink", value = "인스타그램 링크"),
 		@ApiImplicitParam(name = "twitterLink", value = "트위터 링크"),
 		@ApiImplicitParam(name = "youtubeLink", value = "유튜브 링크"),
-		@ApiImplicitParam(name = "blogLink", value = "비밀번호"),
-		@ApiImplicitParam(name = "artistIntro", value = "프로필이미지 파일")
+		@ApiImplicitParam(name = "blogLink", value = "블로그 링크"),
+		@ApiImplicitParam(name = "artistIntro", value = "작가 자기소개")
 	})
 	@ApiResponses({
 		@ApiResponse(code = 201, message = "작가정보 수정 성공", response = SuccessResponse.class),
