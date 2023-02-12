@@ -2,35 +2,48 @@ import React from 'react';
 import { Form, useNavigate, redirect } from 'react-router-dom'
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
 
+
 export async function action({request, params}) {
+
+  // 이미지파일 제외 내가 작성한 내용은 key랑 value로 들어있음 artData에...
   const formData = await request.formData();
-  // const updates = Object.fromEntries(formData);
-  // console.log(updates);
-  // 이렇게 하면 내가 입력한 정보가 객체로 잘 넘어오거든?
-  // {
-  //   artCategorySeq : "3"
-  //   artDescription : "ㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷ"
-  //   artFile : "6905d2b5d05b4d0b27ec8731cb8252fa7f9f127ae3ca5dc7f0f6349aebcdb3c4.png"
-  //   artName : "ㄷㄷㄷㄷ"
+  const artData = Object.fromEntries(formData);
+  delete artData.artFile;
+  artData.artCategorySeq = +artData.artCategorySeq
+
+  // 혹시 JSON으로 만들어야 하나 싶어서 만들어봣음??? 나도모름
+  // const artJSON = JSON.stringify(artData);
+  // console.log(typeof artJSON)
+
+  // 이건 내가 업로드 한 파일 정보
+  const artFile= document.querySelector('#artFile').files[0];
+
+  // 이건 body에 들어가는 값
+  // const body = {
+  //   "artFile": artFile,
+  //   "artRequest": JSON.stringify(artData)
   // }
-  // 넘어오는게 다 문자열이라 숫자로 바꿀건 바꾸고...
-  // 이렇게 가져온 정보를 어떻게 해서 어떻게 axios로 보내야 할지 모르겠어!!
 
+  const body = new FormData();
+  body.append('artFile', artFile);
+  body.append('artRequest', new Blob([JSON.stringify(artData)], {type: "application/json"}))
+  console.log(body);
 
-  // 못하겠어욘 ㅠㅠ
-  // postman 도 안되고...모르겠어요
   axiosReissue();
-  await axiosAuth.post('arts', {
-            artFile: formData.get("artFile"),
-            artRequest: {
-              "artCategorySeq": +formData.get("artCategorySeq"),
-              "artDescription": formData.get("artDescription"),
-              "artName": formData.get("artName")
-          }
-  })
-    .then(() => {
-      const [nickname, userSeq] = params.nickname_user_seq;
-      redirect(`/${nickname}@${userSeq}`)
+  await axiosAuth.post('arts', body, {
+    headers : {
+      'content-type' : 'multipart/form-data'
+    }
+  } )
+    .then((response) => {
+      console.log(response)
+
+      // return redirect(`${nickname}@${userSeq}`);
+    })
+    .then(()=> {
+      const [nickname, userSeq] = params.nickname_user_seq.split('@');
+      console.log(nickname, userSeq);
+      redirect('../login')
     })
     .catch(error => console.log(error))
 
@@ -46,7 +59,7 @@ function Upload() {
         {/* 작품 업로드하는 무언가 */}
 
         <label htmlFor="title">작품 사진 올리기</label>
-        <input type="file" accept="image/*" name="artFile" id="title" required/>
+        <input type="file" accept="image/*" name="artFile" id="artFile" required/>
 
         <label htmlFor="title">작품 제목</label>
         <input type="text" name="artName" id="title" placeholder="작품 제목" required/>
