@@ -7,7 +7,7 @@ import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.Role;
 import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
-import com.ssafy.banana.dto.UpdateArtistRequest;
+import com.ssafy.banana.dto.request.UpdateArtistRequest;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
@@ -46,9 +46,9 @@ public class ArtistService {
 	}
 
 	public void updateUser(String token, UpdateArtistRequest updateArtistRequest) {
-		long id = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 
-		Artist artist = artistRepository.findById(id)
+		Artist artist = artistRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.ARTIST_NOT_FOUND));
 
 		if (updateArtistRequest.getInstagramLink() != null) {
