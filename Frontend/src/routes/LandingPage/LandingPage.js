@@ -1,13 +1,16 @@
 import React from 'react';
-import {Link, useLoaderData} from 'react-router-dom';
+import {Link, useLoaderData } from 'react-router-dom';
+import { useSelector } from 'react-redux'
+
 import axiosCustom from "../../_actions/axiosCustom";
 import { logoutCode } from '../../_actions/user_action';
-
+import { landingRenderingLogout } from '../../_actions/user_action' 
 import ArtItem from "../../components/commons/artItem";
 import { useDispatch } from 'react-redux';
 // import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
+
   const arts = await axiosCustom.get('/arts/all' )
     .then(response=>response.data)
     .catch(error=>console.log(error))
@@ -16,7 +19,13 @@ export async function loader () {
 
 function LandingPage() {
   const dispatch = useDispatch()
-  // const loginWonder = useSelector(state => state.user.login_status)
+  const landingStatus = useSelector(state => state.user.landing_status);
+  if (landingStatus) {
+    dispatch(landingRenderingLogout())
+      .then(
+        window.location.reload()
+      )
+  }
   const handleLogOut = event => {
     event.preventDefault()
     localStorage.removeItem("token")
