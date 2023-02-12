@@ -1,23 +1,33 @@
 import React from 'react';
-import {NavLink, Outlet } from "react-router-dom";
+import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
+// import { useLoaderData, Form } from "react-router-dom";
 
-function NoticesRoot(props) {
-  const user = {
-    isArtist: true,
-    isMyPage: false
-  }
+export async function loader ({params}) {
+  const [nickname, userSeq] = params.nickname_user_seq.split('@');
+
+  axiosReissue();
+  const userNotices = await axiosAuth(`notices/${userSeq}`)
+    .then(response => response.data)
+    .catch(() => null)
+  const followingNotices = await axiosAuth(`notices/${userSeq}/following`)
+    .then(response => response.data)
+    .catch(() => null)
+
+  console.log(userNotices);
+  console.log(followingNotices);
+  return [nickname, userSeq, userNotices, followingNotices]
+}
+
+
+function NoticesRoot() {
+  // const [nickname, userSeq, userNotices, followingNotices] = useLoaderData();
+  // const [nonticeIndex, setNoticeIndex] = useState(0)
+  // const isMyPage = nickname === localStorage.getItem('nickname')
+  // const isArtist = userData.role === 'ROLE_ARTIST'
 
   return (
     <div>
-      { (user.isMyPage && user.isArtist) ?
-        <>
-          <NavLink to='mine'>나의 공지</NavLink>
-          <NavLink to='following'>팔로잉 작가의 공지</NavLink>
-        </> :
-        null
-      }
 
-      <Outlet />
     </div>
   );
 }
