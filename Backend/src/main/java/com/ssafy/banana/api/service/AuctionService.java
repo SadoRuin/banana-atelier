@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.Auction;
+import com.ssafy.banana.db.entity.AuctionBidLog;
 import com.ssafy.banana.db.entity.AuctionJoin;
 import com.ssafy.banana.db.entity.AuctionJoinId;
 import com.ssafy.banana.db.entity.Curation;
@@ -22,7 +23,9 @@ import com.ssafy.banana.db.repository.AuctionRepository;
 import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.db.repository.CurationRepository;
 import com.ssafy.banana.db.repository.UserRepository;
+import com.ssafy.banana.dto.request.AuctionRequest;
 import com.ssafy.banana.dto.response.AuctionResponse;
+import com.ssafy.banana.dto.response.AuctionUpdateResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
@@ -139,8 +142,46 @@ public class AuctionService {
 				.message("[HOST] 경매를 시작하겠습니다.")
 				.build();
 
-			return auctionResponse;
+	/**
+	 * 경매 입찰 정보 업데이트
+	 * @param auctionRequest
+	 * @param userSeq
+	 * @return
+	 */
+	@Transactional
+	public AuctionUpdateResponse updateAuction(AuctionRequest auctionRequest, Long userSeq) {
+
+		// 작가는 본인의 경매 참여 불가
+		if (auctionRequest.getArtistSeq() == userSeq) {
+			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
-		return null;
+		// 현재 경매
+		Auction auction = auctionRepository.findById(auctionRequest.getCurationArtSeq())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+		// 입찰자
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
+		// 최근 입찰
+		AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
+			auctionRequest.getCurationArtSeq());
+
+		// 입찰 로그 기록
+		auctionBidLog = AuctionBidLog.builder()
+			.auctionBidPrice(auctionBidLog.getAuctionBidPrice() + auction.getAuctionGap())
+			.auctionBidTime(now())
+			.user(user)
+			.auction(auction)
+			.build();
+		auctionBidLogRepository.save(auctionBidLog);
+
+		int currentPrice = auctionBidLog.getAuctionBidPrice();
+		AuctionUpdateResponse auctionUpdateResponse = AuctionUpdateResponse.builder()
+			.auctionCurrentPrice(currentPrice)
+			.auctionBidPrice(currentPrice + auction.getAuctionGap())
+			.message(String.format("[ %s ] 님의 입찰가 %d원", user.getNickname(), currentPrice))
+			.build();
+		return auctionUpdateResponse;
+
 	}
 }
