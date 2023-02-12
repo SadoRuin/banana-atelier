@@ -30,9 +30,11 @@ import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuctionService {
 
 	private final UserRepository userRepository;
@@ -189,20 +191,24 @@ public class AuctionService {
 
 	/**
 	 * 경매 입찰 정보 업데이트
-	 * @param auctionRequest
-	 * @param userSeq
-	 * @return
+	 * @param auctionRequest 경매 입찰 정보 요청 DTO
+	 * @param userSeq 로그인 유저 pk
+	 * @return 경매 입찰 정보 응답 DTO
 	 */
 	@Transactional
 	public AuctionUpdateResponse updateAuction(AuctionRequest auctionRequest, Long userSeq) {
 
-		// 작가는 본인의 경매 참여 불가
-		if (auctionRequest.getArtistSeq() == userSeq) {
-			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
-		}
-		// 현재 경매
 		Auction auction = auctionRepository.findById(auctionRequest.getCurationArtSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+		CurationArt curationArt = curationArtRepository.findById(auction.getCurationArt().getId())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+		Curation curation = curationRepository.findById(curationArt.getCuration().getId())
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+
+		// 작가는 본인의 경매 참여 불가
+		if (curation.getArtist().getId() == userSeq) {
+			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
+		}
 		// 입찰자
 		User user = userRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
