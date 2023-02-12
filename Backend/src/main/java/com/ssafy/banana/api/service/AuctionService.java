@@ -86,37 +86,56 @@ public class AuctionService {
 		return auctionJoin;
 	}
 
+	/**
+	 * 경매 생성
+	 * @param curationSeq 큐레이션 pk
+	 * @param userSeq 로그인 유저 pk
+	 */
 	@Transactional
-	public int createAuction(Long curationSeq) {
+	public void createAuction(Long curationSeq, Long userSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		List<CurationArt> curationArtList = curationArtRepository.findByCuration_Id(curation.getId());
-		Auction auction = null;
+		// 경매 가능한 작품 리스트
+		List<CurationArt> curationArtList =
+			curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
+				.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
+		User artist = curation.getArtist().getUser();
 
-		int artCount = 0;
+		// 작가 본인이 아니면 경매 시작 불가
+		if (artist.getId() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+
+		for (int i = 0; i < curationArtList.size(); i++) {
+			System.out.println("curationArtList = " + curationArtList.get(i));
+		}
+
 		for (int i = 0; i < curationArtList.size(); i++) {
 			CurationArt curationArt = curationArtList.get(i);
-			if (curationArt.getIsAuction() == 0) {
-				continue;
-			}
-			auction = auctionRepository.findById(curationArt.getId()).orElse(null);
 
-			if (auction == null) {
-				auction = Auction.builder()
-					.id(curationArt.getId())
-					.curationArt(curationArt)
-					.auctionStartPrice(curationArt.getIsAuction())
-					.auctionGap(500)
-					.auctionEndPrice(curationArt.getIsAuction())
-					.auctionStatus(AuctionStatus.INIT)
-					.user(curation.getArtist().getUser())
-					.build();
-				auctionRepository.save(auction);
-				artCount++;
+			if (auctionRepository.findById(curationArt.getId()).isPresent()) {
+				throw new CustomException(CustomExceptionType.AUCTION_INFO_CONFLICT);
 			}
+
+			Auction auction = Auction.builder()
+				.id(curationArt.getId())
+				.curationArt(curationArt)
+				.auctionStartPrice(curationArt.getIsAuction())
+				.auctionGap(curationArt.getAuctionGap())
+				.auctionStartTime(now())
+				.auctionEndTime(now())
+				.auctionPaidTime(now())
+				.auctionStatusTime(now())
+				.auctionEndPrice(curationArt.getIsAuction())
+				.auctionStatus(AuctionStatus.INIT)
+				.user(artist)
+				.build();
+
+			log.error("auction = {}", auction);
+
+			auctionRepository.save(auction);
 		}
-		return artCount;
 	}
 
 	@Transactional

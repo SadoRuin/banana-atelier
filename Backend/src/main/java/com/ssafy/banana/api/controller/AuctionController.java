@@ -17,8 +17,6 @@ import com.ssafy.banana.dto.request.AuctionRequest;
 import com.ssafy.banana.dto.response.AuctionResponse;
 import com.ssafy.banana.dto.response.AuctionUpdateResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
-import com.ssafy.banana.exception.CustomException;
-import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
@@ -53,15 +51,17 @@ public class AuctionController {
 
 	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "경매 시작", notes = "해당 큐레이션 작품들에 대한 경매 정보를 모두 생성합니다")
+	@ApiImplicitParam(name = "curationSeq", value = "큐레이션 번호", required = true)
 	@PostMapping("/start/{curationSeq}")
-	public ResponseEntity startAuction(@PathVariable Long curationSeq) {
+	public ResponseEntity startAuction(
+		@PathVariable Long curationSeq,
+		@RequestHeader String Authorization) {
 
-		int artCount = auctionService.createAuction(curationSeq);
-		if (artCount > 0) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("경매가 시작됩니다."));
-		} else {
-			throw new CustomException(CustomExceptionType.UNABLE_AUCTION);
-		}
+		String token = Authorization.split(BLNAK)[1];
+		Long userSeq = tokenProvider.getSubject(token);
+		auctionService.createAuction(curationSeq, userSeq);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("경매가 시작됩니다."));
 	}
 
 	@ApiOperation(value = "경매 정보", notes = "경매시 필요한 정보를 반환합니다")
