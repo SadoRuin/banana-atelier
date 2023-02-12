@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import OpenViduVideoComponent from './OvVideo';
-import './UserVideo.css';
+import styled from 'styled-components';
 
-
-
+export const Streamcomponent = styled.div`
+    display: flex;
+    overflow: hidden;
+    width: 600px;
+    height: 700px;
+    border-radius: 15px;
+  `;
 
 
 
@@ -18,9 +23,9 @@ export default class UserVideoComponent extends Component {
         return (
             <div>
                 {this.props.streamManager !== undefined ? (
-                    <div className="streamcomponent">
+                    <Streamcomponent>
                         <OpenViduVideoComponent streamManager={this.props.streamManager} />
-                    </div>
+                    </Streamcomponent>
                 ) : null}
                 <div><p> 호스트 : {this.getNicknameTag()}</p></div>
             </div>
