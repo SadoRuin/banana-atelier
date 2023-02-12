@@ -28,15 +28,15 @@ export default function Layout() {
       <div className="my-page__side">
         <ProfileImg url={userData.profileImg} userSeq={userSeq} />
         <h3 id="artist_name">{userData.nickname}</h3>
-        <div id="introduction">한 줄 자기소개.. 아직 구현 안된듯</div>
+        <div id="introduction">{userData.artistIntro}</div>
 
         {/* userSeq가 작가면 sns links 렌더, 아님 말구 */}
         { isArtist ?
           <div id="sns_links">
-            <div id="email">이메일</div>
-            <div id="instagram">인스타그램</div>
-            <div id="twitter">트위터</div>
-            <div id="youtube">유튜브</div>
+            <div id="email">이메일 : {userData.email}</div>
+            <div id="instagram">인스타그램 : {userData.instagramLink}</div>
+            <div id="twitter">트위터 : {userData.twitterLink}</div>
+            <div id="youtube">블로그 : {userData.blogLink}</div>
           </div> : null }
 
           {/* userSeq가 내가 아니면 남의 버튼 렌더링, 나라면 나의 버튼 렌더링 */}
