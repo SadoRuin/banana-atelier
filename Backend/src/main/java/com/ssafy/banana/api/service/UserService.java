@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.banana.db.entity.Artist;
@@ -165,10 +166,10 @@ public class UserService {
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (!"".equals(updateUserRequest.getNickname()) && updateUserRequest.getNickname() != null) {
+		if (StringUtils.hasText(updateUserRequest.getNickname())) {
 			user.setNickname(updateUserRequest.getNickname());
 		}
-		if (!"".equals(updateUserRequest.getPassword()) && updateUserRequest.getPassword() != null) {
+		if (StringUtils.hasText(updateUserRequest.getPassword())) {
 			user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
 		}
 		if (!imageFile.isEmpty()) {

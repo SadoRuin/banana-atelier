@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.ArtistService;
-import com.ssafy.banana.dto.UpdateArtistRequest;
+import com.ssafy.banana.dto.request.UpdateArtistRequest;
 import com.ssafy.banana.dto.response.ExceptionResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
 
