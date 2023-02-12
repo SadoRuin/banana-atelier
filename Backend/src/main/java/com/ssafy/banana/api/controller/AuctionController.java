@@ -3,6 +3,7 @@ package com.ssafy.banana.api.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,6 +94,24 @@ public class AuctionController {
 		AuctionUpdateResponse auctionUpdateResponse = auctionService.updateAuction(auctionRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(auctionUpdateResponse);
+	}
+
+	@PreAuthorize("hasRole('ARTIST')")
+	@ApiOperation(value = "모든 경매 종료", notes = "경매를 모두 종료합니다")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "userSeq", value = "작가 번호", required = true),
+		@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true),
+	})
+	@DeleteMapping("/closeAll/{curationSeq}")
+	public ResponseEntity closeAllAuction(
+		@PathVariable Long curationSeq,
+		@RequestHeader String Authorization) {
+
+		String token = Authorization.split(BLNAK)[1];
+		Long userSeq = tokenProvider.getSubject(token);
+		auctionService.closeAllAuction(curationSeq, userSeq);
+
+		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
 }

@@ -226,7 +226,36 @@ public class AuctionService {
 			.auctionBidPrice(currentPrice + auction.getAuctionGap())
 			.message(String.format("[ %s ] 님의 입찰가 %d원", user.getNickname(), currentPrice))
 			.build();
-		return auctionUpdateResponse;
 
+		return auctionUpdateResponse;
+	}
+
+	/**
+	 * 모든 경매 종료
+	 * @param curationSeq 큐레이션 pk
+	 * @param userSeq 로그인 유저 pk
+	 */
+	@Transactional
+	public void closeAllAuction(Long curationSeq, Long userSeq) {
+
+		Curation curation = curationRepository.findById(curationSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+		// 작가 본인이 아니면 경매 종료 불가
+		if (curation.getArtist().getId() == userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<CurationArt> curationArtList
+			= curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+
+		for (int i = 0; i < curationArtList.size(); i++) {
+			Auction auction = auctionRepository.findById(curationArtList.get(i).getId()).orElse(null);
+			if (auction.getAuctionStatus() == AuctionStatus.INIT
+				|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
+				auction.setAuctionStatus(AuctionStatus.FAILED);
+				auction.setAuctionStatusTime(now());
+				auctionRepository.save(auction);
+			}
+		}
 	}
 }
