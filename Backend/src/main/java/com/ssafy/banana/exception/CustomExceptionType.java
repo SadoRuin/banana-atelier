@@ -20,7 +20,8 @@ public enum CustomExceptionType {
 	FILE_EXTENSION_ERROR(HttpStatus.FORBIDDEN, "E015", "jpg, jpeg, png의 이미지 파일만 업로드해주세요."),
 	MAX_UPLOAD_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "E016", "한번에 업로드 가능한 용량(10MB)을 초과했습니다."),
 	PASSWORD_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "E017", "비밀번호가 일치하지 않습니다."),
-	ARTIST_FOLLOW_CONFLICT(HttpStatus.CONFLICT, "E018", "이미 팔로우한 작가입니다.");
+	ARTIST_FOLLOW_CONFLICT(HttpStatus.CONFLICT, "E018", "이미 팔로우한 작가입니다."),
+	ARTIST_NOT_FOUND(HttpStatus.NOT_FOUND, "E019", "작가가 아닌 사용자입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
