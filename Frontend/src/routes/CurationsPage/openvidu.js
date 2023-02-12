@@ -213,7 +213,6 @@ class App extends Component {
       },
       () => {
         var mySession = this.state.sessionScreen;
-        // var mySession = this.state.sessionScreen;d
         this.getToken().then((token) => {
           mySession
             .connect(token)
@@ -300,14 +299,7 @@ class App extends Component {
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              <h1 id="session-title">{mySessionId}</h1>
-              {/* <input
-                                className="btn btn-large btn-danger"
-                                type="button"
-                                id="buttonLeaveSession"
-                                onClick={this.leaveSession}
-                                value="나가기"
-                            /> */}
+              {/* <h1 id="session-title">{mySessionId}</h1> */}
 
               <button
                 className="btn btn-large btn-danger"
@@ -359,7 +351,9 @@ class App extends Component {
                                 ) : null}
                             {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
             </div>
+          component 위치
           </div>
+          
         ) : null}
       </div>
     );
