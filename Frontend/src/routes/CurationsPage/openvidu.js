@@ -203,49 +203,8 @@ class App extends Component {
     return await this.createToken(sessionId);
   }
 
-  joinSession2() {
-    console.log("start");
-    this.OVee = new OpenVidu();
-    console.log("start yet?");
-    this.setState(
-      {
-        sessionScreen: this.OVee.initSession(),
-      },
-      () => {
-        var mySession = this.state.sessionScreen;
-        this.getToken().then((token) => {
-          mySession
-            .connect(token)
-            .then(async () => {
-              let publisher = await this.OVee.initPublisherAsync("html-element-id", {
-                videoSource: "screen",
-              });
+  
 
-              publisher.once("accessAllowed", (event) => {
-                publisher.stream
-                  .getMediaStream()
-                  .getVideoTracks()[0]
-                  .addEventListener("ended", () => {
-                    console.log('User pressed the "Stop sharing" button');
-                  });
-                mySession.publish(publisher);
-              });
-
-              publisher.once("accessDenied", (event) => {
-                console.log("ScreenShare: Access Denied");
-              });
-            })
-            .catch((error) => {
-              console.log(
-                "There was an error connecting to the session:",
-                error.code,
-                error.message
-              );
-            });
-        });
-      }
-    );
-  }
 
   render() {
     const mySessionId = this.state.mySessionId;
@@ -311,27 +270,12 @@ class App extends Component {
                 나가기
               </button>
 
-              <button
-                className="btn btn-large btn-danger"
-                type="button"
-                id="buttonScreenShare"
-                onClick={this.joinSession2}
-                value="joinSession2"
-              >
-                joinSession2
-              </button>
+              
             </div>
 
             {this.state.mainStreamManager !== undefined ? (
               <div id="main-video" className="col-md-6">
                 <UserVideoComponent streamManager={this.state.mainStreamManager} />
-                {/* <input
-                                    className="btn btn-large btn-success"
-                                    type="button"
-                                    id="buttonSwitchCamera"
-                                    onClick={this.switchCamera}
-                                    value="Switch Camera"
-                                /> */}
               </div>
             ) : null}
             <div id="video-container" className="col-md-6">
@@ -340,47 +284,48 @@ class App extends Component {
                                 <UserVideoComponent
                                 streamManager={this.state.publisher} />
                                 </div>
-                            ) : null}
+                            ) : null} */}
                             {this.state.subscribers.map((sub, i) => (
-                                <div key={i} className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(sub)}>
+                              <div key={i} className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(sub)}>
                                 <UserVideoComponent streamManager={sub} />
                                 </div>
                             ))}
-                            {this.state.publisher !== undefined ? (
-                                <div> {this.state.publisher} </div>
-                                ) : null}
+                            {/* {this.state.publisher !== undefined ? (
+                              <div> {this.state.publisher} </div>
+                              ) : null}
                             {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
+
+                            
             </div>
           component 위치
           </div>
-          
         ) : null}
       </div>
     );
   }
-
+  
   /**
    * --------------------------------------------
    * GETTING A TOKEN FROM YOUR APPLICATION SERVER
    * --------------------------------------------
    * The methods below request the creation of a Session and a Token to
    * your application server. This keeps your OpenVidu deployment secure.
-   *
-   * In this sample code, there is no user control at all. Anybody could
-   * access your application server endpoints! In a real production
-   * environment, your application server must identify the user to allow
-   * access to the endpoints.
-   *
-   * Visit https://docs.openvidu.io/en/stable/application-server to learn
+  *
+  * In this sample code, there is no user control at all. Anybody could
+  * access your application server endpoints! In a real production
+  * environment, your application server must identify the user to allow
+  * access to the endpoints.
+  *
+  * Visit https://docs.openvidu.io/en/stable/application-server to learn
    * more about the integration of OpenVidu in your application server.
-   */
-
-  createSession(sessionId) {
-    return new Promise((resolve, reject) => {
-      var data = JSON.stringify({ customSessionId: sessionId });
-      axios
-        .post(APPLICATION_SERVER_URL + "/openvidu/api/sessions", data, {
-          headers: {
+  */
+ 
+ createSession(sessionId) {
+   return new Promise((resolve, reject) => {
+     var data = JSON.stringify({ customSessionId: sessionId });
+     axios
+     .post(APPLICATION_SERVER_URL + "/openvidu/api/sessions", data, {
+       headers: {
             Authorization: "Basic " + btoa("OPENVIDUAPP:" + OPENVIDU_SERVER_SECRET),
             "Content-Type": "application/json",
           },
