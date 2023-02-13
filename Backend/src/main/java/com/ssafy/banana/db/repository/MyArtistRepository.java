@@ -10,6 +10,7 @@ import com.ssafy.banana.db.entity.MyArtistId;
 import com.ssafy.banana.db.entity.User;
 
 public interface MyArtistRepository extends JpaRepository<MyArtist, MyArtistId> {
+
 	List<MyArtist> findAllByArtist(Artist artist);
 
 	List<MyArtist> findAllByUser(User user);
