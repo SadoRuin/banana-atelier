@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useOutletContext } from "react-router-dom";
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import {TabMenu, TabContent} from "../../components/commons/TabMenuComponent";
 
 export async function loader ({params}) {
-  const [nickname, userSeq] = params.nickname_user_seq.split('@');
-
+  const userSeq = params.nickname_user_seq.split('@')[1];
   axiosReissue();
 
   // 나의 공지, 없으면 null
@@ -16,22 +15,18 @@ export async function loader ({params}) {
   const followingNotices = await axiosAuth(`notices/${userSeq}/following`)
     .then(response => response.data)
     .catch(() => null)
-  // 이 마이페이지 주인이 작가인지 알기위해 필요함
-  const userData = await axiosAuth.get(`users/profile/${userSeq}`)
-    .then(response => response.data)
-    .catch(error => console.log(error))
 
   console.log(userNotices);
   console.log(followingNotices);
-  return [nickname, userSeq, userData, userNotices, followingNotices]
+  return [userSeq, userNotices, followingNotices]
 }
 
 
 function NoticesRoot() {
-  const [nickname, userSeq, userData, userNotices, followingNotices] = useLoaderData();
+  const [isMyPage, isArtist] = useOutletContext();
+  const [userSeq, userNotices, followingNotices] = useLoaderData();
+
   const [noticeIndex, setNoticeIndex] = useState(0)
-  const isMyPage = nickname === localStorage.getItem('nickname');
-  const isArtist = userData.role === "ROLE_ARTIST"
 
   console.log(userSeq)
   const noticesMenuData = [];
