@@ -17,19 +17,15 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
-import com.ssafy.banana.dto.request.MyArtRequest;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
-import com.ssafy.banana.exception.CustomException;
-import com.ssafy.banana.exception.CustomExceptionType;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
@@ -43,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArtController {
 
-	private static final String AUTHORIZATION = "Authorization";
+	private static final String BLNAK = " ";
 	private final TokenProvider tokenProvider;
 	private final ArtService artService;
 
@@ -52,10 +48,9 @@ public class ArtController {
 	public ResponseEntity uploadArt(
 		@RequestPart(value = "artFile", required = false) MultipartFile artFile,
 		@RequestPart ArtRequest artRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-
+		String token = Authorization.split(BLNAK)[1];
 		artService.uploadArt(artFile, artRequest, token);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("작품이 업로드되었습니다."));
@@ -80,15 +75,11 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "나의 작품 리스트", notes = "작가의 작품 목록을 반환합니다")
-	@GetMapping("/{userSeq}")
-	public ResponseEntity<List<ArtResponse>> getMyArtList(
-		@PathVariable Long userSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+	@GetMapping
+	public ResponseEntity<List<ArtResponse>> getMyArtList(@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
+		Long userSeq = tokenProvider.getSubject(token);
 		List<ArtResponse> artList = artService.getMyArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
@@ -97,31 +88,21 @@ public class ArtController {
 	@ApiOperation(value = "대표 작품 리스트", notes = "작가의 대표작 목록을 반환합니다")
 	@GetMapping("/{userSeq}/masterpiece")
 	public ResponseEntity getMasterpieceList(
-		@PathVariable Long userSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@PathVariable("userSeq") Long artistSeq) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long tokenUserSeq = tokenProvider.getSubject(token);
-		List<ArtResponse> artList = artService.getMasterpieceList(userSeq, tokenUserSeq);
+		List<ArtResponse> artList = artService.getMasterpieceList(artistSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
 	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
-	@GetMapping("/{userSeq}/like")
+	@GetMapping("/like")
 	public ResponseEntity<List<ArtResponse>> getLikedArtList(
-		@PathVariable Long userSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long tokenUserSeq = tokenProvider.getSubject(token);
-		List<ArtResponse> artList = artService.getLikedArtList(userSeq, tokenUserSeq);
+		String token = Authorization.split(BLNAK)[1];
+		Long userSeq = tokenProvider.getSubject(token);
+		List<ArtResponse> artList = artService.getLikedArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
@@ -131,16 +112,13 @@ public class ArtController {
 	@PutMapping("/masterpiece")
 	public ResponseEntity<?> setMasterpieceList(
 		@RequestBody List<MasterpieceRequest> masterpieceRequestList,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
 		artService.setMasterpieceList(masterpieceRequestList, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("대표 작품 설정 완료"));
 	}
 
 	@ApiOperation(value = "카테고리별 작품 리스트", notes = "카테고리별 작품 목록을 반환합니다")
@@ -174,16 +152,8 @@ public class ArtController {
 	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
 	@GetMapping("/detail/{artSeq}")
 	public ResponseEntity getArt(
-		@PathVariable Long artSeq,
-		@RequestHeader(value = AUTHORIZATION, required = false) String token) {
+		@PathVariable Long artSeq) {
 
-		if (StringUtils.isBlank(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		ArtDetailResponse artDetailResponse = artService.getArt(artSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artDetailResponse);
@@ -192,15 +162,12 @@ public class ArtController {
 	@ApiOperation(value = "작품 좋아요 추가하기", notes = "작품에 좋아요를 설정합니다")
 	@PostMapping("/like")
 	public ResponseEntity addArtLike(
-		@RequestBody MyArtRequest myArtRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestBody SeqRequest seqRequest,
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.addArtLike(myArtRequest, userSeq);
+		Art art = artService.addArtLike(seqRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
@@ -208,15 +175,12 @@ public class ArtController {
 	@ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
 	@DeleteMapping("/like")
 	public ResponseEntity deleteArtLike(
-		@RequestBody MyArtRequest myArtRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestBody SeqRequest seqRequest,
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.deleteArtLike(myArtRequest, userSeq);
+		Art art = artService.deleteArtLike(seqRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
 	}
@@ -235,12 +199,9 @@ public class ArtController {
 	@PutMapping
 	public ResponseEntity updateArt(
 		@RequestBody ArtRequest artRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
 		Art art = artService.updateArt(artRequest, userSeq);
 
@@ -253,19 +214,11 @@ public class ArtController {
 	@DeleteMapping("/delete")
 	public ResponseEntity deleteArt(
 		@RequestBody SeqRequest seqRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
+		String token = Authorization.split(BLNAK)[1];
 		artService.deleteArt(seqRequest.getSeq(), token);
 
 		return ResponseEntity.ok(new SuccessResponse("작품이 삭제되었습니다."));
 	}
-
-	private static String getToken(String token) {
-		if (token.substring(0, 7).equals("Bearer ")) {
-			token = token.substring("Bearer ".length());
-		}
-		return token;
-	}
-
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class NoticeController {
 	private final TokenProvider tokenProvider;
 	private final NoticeService noticeService;
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "공지사항 업로드", notes = "나의 공지사항을 업로드합니다")
 	@PostMapping
 	public ResponseEntity uploadNotice(
@@ -50,6 +52,7 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("공지사항이 등록되었습니다."));
 	}
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "나의 공지사항 리스트", notes = "작가 본인의 공지사항 목록을 반환합니다")
 	@GetMapping
 	public ResponseEntity<List> getMyNoticeList(@RequestHeader String Authorization) {
@@ -81,6 +84,7 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(noticeResponse);
 	}
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "공지사항 수정", notes = "등록된 공지사항을 수정합니다")
 	@PutMapping
 	public ResponseEntity updateNotice(@RequestBody NoticeRequest noticeRequest,
@@ -93,6 +97,7 @@ public class NoticeController {
 		return ResponseEntity.status(HttpStatus.OK).body(notice);
 	}
 
+	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
 	@DeleteMapping("/{notice_seq}")
 	public ResponseEntity deleteNotice(@PathVariable("notice_seq") Long noticeSeq,
