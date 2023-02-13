@@ -59,7 +59,7 @@ import { loader as ArtsMyPageLoader } from "./routes/MyPage/ArtsRoot";
 // import ArtsMyCollections from "./routes/MyPage/ArtsMyCollections";
 // 공지사항탭
 import NoticesRoot from "./routes/MyPage/NoticesRoot";
-import { loader as NoticesLoader } from "./routes/MyPage/NoticesRoot";
+import { loader as NoticesLoader, action as NoticesAction } from "./routes/MyPage/NoticesRoot";
 // import NoticesMine from "./routes/MyPage/NoticesMine";
 // import NoticesFollowing from "./routes/MyPage/NoticesFollowing";
 import NoticesDetail, {loader as noticeLoader} from "./routes/MyPage/NoticesDetail"
@@ -146,6 +146,7 @@ const router = createBrowserRouter(
               path="notices"
               element={ <NoticesRoot /> }
               loader={ NoticesLoader }
+              action={ NoticesAction }
             >
               {/*<Route*/}
               {/*  path="mine"*/}
