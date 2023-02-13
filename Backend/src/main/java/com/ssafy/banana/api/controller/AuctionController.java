@@ -1,6 +1,7 @@
 package com.ssafy.banana.api.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ssafy.banana.api.service.AuctionService;
 import com.ssafy.banana.db.entity.AuctionJoin;
@@ -38,7 +40,7 @@ public class AuctionController {
 
 	@ApiOperation(value = "경매 참가 신청", notes = "해당 큐레이션 작품에 대해 경매 참가 신청합니다")
 	@ApiImplicitParam(name = "curationArtSeq", value = "큐레이션 작품 번호", required = true)
-	@PostMapping("/join/{curationArtSeq}")
+	@GetMapping("/join/{curationArtSeq}")
 	public ResponseEntity joinAuction(
 		@PathVariable Long curationArtSeq,
 		@RequestHeader String Authorization) {
@@ -53,7 +55,7 @@ public class AuctionController {
 	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "경매 시작", notes = "해당 큐레이션 작품들에 대한 경매 정보를 모두 생성합니다")
 	@ApiImplicitParam(name = "curationSeq", value = "큐레이션 번호", required = true)
-	@PostMapping("/start/{curationSeq}")
+	@GetMapping("/start/{curationSeq}")
 	public ResponseEntity startAuction(
 		@PathVariable Long curationSeq,
 		@RequestHeader String Authorization) {
@@ -114,4 +116,21 @@ public class AuctionController {
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
+	@ApiOperation(value = "경매 호스트 접속", notes = "경매 자동호스트에 접속")
+	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
+	@GetMapping(value = "/connect/{curationArtSeq}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public ResponseEntity<SseEmitter> connectAuction(
+		@PathVariable long curationArtSeq) {
+
+		return ResponseEntity.ok(auctionService.connectAuction(curationArtSeq));
+	}
+
+	@ApiOperation(value = "경매 호스트 접속", notes = "경매 자동호스트에 접속")
+	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
+	@GetMapping("/count/{curationArtSeq}")
+	public ResponseEntity<SuccessResponse> countAuction(
+		@PathVariable long curationArtSeq) {
+		auctionService.countAuction(curationArtSeq);
+		return ResponseEntity.ok(new SuccessResponse("카운트 성공"));
+	}
 }

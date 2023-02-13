@@ -1,7 +1,5 @@
 package com.ssafy.banana.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,9 +7,11 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.ssafy.banana.dto.response.ExceptionResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionAdvice {
-	private final Logger logger = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
 
 	@ExceptionHandler(value = CustomException.class)
 	public ResponseEntity<ExceptionResponse> customExceptionHandler(CustomException e) {
@@ -20,23 +20,23 @@ public class GlobalExceptionAdvice {
 
 	@ExceptionHandler(value = RuntimeException.class)
 	public ResponseEntity<ExceptionResponse> runtimeExceptionHandler(RuntimeException e) {
-		logger.info(e.getMessage());
+		log.info(e.getMessage());
 		return getResponseEntity(CustomExceptionType.RUNTIME_EXCEPTION);
 	}
 
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ExceptionResponse> exceptionHandler(Exception e) {
-		logger.info(e.getMessage());
+		log.info(e.getMessage());
 		return getResponseEntity(CustomExceptionType.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(value = MaxUploadSizeExceededException.class)
 	public ResponseEntity<ExceptionResponse> maxUploadSizeExceededExceptionHandler(Exception e) {
-		logger.info(e.getMessage());
+		log.info(e.getMessage());
 		return getResponseEntity(CustomExceptionType.MAX_UPLOAD_SIZE_EXCEEDED);
 	}
 
-	private ResponseEntity getResponseEntity(CustomExceptionType exceptionType) {
+	private ResponseEntity<ExceptionResponse> getResponseEntity(CustomExceptionType exceptionType) {
 		return ResponseEntity
 			.status(exceptionType.getHttpStatus())
 			.body(ExceptionResponse.builder()

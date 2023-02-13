@@ -2,8 +2,6 @@ package com.ssafy.banana.api.service;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -23,11 +21,12 @@ import com.ssafy.banana.util.SecurityUtil;
 
 import io.jsonwebtoken.io.Encoders;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
-	private final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -75,7 +74,7 @@ public class AuthService {
 	}
 
 	public void logout(String token) {
-		logger.info(token);
+		log.info(token);
 		String email = securityUtil.getCurrentUsername()
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 		String key = "RT:" + Encoders.BASE64.encode(email.getBytes());
@@ -88,7 +87,7 @@ public class AuthService {
 		redisUtil.setDataExpire(token, token, expiration - now.getTime());
 
 		SecurityContextHolder.getContext().setAuthentication(null);
-		logger.info("로그아웃 유저 이메일 : '{}'", email);
+		log.info("로그아웃 유저 이메일 : '{}'", email);
 	}
 
 	public void checkPassword(String password) {
