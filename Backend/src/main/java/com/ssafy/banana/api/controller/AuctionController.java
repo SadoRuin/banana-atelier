@@ -57,15 +57,18 @@ public class AuctionController {
 
 	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "경매 시작", notes = "해당 큐레이션 작품들에 대한 경매 정보를 모두 생성합니다")
-	@ApiImplicitParam(name = "curationSeq", value = "큐레이션 번호", required = true)
-	@PostMapping("/start/{curationSeq}")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "seq", value = "큐레이션 번호", required = true),
+		@ApiImplicitParam(name = "Authorization", value = "token", required = true),
+	})
+	@PostMapping("/start")
 	public ResponseEntity startAuction(
-		@PathVariable Long curationSeq,
+		@RequestBody SeqRequest seqRequest,
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		auctionService.createAuction(curationSeq, userSeq);
+		auctionService.createAuction(seqRequest.getSeq(), userSeq);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("경매가 시작됩니다."));
 	}
