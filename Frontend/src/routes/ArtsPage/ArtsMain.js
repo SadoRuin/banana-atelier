@@ -1,7 +1,7 @@
 import React from 'react'
 import axiosCustom from '../../_actions/axiosCustom';
 import ArtItem from "../../components/commons/artItem";
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, Link } from 'react-router-dom';
 
 
 export async function loader () {
@@ -28,15 +28,14 @@ function ArtsMain() {
     <div>
 
       {/* 클릭하면 카테고리 변경되게 하자 */}
-      <ul className="category">
-        <li id="illustrations" value="일러스트레이션">일러스트레이션</li>
-        <li id="digital_arts" value="디지털 아트">디지털 아트</li>
-        <li id="crafts" value="공예">공예</li>
-        <li id="characters" value="캐릭터 디자인" >캐릭터 디자인</li>
-        <li id="fine_arts" value="파인아트">파인아트</li>
-        <li id="photography" value="포토그래피">포토그래피</li>
-        <li id="typography" value="타이포그래피">타이포그래피</li>
-      </ul>
+
+      <Link className='link' to="1">일러스트레이션</Link><br />
+      <Link className='link' to="2">캐릭터 디자인</Link><br />
+      <Link className='link' to="3">디지털 아트</Link><br />
+      <Link className='link' to="4">타이포그래피</Link><br />
+      <Link className='link' to="5">포토그래피</Link><br />
+      <Link className='link' to="6">파인아트</Link><br />
+      <Link className='link' to="7">공예</Link>
 
       {/* 정렬 탭도.. */}
       <div className="sort_tab">
