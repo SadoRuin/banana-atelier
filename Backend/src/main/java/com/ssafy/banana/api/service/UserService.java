@@ -1,12 +1,15 @@
 package com.ssafy.banana.api.service;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.banana.db.entity.Artist;
@@ -70,7 +73,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserBoxDto getUserInfo(long id) {
+	public UserBoxDto<? extends UserDto> getUserInfo(long id) {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
@@ -84,7 +87,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserBoxDto getMyUserInfo() {
+	public UserBoxDto<? extends UserDto> getMyUserInfo() {
 		User user = securityUtil.getCurrentUsername()
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
@@ -165,10 +168,10 @@ public class UserService {
 			.flatMap(userRepository::findByEmail)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-		if (!updateUserRequest.getNickname().equals("")) {
+		if (StringUtils.hasText(updateUserRequest.getNickname())) {
 			user.setNickname(updateUserRequest.getNickname());
 		}
-		if (!updateUserRequest.getPassword().equals("")) {
+		if (StringUtils.hasText(updateUserRequest.getPassword())) {
 			user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
 		}
 		if (!imageFile.isEmpty()) {
@@ -222,6 +225,15 @@ public class UserService {
 		int like = artist.getUser().getArtistLikeCount();
 		artist.getUser().setArtistLikeCount(like + 1);
 		artistRepository.save(artist);
+	}
+
+	public List<Long> getFollowList(String token) {
+		long userSeq = tokenProvider.getSubject(token);
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		return myArtistRepository.findAllByUser(user)
+			.stream().map(myArtist -> myArtist.getArtist().getId()).collect(Collectors.toList());
 	}
 
 	@Transactional

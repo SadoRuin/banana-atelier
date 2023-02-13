@@ -17,7 +17,7 @@ import lombok.Setter;
 public class SuccessResponse {
 	@ApiModelProperty(name = "상태", example = "success")
 	private final String code = "success";
-	@ApiModelProperty(name = "메시지", example = "가입이 왼료되었습니다.")
+	@ApiModelProperty(name = "메시지", example = "ㅇㅇ이 왼료되었습니다.")
 	private String message;
 
 }
