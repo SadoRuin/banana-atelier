@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {Form, useLoaderData, useNavigate} from 'react-router-dom';
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
-import ArtItemMyPage from "../../components/commons/ArtItemMyPage";
+import MasterpieceItem from "../../components/MyPage/MasterpieceItem";
 
 export async function loader({params}) {
   const userSeq = params.nickname_user_seq.split('@')[1];
@@ -16,6 +16,24 @@ export async function loader({params}) {
     .catch(() => null)
 
   return [userArts, userMasterpiece];
+}
+
+export async function action ({request}) {
+  const formData = await request.formData();
+  for (const [key, value] of formData){
+    console.log(key, value);
+  }
+
+  const body = []
+  for (const [key, value] of formData){
+    body.push({
+      [key]: value,
+      represent: true
+    })
+  }
+  console.log(body);
+  await axiosAuth.put('arts/masterpiece', body)
+  return null
 }
 
 function SetMasterpiece() {
@@ -52,12 +70,13 @@ function SetMasterpiece() {
         </div>
       </div>
 
-      <Form method="post">
+      <Form method="post" id="masterpiece__form">
         <div className="selected_masterpiece">
           <h4>현재 대표작품</h4>
           { selectedPieces.length?
-            selectedPieces.map(arts => <ArtItemMyPage key={arts.artSeq} artName={arts.artName} artThumbnail={arts.artThumbnail}/>) :
-            <div>선택된 작품이 없습니다.</div>
+            selectedPieces.map(arts =>
+              <MasterpieceItem key={arts.artSeq} artName={arts.artName} userSeq={arts.userSeq} artThumbnail={arts.artThumbnail} />)
+            : <div>선택된 작품이 없습니다.</div>
           }
         </div>
 
@@ -68,16 +87,20 @@ function SetMasterpiece() {
               return (
                 <label key={`my-page__masterpiece-all-${arts.id}`}>
                   {/*<img src="작품img" alt="작품 이미지"/> */}
-                  <input type="checkbox" name="selected" value={arts.artSeq} onChange={handleSelected} />
-                  <ArtItemMyPage artName={arts.artName} artThumbnail={arts.artThumbnail} />
+                  <input type="checkbox" name="artSeq" value={arts.artSeq} onChange={handleSelected} />
+                  <MasterpieceItem
+                    artName={arts.artName}
+                    userSeq={arts.userSeq}
+                    artThumbnail={arts.artThumbnail}
+                  />
                 </label>
               )
             }) }
             <button type="submit">저장하기</button>
             <button onClick={()=>{ navigate(-1) }}>취소</button>
-
         </div>
       </Form>
+
     </div>
   )
 }

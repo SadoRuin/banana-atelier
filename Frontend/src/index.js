@@ -80,10 +80,10 @@ import EditProfile from "./routes/MyPage/EditProfile";
 
 // 작품 업로드
 import Upload from "./routes/MyPage/Upload"
-import { action as UploadLoader } from "./routes/MyPage/Upload"
+import { action as UploadAction } from "./routes/MyPage/Upload"
 // 대표작품 설정
 import SetMasterpiece from "./routes/MyPage/SetMasterpiece"
-import { loader as SetMasterpieceLoader } from "./routes/MyPage/SetMasterpiece"
+import { loader as SetMasterpieceLoader, action as SetMasterpieceAction } from "./routes/MyPage/SetMasterpiece"
 // import CommissionsRegister from "./routes/CommissionsPage/CommissionsRegister";
 
 
@@ -184,8 +184,8 @@ const router = createBrowserRouter(
               {/*<Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />*/}
 
               <Route path="edit_profile" element={ <EditProfile /> }></Route>
-              <Route path="upload" element={ <Upload /> } action={UploadLoader}></Route>
-              <Route path="set_masterpiece" element={ <SetMasterpiece />} loader={SetMasterpieceLoader}></Route>
+              <Route path="upload" element={ <Upload /> } action={UploadAction} ></Route>
+              <Route path="set_masterpiece" element={ <SetMasterpiece />} loader={SetMasterpieceLoader} action={SetMasterpieceAction}></Route>
             </Route>
           </Route>
 
