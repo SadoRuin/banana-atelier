@@ -27,6 +27,7 @@ import { loader as LandingLoader } from './routes/LandingPage/LandingPage'
 
 // 작품 페이지
 import ArtsMain from "./routes/ArtsPage/ArtsMain";
+import { loader as ArtsLoader } from "./routes/ArtsPage/ArtsMain";
 import ArtsDetail from "./routes/ArtsPage/ArtsDetail";
 import { loader as ArtsDetailLoader, action as ArtsDetailAction } from "./routes/ArtsPage/ArtsDetail";
 
@@ -104,7 +105,7 @@ const router = createBrowserRouter(
           <Route index element={ <LandingPage /> } loader={LandingLoader} errorElement={ <Error /> } />
 
           {/* 작품 페이지 */}
-          <Route path="arts" element={ <ArtsMain /> } />
+          <Route path="arts" element={ <ArtsMain /> } loader={ArtsLoader} />
           <Route path=":nickname/:art_seq" element={ <ArtsDetail /> } loader={ArtsDetailLoader} action={ArtsDetailAction} />
 
           {/* 큐레이션 페이지 */}
