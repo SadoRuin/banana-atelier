@@ -74,15 +74,15 @@ public class AuctionController {
 	}
 
 	@ApiOperation(value = "경매 정보", notes = "경매시 필요한 정보를 반환합니다")
-	@ApiImplicitParam(name = "curationSeq", value = "큐레이션 번호", required = true)
-	@GetMapping("/{curationSeq}")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "seq", value = "큐레이션 번호", required = true),
+		@ApiImplicitParam(name = "Authorization", value = "token", required = true),
+	})
+	@PostMapping
 	public ResponseEntity getAuctionInfo(
-		@PathVariable Long curationSeq,
-		@RequestHeader String Authorization) {
-
-		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
-		AuctionResponse auctionResponse = auctionService.getAuctionInfo(curationSeq, userSeq);
+		@RequestBody SeqRequest seqRequest) {
+		
+		AuctionResponse auctionResponse = auctionService.getAuctionInfo(seqRequest.getSeq());
 
 		return ResponseEntity.status(HttpStatus.OK).body(auctionResponse);
 	}

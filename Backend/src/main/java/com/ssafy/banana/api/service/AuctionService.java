@@ -147,39 +147,27 @@ public class AuctionService {
 	}
 
 	/**
-	 * 경매 정보
+	 * 경매 정보 (현재 진행 경매)
 	 * @param curationSeq 큐레이션 pk
-	 * @param userSeq 로그인 유저 pk
 	 * @return 경매 정보 응답 DTO
 	 */
 	@Transactional
-	public AuctionResponse getAuctionInfo(Long curationSeq, Long userSeq) {
+	public AuctionResponse getAuctionInfo(Long curationSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		User artist = userRepository.findById(curation.getArtist().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
 		// 경매 가능한 작품 중, 경매가 진행되지 않은 작품
 		Auction auction = auctionRepository.findAuctionInfo(curationSeq, AuctionStatus.INIT)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
 
-		log.error("auction = {}", auction);
-
 		CurationArt curationArt = auction.getCurationArt();
 		// 현재 나타낼 경매 작품 정보
-		Art art = artRepository.findById(curationArt.getArt().getId())
+		Art art = artRepository.findById(auction.getCurationArt().getArt().getId())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
-		// 입찰 로그 초기화 (초기 입찰자는 작가로 세팅)
-		AuctionBidLog auctionBidLog = AuctionBidLog.builder()
-			.auctionBidPrice(auction.getAuctionStartPrice())
-			.auctionBidTime(now())
-			.user(artist)
-			.auction(auction)
-			.build();
-		auctionBidLogRepository.save(auctionBidLog);
-
+		LocalDateTime currentTime = LocalDateTime.now();
+		User artist = curation.getArtist().getUser();
 		AuctionResponse auctionResponse = AuctionResponse.builder()
 			.artistSeq(artist.getId())
 			.artistNickname(artist.getNickname())
@@ -189,8 +177,16 @@ public class AuctionService {
 			.auctionStartPrice(auction.getAuctionStartPrice())
 			.auctionCurrentPrice(auction.getAuctionStartPrice())
 			.auctionBidPrice(auction.getAuctionStartPrice() + curationArt.getAuctionGap())
+			.auctionEndTime(currentTime.plusMinutes(1))
 			.message("[HOST] 경매를 시작하겠습니다.")
 			.build();
+
+		auction
+			.setAuctionStatus(AuctionStatus.ONGOING)
+			.setAuctionStatusTime(currentTime)
+			.setAuctionStartTime(currentTime)
+			.setAuctionEndTime(currentTime.plusMinutes(1));
+		auctionRepository.save(auction);
 
 		return auctionResponse;
 	}
