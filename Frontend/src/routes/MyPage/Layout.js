@@ -1,7 +1,7 @@
 import React from 'react';
 import {Outlet, NavLink, Form, useLoaderData, redirect} from "react-router-dom";
-import { axiosAuth } from "../../_actions/axiosAuth";
-
+import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
+import { useState } from 'react';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { YellowBtn } from "../../components/commons/buttons";
 import './Layout.css'
@@ -13,6 +13,10 @@ export async function loader ({params}) {
     .then(response => response.data)
     .catch(error => error.response.status)
 
+  const likeList = await axiosAuth.get("users/follow")
+    .then(response => response.data)
+
+  console.log('likeList',likeList)
   console.log(userData);
   
   // 로그아웃 된 경우
@@ -34,18 +38,20 @@ export async function loader ({params}) {
       statusText: "사용자를 찾을 수 없습니다",
     });
   }
-  return [userSeq, userData];
-}
+  return [nickname, userSeq, userData, likeList];
+
 
 
 export default function Layout() {
-  const [userSeq, userData] = useLoaderData();
-
-  console.log(userData);
-
+  const [nickname, userSeq, userData, likeList] = useLoaderData();
   const isMyPage = userSeq === localStorage.getItem('userSeq');
   const isArtist = userData.role === 'ROLE_ARTIST'
 
+  let wonderValue = likeList?.find(like => +like === +userSeq) || false
+  console.log(wonderValue)
+  const [wonder, setWonder] = useState(wonderValue)
+
+  let content = !wonder? "팔로우": "팔로우 취소"
 
   return (
     // 얘는 Mypage의 layout임!!! 마이페이지 어디를 가든 변하지 않고 항상 있어야 함 (==사이드바랑 위의 메뉴탭 4개)
@@ -65,17 +71,34 @@ export default function Layout() {
           </div> : null
         }
 
-        {/* userSeq가 내가 아니면 남의 버튼 렌더링, 나라면 나의 버튼 렌더링 */}
-        { isMyPage ?
-          <div id="profile_buttons">
-            <Form action={'edit_profile'}><YellowBtn type="submit">정보 수정하기</YellowBtn></Form>
-            <Form action={'upload'}><YellowBtn type="submit">작품 업로드</YellowBtn></Form>
-          </div>
-          :
-          <div id="profile_buttons">
-            <YellowBtn id='follow'>팔로우버튼</YellowBtn>
-          </div>
-        }
+          {/* userSeq가 내가 아니면 남의 버튼 렌더링, 나라면 나의 버튼 렌더링 */}
+          { isMyPage ?
+            <div id="profile_buttons">
+              <Form action={'edit_profile'}><button type="submit">정보 수정하기</button></Form>
+              <Form action={'upload'}><button type="submit">작품 업로드</button></Form>
+            </div>
+            :
+            <div id="profile_buttons">
+              <form onSubmit={event => {
+                event.preventDefault()
+
+                if (!wonder) {
+                  let body = {"seq": +userSeq}
+                  axiosReissue()
+                  axiosAuth.post("users/follow", body)
+                    .then(response => console.log('팔로우 성공', response))
+                } else if (wonder) {
+                  let body = {"seq": +userSeq}
+                  axiosReissue()
+                  axiosAuth.delete("users/follow", {data: body})
+                    .then(response => console.log('팔로우 취소', response))
+                }
+                setWonder(prev=>!prev)
+              }}>
+                <button id='follow'>{content}</button>
+              </form>
+            </div>
+          }
       </div>
 
       <div className="my-page__content">
@@ -95,4 +118,4 @@ export default function Layout() {
 
     </div>
   );
-}
+}}
