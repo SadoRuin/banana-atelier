@@ -91,6 +91,7 @@ public class AuctionController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "userSeq", value = "작가 번호", required = true),
 		@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true),
+		@ApiImplicitParam(name = "Authorization", value = "token", required = true)
 	})
 	@PostMapping("/bid")
 	public ResponseEntity updateAuction(

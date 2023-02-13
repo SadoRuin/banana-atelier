@@ -202,13 +202,14 @@ public class AuctionService {
 
 		Auction auction = auctionRepository.findById(auctionRequest.getCurationArtSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		CurationArt curationArt = curationArtRepository.findById(auction.getCurationArt().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
-		Curation curation = curationRepository.findById(curationArt.getCuration().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
+		// 진행 중인 경매가 아님
+		if (auction.getAuctionStatus() != AuctionStatus.ONGOING) {
+			throw new CustomException(CustomExceptionType.AUCTION_NOT_ONGOING);
+		}
 		// 작가는 본인의 경매 참여 불가
-		if (curation.getArtist().getId() == userSeq) {
+		Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+		if (artistSeq == userSeq) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
 		// 입찰자
@@ -219,19 +220,24 @@ public class AuctionService {
 		AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
 			auctionRequest.getCurationArtSeq());
 
+		LocalDateTime currentTime = LocalDateTime.now();
 		// 입찰 로그 기록
 		auctionBidLog = AuctionBidLog.builder()
 			.auctionBidPrice(auctionBidLog.getAuctionBidPrice() + auction.getAuctionGap())
-			.auctionBidTime(now())
+			.auctionBidTime(currentTime)
 			.user(user)
 			.auction(auction)
 			.build();
 		auctionBidLogRepository.save(auctionBidLog);
 
+		auction.setAuctionEndTime(currentTime.plusMinutes(1));
+		auctionRepository.save(auction);
+
 		int currentPrice = auctionBidLog.getAuctionBidPrice();
 		AuctionUpdateResponse auctionUpdateResponse = AuctionUpdateResponse.builder()
 			.auctionCurrentPrice(currentPrice)
 			.auctionBidPrice(currentPrice + auction.getAuctionGap())
+			.auctionEndTime(auction.getAuctionEndTime())
 			.message(String.format("[ %s ] 님의 입찰가 %d원", user.getNickname(), currentPrice))
 			.build();
 
