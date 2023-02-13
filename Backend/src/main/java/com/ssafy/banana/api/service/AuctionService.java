@@ -31,11 +31,9 @@ import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuctionService {
 
 	private final UserRepository userRepository;
@@ -248,6 +246,7 @@ public class AuctionService {
 	 * 현재 경매 종료
 	 * @param curationArtSeq 큐레이션 작품 pk
 	 */
+	@Transactional
 	public void closeOneAuction(Long curationArtSeq) {
 
 		Auction auction = auctionRepository.findById(curationArtSeq)
@@ -288,21 +287,42 @@ public class AuctionService {
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 		// 작가 본인이 아니면 경매 종료 불가
-		if (curation.getArtist().getId() == userSeq) {
+		if (curation.getArtist().getId() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		List<CurationArt> curationArtList
 			= curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
+		int closeAuctionCount = 0;
 		for (int i = 0; i < curationArtList.size(); i++) {
 			Auction auction = auctionRepository.findById(curationArtList.get(i).getId()).orElse(null);
 			if (auction.getAuctionStatus() == AuctionStatus.INIT
 				|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
-				auction.setAuctionStatus(AuctionStatus.FAILED);
-				auction.setAuctionStatusTime(now());
+				// 최근 입찰자가 초기 세팅(작가)이면 FAILED
+				Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+				AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
+					curationArtList.get(i).getId());
+				if (auctionBidLog.getUser().getId() == artistSeq) {
+					auction.setAuctionStatus(AuctionStatus.FAILED);
+				} else {
+					auction
+						.setAuctionStatus(AuctionStatus.SUCCESS)
+						.setAuctionEndPrice(auctionBidLog.getAuctionBidPrice())
+						.setUser(auctionBidLog.getUser());
+				}
+
+				LocalDateTime currentTime = LocalDateTime.now();
+				auction
+					.setAuctionStatusTime(currentTime)
+					.setAuctionEndTime(currentTime);
 				auctionRepository.save(auction);
+				closeAuctionCount++;
 			}
+		}
+		// 모든 경매가 이미 종료됨
+		if (closeAuctionCount == 0) {
+			throw new CustomException(CustomExceptionType.AUCTION_CLOSE_CONFLICT);
 		}
 	}
 }

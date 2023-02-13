@@ -3,9 +3,6 @@ package com.ssafy.banana.api.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.AuctionService;
-import com.ssafy.banana.db.entity.AuctionJoin;
 import com.ssafy.banana.dto.request.AuctionRequest;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.AuctionResponse;
@@ -117,21 +113,21 @@ public class AuctionController {
 	}
 
 	@PreAuthorize("hasRole('ARTIST')")
-	@ApiOperation(value = "모든 경매 종료", notes = "경매를 모두 종료합니다")
+	@ApiOperation(value = "모든 경매 종료", notes = "하나의 큐레이션에 포함된 경매가 모두 종료합니다")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "userSeq", value = "작가 번호", required = true),
-		@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true),
+		@ApiImplicitParam(name = "seq", value = "큐레이션 번호", required = true),
+		@ApiImplicitParam(name = "Authorization", value = "token", required = true),
 	})
-	@DeleteMapping("/closeAll/{curationSeq}")
+	@PutMapping("/closeAll")
 	public ResponseEntity closeAllAuction(
-		@PathVariable Long curationSeq,
+		@RequestBody SeqRequest seqRequest,
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		auctionService.closeAllAuction(curationSeq, userSeq);
+		auctionService.closeAllAuction(seqRequest.getSeq(), userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("경매가 모두 종료되었습니다."));
 	}
 
 }
