@@ -18,7 +18,7 @@ export async function loader ({params}) {
     .catch(() => null)
   console.log(userArts);
   console.log(userLikes);
-  console.log(userMasterpiece)
+  console.log(userMasterpiece);
   return [userArts, userLikes, userMasterpiece]
 }
 

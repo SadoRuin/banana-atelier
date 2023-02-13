@@ -66,7 +66,8 @@ export default function Layout() {
         </nav>
 
         {/* 여기가 진짜 렌더링 해야하는 곳인데..... */}
-        <Outlet />
+        {/* 자식에게 props 전달 가능함! context를 이용한다. */}
+        <Outlet context={[isMyPage, isArtist]} />
 
       </div>
 
