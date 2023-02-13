@@ -3,11 +3,11 @@ import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
 
 export const Streamcomponent = styled.div`
-    display: flex;
+    display: inline-block;
     overflow: hidden;
     border-radius: 15px;
-    width: 600px; 
-    height: 700px;
+    height: 80px;
+    width: 180px;
   `;
 
 
