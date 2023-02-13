@@ -122,7 +122,7 @@ public class CurationService {
 		curation.setArtist(artistRepository.findById(curationRequest.getArtistSeq()).orElse(null));
 		curationRepository.save(curation);
 		curationArtRepository.deleteAllByCuration_Id(curation.getId());
-		
+
 		for (int i = 0; i < curationRequest.getCurationArtList().size(); i++) {
 			CurationArt curationArt = CurationArt.builder()
 				.isAuction(curationRequest.getCurationArtList().get(i).getIsAuction())
@@ -217,4 +217,33 @@ public class CurationService {
 		return curation;
 	}
 
+	//큐레이션명 및 큐레이션 설명에서 해당 내용 검색
+	public List<CurationDataResponse.CurationSimple> getCurationSearchList(String word) {
+		return curationRepository.findAllByCurationNameContainingOrCurationSummaryContaining(word, word)
+			.stream()
+			.map(CurationDataResponse.CurationSimple::new)
+			.collect(Collectors.toList());
+	}
+
+	//큐레이션 북마크 리스트
+	public List<CurationDataResponse.CurationSimple> getCurationBookmarkList(Long userSeq, Long tokenUserSeq) {
+		System.out.println("===============1============");
+		if (userSeq != tokenUserSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		System.out.println("===============2============");
+		List<CurationDataResponse.CurationSimple> bookMarkedCurations = curationBookmarkRepository.findAllByUser_Id(
+				userSeq)
+			.stream()
+			.map(CurationDataResponse.CurationSimple::new)
+			.collect(Collectors.toList());
+
+		System.out.println("===============3============");
+		if (bookMarkedCurations.size() > 0) {
+			System.out.println("===============4============");
+			return bookMarkedCurations;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+	}
 }

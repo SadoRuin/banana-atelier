@@ -14,4 +14,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
 	List<Curation> findAllByArtist_Id(Long artist_id);
 
+	List<Curation> findAllByCurationNameContainingOrCurationSummaryContaining(String curationName,
+		String curationSummary);
+
 }
