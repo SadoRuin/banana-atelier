@@ -1,5 +1,5 @@
 import React from 'react';
-import {Outlet, NavLink, Form, useLoaderData} from "react-router-dom";
+import {Outlet, NavLink, Form, useLoaderData, redirect} from "react-router-dom";
 import { axiosAuth } from "../../_actions/axiosAuth";
 
 import ProfileImg from "../../components/commons/ProfileImg";
@@ -11,16 +11,39 @@ export async function loader ({params}) {
 
   const userData = await axiosAuth.get(`users/profile/${userSeq}`)
     .then(response => response.data)
-    .catch(error => console.log(error))
+    .catch(error => error.response.status)
 
-  return [nickname, userSeq, userData];
+  console.log(userData);
+  
+  // 로그아웃 된 경우
+  if(userData === 401) {
+    console.log('권한이 없습니다');
+    return redirect('/login')
+  }
+  // 사용자를 찾을 수 없는 경우(userSeq가 없는 경우)
+  if(userData === 404) {
+    throw new Error("", {
+      status: 404,
+      statusText: "사용자를 찾을 수 없습니다",
+    });
+  }
+  // userSeq를 이용해 사용자를 받아왔지만, 앞의 nickname이 다른 경우
+  if (userData.nickname !== nickname) {
+    throw new Error("", {
+      status: 404,
+      statusText: "사용자를 찾을 수 없습니다",
+    });
+  }
+  return [userSeq, userData];
 }
 
 
 export default function Layout() {
-  const [nickname, userSeq, userData] = useLoaderData();
+  const [userSeq, userData] = useLoaderData();
+
   console.log(userData);
-  const isMyPage = nickname === localStorage.getItem('nickname')
+
+  const isMyPage = userSeq === localStorage.getItem('userSeq');
   const isArtist = userData.role === 'ROLE_ARTIST'
 
 
@@ -58,7 +81,6 @@ export default function Layout() {
       <div className="my-page__content">
         <nav>
           <NavLink to='.' className={({isActive}) => isActive? 'link nav-active' : 'link' } end>작품</NavLink>
-
           {/* 공지사항은 내 페이지도 아니고 작가도 아니면 아예 링크를 띄우지 말자 */}
           { (!isMyPage && !isArtist)? null : <NavLink to={ 'notices' } className={({isActive}) => isActive? 'link nav-active' : 'link' }>공지사항</NavLink>}
           <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' } className={({isActive}) => isActive? 'link nav-active' : 'link' } >큐레이션</NavLink>
