@@ -3,6 +3,7 @@ package com.ssafy.banana.api.service;
 import static java.time.LocalDateTime.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.entity.CurationArt;
 import com.ssafy.banana.db.entity.CurationBookmark;
 import com.ssafy.banana.db.entity.CurationBookmarkId;
+import com.ssafy.banana.db.entity.MyArtist;
 import com.ssafy.banana.db.entity.User;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
 import com.ssafy.banana.db.repository.ArtRepository;
@@ -245,38 +247,30 @@ public class CurationService {
 		}
 	}
 
-	// //팔로잉한 작가의 큐레이션 리스트
-	// public List<CurationDataResponse.CurationSimple> getCurationFollowingList(Long userSeq, Long tokenUserSeq) {
-	// 	if (userSeq != tokenUserSeq) {
-	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-	// 	}
-	//
-	// 	List<MyArtist> artistList = myArtistRepository.findAllByUser_Id(userSeq);
-	// 	List<CurationDataResponse.CurationSimple> curationSimpleList = null;
-	//
-	// 	for (int i = 0; i < artistList.size(); i++) {
-	// 		System.out.println("artist id : " + artistList.get(i).getArtist().getId());
-	// 	}
-	//
-	// 	if (artistList.size() > 0) {
-	// 		for (int artist = 0; artist < artistList.size(); artist++) {
-	// 			System.out.println("+++++++++++++i+++++++++:" + artist);
-	// 			List<CurationDataResponse.CurationSimple> followingCurations = curationRepository.findAllByArtist_Id(
-	// 					artistList.get(artist).getArtist().getId())
-	// 				.stream()
-	// 				.map(CurationDataResponse.CurationSimple::new)
-	// 				.collect(Collectors.toList());
-	// 			System.out.println("팔로우한 사람의 큐레이션 갯수:" + followingCurations.size());
-	// 			curationSimpleList.addAll(followingCurations);
-	// 			System.out.println("지금은" + artist + "번째");
-	// 		}
-	// 		if (curationSimpleList.size() > 0) {
-	// 			return curationSimpleList;
-	// 		} else
-	// 			throw new CustomException(CustomExceptionType.NO_CONTENT);
-	// 	} else {
-	// 		throw new CustomException(CustomExceptionType.NO_CONTENT);
-	// 	}
-	// }
+	//팔로잉한 작가의 큐레이션 리스트
+	public List<CurationDataResponse.CurationSimple> getCurationFollowingList(Long userSeq, Long tokenUserSeq) {
+		if (userSeq != tokenUserSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 
+		List<MyArtist> artistList = myArtistRepository.findAllByUser_Id(userSeq);
+		List<CurationDataResponse.CurationSimple> curationSimpleList = new ArrayList<>();
+
+		if (artistList.size() > 0) {
+			for (int artist = 0; artist < artistList.size(); artist++) {
+				List<CurationDataResponse.CurationSimple> followingCurations = curationRepository.findAllByArtist_Id(
+						artistList.get(artist).getArtist().getId())
+					.stream()
+					.map(CurationDataResponse.CurationSimple::new)
+					.collect(Collectors.toList());
+				curationSimpleList.addAll(followingCurations);
+			}
+			if (curationSimpleList.size() > 0) {
+				return curationSimpleList;
+			} else
+				throw new CustomException(CustomExceptionType.NO_CONTENT);
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+	}
 }
