@@ -15,9 +15,6 @@ export async function loader ({params}) {
 
   const likeList = await axiosAuth.get("users/follow")
     .then(response => response.data)
-
-  console.log('likeList',likeList)
-  console.log(userData);
   
   // 로그아웃 된 경우
   if(userData === 401) {
@@ -51,7 +48,6 @@ export default function Layout() {
   console.log(nickname)
   
   let wonderValue = likeList?.find(like => +like === +userSeq) || false
-  console.log(wonderValue)
   const [wonder, setWonder] = useState(wonderValue)
 
   let content = !wonder? "팔로우": "팔로우 취소"
@@ -89,12 +85,12 @@ export default function Layout() {
                   let body = {"seq": +userSeq}
                   axiosReissue()
                   axiosAuth.post("users/follow", body)
-                    .then(response => console.log('팔로우 성공', response))
+                    .then(response => response)
                 } else if (wonder) {
                   let body = {"seq": +userSeq}
                   axiosReissue()
                   axiosAuth.delete("users/follow", {data: body})
-                    .then(response => console.log('팔로우 취소', response))
+                    .then(response => response)
                 }
                 setWonder(prev=>!prev)
               }}>
