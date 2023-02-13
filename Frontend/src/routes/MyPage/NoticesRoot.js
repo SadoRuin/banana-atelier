@@ -22,24 +22,24 @@ export async function loader ({params}) {
   return [userSeq, userNotices, followingNotices]
 }
 
-export async function action ({request }) {
+export async function action ({request}) {
+  console.log(request);
   // const body = request.formData();
   const body = Object.fromEntries(request.formData());
   await axiosAuth.post('notices', body)
     .then(response => console.log(response))
     .catch(error => error)
+  return null
 }
 
 
 function NoticesRoot() {
   const [isMyPage, isArtist] = useOutletContext();
   const [userSeq, userNotices, followingNotices] = useLoaderData();
-
+  console.log(userSeq);
   const [noticeIndex, setNoticeIndex] = useState(0)
   const [isFormOpen, setIsFormOpen] = useState(false)
 
-  console.log(userSeq)
-  console.log(isFormOpen)
   const noticesMenuData = [];
   if (isArtist) {
     noticesMenuData.push({
@@ -76,7 +76,7 @@ function NoticesRoot() {
   }
   if (isMyPage) {
     noticesMenuData.push({
-      name: "작가들 공지",
+      name: "작가들 공지사항",
       content: followingNotices?
         followingNotices.map((notice) => <div>{notice.noticeTitle}</div> )
         :
