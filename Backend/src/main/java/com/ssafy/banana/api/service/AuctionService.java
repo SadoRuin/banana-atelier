@@ -2,6 +2,7 @@ package com.ssafy.banana.api.service;
 
 import static java.time.LocalDateTime.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -234,6 +235,39 @@ public class AuctionService {
 			.build();
 
 		return auctionUpdateResponse;
+	}
+
+	/**
+	 * 현재 경매 종료
+	 * @param curationArtSeq 큐레이션 작품 pk
+	 */
+	public void closeOneAuction(Long curationArtSeq) {
+
+		Auction auction = auctionRepository.findById(curationArtSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
+		if (auction.getAuctionStatus() == AuctionStatus.INIT
+			|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
+			// 최근 입찰자가 초기 세팅(작가)이면 FAILED, 낙찰되었다면 SUCCESS
+			Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+			AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(curationArtSeq);
+			if (auctionBidLog.getUser().getId() == artistSeq) {
+				auction.setAuctionStatus(AuctionStatus.FAILED);
+			} else {
+				auction
+					.setAuctionStatus(AuctionStatus.SUCCESS)
+					.setAuctionEndPrice(auctionBidLog.getAuctionBidPrice())
+					.setUser(auctionBidLog.getUser());
+			}
+
+			LocalDateTime currentTime = LocalDateTime.now();
+			auction
+				.setAuctionStatusTime(currentTime)
+				.setAuctionEndTime(currentTime);
+			auctionRepository.save(auction);
+		} else {
+			throw new CustomException(CustomExceptionType.AUCTION_CLOSE_CONFLICT);
+		}
 	}
 
 	/**

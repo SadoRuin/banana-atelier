@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.banana.api.service.AuctionService;
 import com.ssafy.banana.db.entity.AuctionJoin;
 import com.ssafy.banana.dto.request.AuctionRequest;
+import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.AuctionResponse;
 import com.ssafy.banana.dto.response.AuctionUpdateResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
@@ -94,6 +96,17 @@ public class AuctionController {
 		AuctionUpdateResponse auctionUpdateResponse = auctionService.updateAuction(auctionRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(auctionUpdateResponse);
+	}
+
+	@ApiOperation(value = "현재 경매 종료", notes = "경매 시간이 남지 않으면 현재 경매를 종료합니다")
+	@ApiImplicitParam(name = "seq", value = "큐레이션 작품 번호", required = true)
+	@PutMapping("/closeOne")
+	public ResponseEntity closeOneAuction(
+		@RequestBody SeqRequest seqRequest) {
+
+		auctionService.closeOneAuction(seqRequest.getSeq());
+
+		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("현재 작품 경매 종료"));
 	}
 
 	@PreAuthorize("hasRole('ARTIST')")
