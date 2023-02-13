@@ -1,5 +1,7 @@
 package com.ssafy.banana.api.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -169,6 +171,17 @@ public class UserController {
 		String token = Authorization.split(" ")[1];
 		userService.followArtist(token, seqRequest);
 		return ResponseEntity.ok(new SuccessResponse("팔로우 되었습니다."));
+	}
+
+	@GetMapping("/follow")
+	@ApiOperation(value = "작가 팔로우 리스트")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "팔로우 리스트 불러오기 성공", response = List.class),
+		@ApiResponse(code = 404, message = "회원 정보가 없습니다.", response = ExceptionResponse.class)
+	})
+	public ResponseEntity<List<Long>> getFollowList(@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		return ResponseEntity.ok(userService.getFollowList(token));
 	}
 
 	@DeleteMapping("/follow")

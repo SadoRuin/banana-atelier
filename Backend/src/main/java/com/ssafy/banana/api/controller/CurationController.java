@@ -133,4 +133,36 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body(curation);
 	}
 
+	//큐레이션명 및 큐레이션 설명에서 해당 내용 검색
+	@GetMapping("/search/{word}")
+	@ApiOperation(value = "큐레이션 검색기능(큐레이션명이나 큐레이션 설명에 있는 내용)")
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getSearchList(@PathVariable String word) {
+		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationSearchList(word);
+		return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	}
+
+	//북마크한 큐레이션 리스트
+	@GetMapping("/{userSeq}/bookmark")
+	@ApiOperation(value = "유저가 북마크한 큐레이션 리스트")
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationBookmarkList(@PathVariable Long userSeq,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationBookmarkList(userSeq,
+			tokenUserSeq);
+		return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	}
+
+	// //팔로잉한 작가의 큐레이션 리스트
+	// @GetMapping("/{userSeq}/following")
+	// @ApiOperation(value = "유저가 팔로잉한 작가의 큐레이션 리스트")
+	// public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationFollowingList(
+	// 	@PathVariable Long userSeq,
+	// 	@RequestHeader String Authorization) {
+	// 	String token = Authorization.split(" ")[1];
+	// 	Long tokenUserSeq = tokenProvider.getSubject(token);
+	// 	List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationFollowingList(userSeq,
+	// 		tokenUserSeq);
+	// 	return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	// }
 }

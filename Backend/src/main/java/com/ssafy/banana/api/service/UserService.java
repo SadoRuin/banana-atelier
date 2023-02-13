@@ -1,6 +1,8 @@
 package com.ssafy.banana.api.service;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -223,6 +225,15 @@ public class UserService {
 		int like = artist.getUser().getArtistLikeCount();
 		artist.getUser().setArtistLikeCount(like + 1);
 		artistRepository.save(artist);
+	}
+
+	public List<Long> getFollowList(String token) {
+		long userSeq = tokenProvider.getSubject(token);
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+		return myArtistRepository.findAllByUser(user)
+			.stream().map(myArtist -> myArtist.getArtist().getId()).collect(Collectors.toList());
 	}
 
 	@Transactional

@@ -21,6 +21,7 @@ import com.ssafy.banana.db.repository.ArtistRepository;
 import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.db.repository.CurationBookmarkRepository;
 import com.ssafy.banana.db.repository.CurationRepository;
+import com.ssafy.banana.db.repository.MyArtistRepository;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.request.CurationRequest;
 import com.ssafy.banana.dto.request.MyCurationRequest;
@@ -40,6 +41,7 @@ public class CurationService {
 	private final UserRepository userRepository;
 	private final CurationBookmarkRepository curationBookmarkRepository;
 	private final CurationArtRepository curationArtRepository;
+	private final MyArtistRepository myArtistRepository;
 
 	//큐레이션 상태별 조회
 	public List<CurationDataResponse.CurationSimple> getCurationList(CurationStatus curationStatus) {
@@ -122,7 +124,7 @@ public class CurationService {
 		curation.setArtist(artistRepository.findById(curationRequest.getArtistSeq()).orElse(null));
 		curationRepository.save(curation);
 		curationArtRepository.deleteAllByCuration_Id(curation.getId());
-		
+
 		for (int i = 0; i < curationRequest.getCurationArtList().size(); i++) {
 			CurationArt curationArt = CurationArt.builder()
 				.isAuction(curationRequest.getCurationArtList().get(i).getIsAuction())
@@ -216,5 +218,65 @@ public class CurationService {
 
 		return curation;
 	}
+
+	//큐레이션명 및 큐레이션 설명에서 해당 내용 검색
+	public List<CurationDataResponse.CurationSimple> getCurationSearchList(String word) {
+		return curationRepository.findAllByCurationNameContainingOrCurationSummaryContaining(word, word)
+			.stream()
+			.map(CurationDataResponse.CurationSimple::new)
+			.collect(Collectors.toList());
+	}
+
+	//큐레이션 북마크 리스트
+	public List<CurationDataResponse.CurationSimple> getCurationBookmarkList(Long userSeq, Long tokenUserSeq) {
+		if (userSeq != tokenUserSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		List<CurationDataResponse.CurationSimple> bookMarkedCurations = curationBookmarkRepository.findAllByUser_Id(
+				userSeq)
+			.stream()
+			.map(CurationDataResponse.CurationSimple::new)
+			.collect(Collectors.toList());
+
+		if (bookMarkedCurations.size() > 0) {
+			return bookMarkedCurations;
+		} else {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+	}
+
+	// //팔로잉한 작가의 큐레이션 리스트
+	// public List<CurationDataResponse.CurationSimple> getCurationFollowingList(Long userSeq, Long tokenUserSeq) {
+	// 	if (userSeq != tokenUserSeq) {
+	// 		throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+	// 	}
+	//
+	// 	List<MyArtist> artistList = myArtistRepository.findAllByUser_Id(userSeq);
+	// 	List<CurationDataResponse.CurationSimple> curationSimpleList = null;
+	//
+	// 	for (int i = 0; i < artistList.size(); i++) {
+	// 		System.out.println("artist id : " + artistList.get(i).getArtist().getId());
+	// 	}
+	//
+	// 	if (artistList.size() > 0) {
+	// 		for (int artist = 0; artist < artistList.size(); artist++) {
+	// 			System.out.println("+++++++++++++i+++++++++:" + artist);
+	// 			List<CurationDataResponse.CurationSimple> followingCurations = curationRepository.findAllByArtist_Id(
+	// 					artistList.get(artist).getArtist().getId())
+	// 				.stream()
+	// 				.map(CurationDataResponse.CurationSimple::new)
+	// 				.collect(Collectors.toList());
+	// 			System.out.println("팔로우한 사람의 큐레이션 갯수:" + followingCurations.size());
+	// 			curationSimpleList.addAll(followingCurations);
+	// 			System.out.println("지금은" + artist + "번째");
+	// 		}
+	// 		if (curationSimpleList.size() > 0) {
+	// 			return curationSimpleList;
+	// 		} else
+	// 			throw new CustomException(CustomExceptionType.NO_CONTENT);
+	// 	} else {
+	// 		throw new CustomException(CustomExceptionType.NO_CONTENT);
+	// 	}
+	// }
 
 }
