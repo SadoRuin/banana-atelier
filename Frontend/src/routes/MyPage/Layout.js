@@ -11,21 +11,23 @@ export async function loader ({params}) {
 
   const userData = await axiosAuth.get(`users/profile/${userSeq}`)
     .then(response => response.data)
-    .catch(error => error.response.status)
+    .catch((error) => error.response.status)
+  console.log(userData);
 
   const likeList = await axiosAuth.get("users/follow")
     .then(response => response.data)
-  
+    .catch(() => null)
+
   // 로그아웃 된 경우
   if(userData === 401) {
     console.log('권한이 없습니다');
-    return redirect('/login')
+    return redirect("/login");
   }
   // 사용자를 찾을 수 없는 경우(userSeq가 없는 경우)
   if(userData === 404) {
-    throw new Error("", {
+    throw new Error ("", {
       status: 404,
-      statusText: "사용자를 찾을 수 없습니다",
+      message: "사용자를 찾을 수 없습니다",
     });
   }
   // userSeq를 이용해 사용자를 받아왔지만, 앞의 nickname이 다른 경우
@@ -37,6 +39,7 @@ export async function loader ({params}) {
   }
   return [nickname, userSeq, userData, likeList];
 }
+
 
 
 export default function Layout() {

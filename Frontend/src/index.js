@@ -46,12 +46,12 @@ import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
 
 
 // 커미션 페이지
-import CommissionsMain from "./routes/CommissionsPage/CommissionsMain";
-import CommissionsDetail from "./routes/CommissionsPage/CommissionsDetail";
+// import CommissionsMain from "./routes/CommissionsPage/CommissionsMain";
+// import CommissionsDetail from "./routes/CommissionsPage/CommissionsDetail";
 
 // 마이페이지
 import MyPageLayout from "./routes/MyPage/Layout";
-import { loader as myPageLoader } from "./routes/MyPage/Layout"
+import { loader as MyPageLoader } from "./routes/MyPage/Layout"
 
 // 작품탭
 // import ArtsRoot from "./routes/MyPage/ArtsRoot"
@@ -73,18 +73,18 @@ import CurationsMine from "./routes/MyPage/CurationsMine";
 import CurationsFollowing from "./routes/MyPage/CurationsFollowing";
 import CurationsBookmark from "./routes/MyPage/CurationsBookmark";
 // 커미션탭
-import Commissions from "./routes/MyPage/Commissions"
-import MyPageCommissionsDetail from "./routes/MyPage/CommissionsDetail"
+// import Commissions from "./routes/MyPage/Commissions"
+// import MyPageCommissionsDetail from "./routes/MyPage/CommissionsDetail"
 // 모달(프로필 수정, 작품 업로드, 대표작품 설정)
 import EditProfile from "./routes/MyPage/EditProfile";
 
 // 작품 업로드
 import Upload from "./routes/MyPage/Upload"
-import { action as UploadLoader } from "./routes/MyPage/Upload"
+import { action as UploadAction } from "./routes/MyPage/Upload"
 // 대표작품 설정
 import SetMasterpiece from "./routes/MyPage/SetMasterpiece"
-import { loader as SetMasterpieceLoader } from "./routes/MyPage/SetMasterpiece"
-import CommissionsRegister from "./routes/CommissionsPage/CommissionsRegister";
+import { loader as SetMasterpieceLoader, action as SetMasterpieceAction } from "./routes/MyPage/SetMasterpiece"
+// import CommissionsRegister from "./routes/CommissionsPage/CommissionsRegister";
 
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
@@ -124,69 +124,71 @@ const router = createBrowserRouter(
           <Route path="curations/register" element={ <CurationsRegister /> } />
 
           {/* 커미션 페이지 */}
-          <Route path="commissions" element={ <CommissionsMain /> } />
-          <Route path="commissions/detail" element={ <CommissionsDetail /> } />
-          <Route path="commissions/detail/register" element={ <CommissionsRegister/> } />
+          {/*<Route path="commissions" element={ <CommissionsMain /> } />*/}
+          {/*<Route path="commissions/detail" element={ <CommissionsDetail /> } />*/}
+          {/*<Route path="commissions/detail/register" element={ <CommissionsRegister/> } />*/}
 
           {/*마이페이지*/}
           <Route
             path=":nickname_user_seq"
             element={<MyPageLayout />}
-            loader={myPageLoader}
+            loader={MyPageLoader}
           >
-
-            <Route
-              index
-              element={<ArtsRoot />}
-              loader={ArtsMyPageLoader}
-            >
-              {/*<Route index element={ <ArtsIndex /> }>*/}
-              {/*  /!* 대표작품 설정 페이지 들어갈거임 *!/*/}
-              {/*</Route>*/}
-              {/*<Route path="favorite" element={ <ArtsFavorite /> }/>*/}
-              {/*<Route path="owns" element={ <ArtsMyCollections /> } />*/}
-            </Route>
-
-            <Route
-              path="notices"
-              element={ <NoticesRoot /> }
-              loader={ NoticesLoader }
-              action={ NoticesAction }
-            >
-              {/*<Route*/}
-              {/*  path="mine"*/}
-              {/*  element={ <NoticesMine /> }*/}
-              {/*  loader={getNotices}/>*/}
-              {/*<Route*/}
-              {/*  path="following"*/}
-              {/*  element={ <NoticesFollowing /> }*/}
-              {/*  loader={getNotices}*/}
-              {/*/>*/}
+            <Route errorElement={ <Error /> }>
+              {/* 마아페이지 작품 */}
               <Route
-                path=":notice_id"
-                element={<NoticesDetail/>}
-                loader={noticeLoader}
-              />
+                index
+                element={<ArtsRoot />}
+                loader={ArtsMyPageLoader}
+              >
+                {/*<Route index element={ <ArtsIndex /> }>*/}
+                {/*  /!* 대표작품 설정 페이지 들어갈거임 *!/*/}
+                {/*</Route>*/}
+                {/*<Route path="favorite" element={ <ArtsFavorite /> }/>*/}
+                {/*<Route path="owns" element={ <ArtsMyCollections /> } />*/}
+              </Route>
+              {/* 마이페이지 공지 */}
+              <Route
+                path="notices"
+                element={ <NoticesRoot /> }
+                loader={ NoticesLoader }
+                action={ NoticesAction }
+              >
+                {/*<Route*/}
+                {/*  path="mine"*/}
+                {/*  element={ <NoticesMine /> }*/}
+                {/*  loader={getNotices}/>*/}
+                {/*<Route*/}
+                {/*  path="following"*/}
+                {/*  element={ <NoticesFollowing /> }*/}
+                {/*  loader={getNotices}*/}
+                {/*/>*/}
+                <Route
+                  path=":notice_id"
+                  element={<NoticesDetail/>}
+                  loader={noticeLoader}
+                />
+              </Route>
+
+              {/* 마이페이지 큐레이션*/}
+              <Route
+                path="curations"
+                element={ <CurationsRoot /> }
+              >
+                <Route path="mine" element={ <CurationsMine /> } />
+                <Route path="following" element={ <CurationsFollowing /> } />
+                <Route path="bookmark" element={ <CurationsBookmark /> } />
+              </Route>
+
+              {/*<Route path="commissions" element={ <Commissions /> } />*/}
+              {/*<Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />*/}
+
+              <Route path="edit_profile" element={ <EditProfile /> }></Route>
+              <Route path="upload" element={ <Upload /> } action={UploadAction} ></Route>
+              <Route path="set_masterpiece" element={ <SetMasterpiece />} loader={SetMasterpieceLoader} action={SetMasterpieceAction}></Route>
             </Route>
-
-
-            <Route
-              path="curations"
-              element={ <CurationsRoot /> }
-            >
-              <Route path="mine" element={ <CurationsMine /> } />
-              <Route path="following" element={ <CurationsFollowing /> } />
-              <Route path="bookmark" element={ <CurationsBookmark /> } />
-            </Route>
-
-            <Route path="commissions" element={ <Commissions /> } />
-            <Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />
-
-            <Route path="edit_profile" element={ <EditProfile /> }></Route>
-            <Route path="upload" element={ <Upload /> } action={UploadLoader}></Route>
-            <Route path="set_masterpiece" element={ <SetMasterpiece />} loader={SetMasterpieceLoader}></Route>
-
           </Route>
+
         </Route>
       </Route>
 

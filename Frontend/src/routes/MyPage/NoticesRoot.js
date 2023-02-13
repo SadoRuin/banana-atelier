@@ -23,9 +23,9 @@ export async function loader ({params}) {
 }
 
 export async function action ({request}) {
-  console.log(request);
-  // const body = request.formData();
-  const body = Object.fromEntries(request.formData());
+  const formData = await request.formData();
+  const body = Object.fromEntries(formData);
+  console.log(body)
   await axiosAuth.post('notices', body)
     .then(response => console.log(response))
     .catch(error => error)
