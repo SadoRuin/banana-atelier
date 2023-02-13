@@ -118,7 +118,7 @@ public class ArtController {
 		Long userSeq = tokenProvider.getSubject(token);
 		artService.setMasterpieceList(masterpieceRequestList, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("대표 작품 설정 완료"));
 	}
 
 	@ApiOperation(value = "카테고리별 작품 리스트", notes = "카테고리별 작품 목록을 반환합니다")
