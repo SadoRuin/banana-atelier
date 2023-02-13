@@ -18,8 +18,7 @@ import com.ssafy.banana.api.service.NoticeService;
 import com.ssafy.banana.db.entity.Notice;
 import com.ssafy.banana.dto.request.NoticeRequest;
 import com.ssafy.banana.dto.response.NoticeResponse;
-import com.ssafy.banana.exception.CustomException;
-import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.dto.response.SuccessResponse;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
 import io.swagger.annotations.Api;
@@ -33,6 +32,8 @@ import lombok.RequiredArgsConstructor;
 public class NoticeController {
 
 	private static final String AUTHORIZATION = "Authorization";
+
+	private static final String BLNAK = " ";
 	private final TokenProvider tokenProvider;
 	private final NoticeService noticeService;
 
@@ -40,57 +41,41 @@ public class NoticeController {
 	@PostMapping
 	public ResponseEntity uploadNotice(
 		@RequestBody NoticeRequest noticeRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		Notice notice = noticeService.uploadNotice(noticeRequest, userSeq);
+		noticeService.uploadNotice(noticeRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(notice);
+		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("공지사항이 등록되었습니다."));
 	}
 
 	@ApiOperation(value = "나의 공지사항 리스트", notes = "작가 본인의 공지사항 목록을 반환합니다")
-	@GetMapping("/{user_seq}")
-	public ResponseEntity<List> getMyNoticeList(@PathVariable("user_seq") Long userSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+	@GetMapping
+	public ResponseEntity<List> getMyNoticeList(@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long tokenUserSeq = tokenProvider.getSubject(token);
-		List<NoticeResponse> myNoticeList = noticeService.getMyNoticeList(userSeq, tokenUserSeq);
+		String token = Authorization.split(BLNAK)[1];
+		Long userSeq = tokenProvider.getSubject(token);
+		List<NoticeResponse> myNoticeList = noticeService.getMyNoticeList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(myNoticeList);
 	}
 
 	@ApiOperation(value = "팔로잉 작가 공지사항 리스트", notes = "내가 팔로우한 작가들의 공지사항 목록을 반환합니다")
-	@GetMapping("/{user_seq}/following")
-	public ResponseEntity<List> getMyArtistsNoticeList(@PathVariable("user_seq") Long userSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+	@GetMapping("/following")
+	public ResponseEntity<List> getMyArtistsNoticeList(@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
-		Long tokenUserSeq = tokenProvider.getSubject(token);
-		List<NoticeResponse> myArtistNoticeList = noticeService.getMyArtistsNoticeList(userSeq, tokenUserSeq);
+		String token = Authorization.split(BLNAK)[1];
+		Long userSeq = tokenProvider.getSubject(token);
+		List<NoticeResponse> myArtistNoticeList = noticeService.getMyArtistsNoticeList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(myArtistNoticeList);
 	}
 
 	@ApiOperation(value = "공지사항 상세", notes = "공지사항 상세 정보를 반환합니다")
 	@GetMapping("/detail/{notice_seq}")
-	public ResponseEntity getNotice(@PathVariable("notice_seq") Long noticeSeq,
-		@RequestHeader(value = AUTHORIZATION, required = false) String token) {
+	public ResponseEntity getNotice(@PathVariable("notice_seq") Long noticeSeq) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		NoticeResponse noticeResponse = noticeService.getNotice(noticeSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(noticeResponse);
@@ -99,12 +84,9 @@ public class NoticeController {
 	@ApiOperation(value = "공지사항 수정", notes = "등록된 공지사항을 수정합니다")
 	@PutMapping
 	public ResponseEntity updateNotice(@RequestBody NoticeRequest noticeRequest,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
 		Notice notice = noticeService.updateNotice(noticeRequest, userSeq);
 
@@ -114,22 +96,12 @@ public class NoticeController {
 	@ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
 	@DeleteMapping("/{notice_seq}")
 	public ResponseEntity deleteNotice(@PathVariable("notice_seq") Long noticeSeq,
-		@RequestHeader(AUTHORIZATION) String token) {
+		@RequestHeader String Authorization) {
 
-		token = getToken(token);
-		if (!tokenProvider.validateToken(token)) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
+		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		Long result = noticeService.deleteNotice(noticeSeq, userSeq);
+		noticeService.deleteNotice(noticeSeq, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(result);
-	}
-
-	private static String getToken(String token) {
-		if (token.substring(0, 7).equals("Bearer ")) {
-			token = token.substring("Bearer ".length());
-		}
-		return token;
+		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("공지사항이 삭제되었습니다."));
 	}
 }

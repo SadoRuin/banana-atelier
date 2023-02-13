@@ -25,17 +25,18 @@ public class NoticeService {
 	private final NoticeRepository noticeRepository;
 	private final ArtistRepository artistRepository;
 
+	/**
+	 * 공지사항 등록
+	 * @param noticeRequest 공지사항 정보 (제목, 내용)
+	 * @param userSeq 로그인 유저 pk
+	 */
 	@Transactional
-	public Notice uploadNotice(NoticeRequest noticeRequest, Long userSeq) {
+	public void uploadNotice(NoticeRequest noticeRequest, Long userSeq) {
 
-		if (noticeRequest.getUserSeq() != userSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		Artist artist = artistRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
 		LocalDateTime artRegDate = LocalDateTime.now();
-
 		Notice notice = Notice.builder()
 			.artist(artist)
 			.noticeTitle(noticeRequest.getNoticeTitle())
@@ -43,15 +44,15 @@ public class NoticeService {
 			.noticeTime(artRegDate)
 			.build();
 		noticeRepository.save(notice);
-
-		return notice;
 	}
 
-	public List<NoticeResponse> getMyNoticeList(Long userSeq, Long tokenUserSeq) {
+	/**
+	 * 작가 본인의 공지사항 리스트
+	 * @param userSeq 로그인 유저 pk
+	 * @return 공지사항 내용 응답 DTO 리스트
+	 */
+	public List<NoticeResponse> getMyNoticeList(Long userSeq) {
 
-		if (userSeq != tokenUserSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		List<NoticeResponse> myNoticeList = noticeRepository.findByUserSeq(userSeq);
 		if (!CollectionUtils.isEmpty(myNoticeList)) {
 			return myNoticeList;
@@ -60,11 +61,13 @@ public class NoticeService {
 		}
 	}
 
-	public List<NoticeResponse> getMyArtistsNoticeList(Long userSeq, Long tokenUserSeq) {
+	/**
+	 * 내가 팔로우한 작가들의 공지사항 리스트
+	 * @param userSeq 로그인 유저 pk
+	 * @return 공지사항 내용 응답 DTO 리스트
+	 */
+	public List<NoticeResponse> getMyArtistsNoticeList(Long userSeq) {
 
-		if (userSeq != tokenUserSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		List<NoticeResponse> myArtistNoticeList = noticeRepository.findMyArtistNotice(userSeq);
 		if (!CollectionUtils.isEmpty(myArtistNoticeList)) {
 			return myArtistNoticeList;
@@ -73,6 +76,11 @@ public class NoticeService {
 		}
 	}
 
+	/**
+	 * 공지사항 상세
+	 * @param noticeSeq 공지사항 pk
+	 * @return 공지사항 정보
+	 */
 	public NoticeResponse getNotice(Long noticeSeq) {
 
 		Notice notice = noticeRepository.findById(noticeSeq)
@@ -81,12 +89,15 @@ public class NoticeService {
 		return new NoticeResponse(notice);
 	}
 
+	/**
+	 * 공지사항 수정
+	 * @param noticeRequest 공지사항 정보 (공지사항 pk, 제목, 내용)
+	 * @param userSeq 로그인 유저 pk
+	 * @return 공지사항 내용 응답 DTO
+	 */
 	@Transactional
 	public Notice updateNotice(NoticeRequest noticeRequest, Long userSeq) {
 
-		if (noticeRequest.getUserSeq() != userSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 		Notice notice = noticeRepository.findById(noticeRequest.getNoticeSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
@@ -101,7 +112,12 @@ public class NoticeService {
 		}
 	}
 
-	public Long deleteNotice(Long noticeSeq, Long userSeq) {
+	/**
+	 * 공지사항 삭제
+	 * @param noticeSeq 공지사항 pk
+	 * @param userSeq 로그인 유저 pk
+	 */
+	public void deleteNotice(Long noticeSeq, Long userSeq) {
 
 		Notice notice = noticeRepository.findById(noticeSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
@@ -110,8 +126,5 @@ public class NoticeService {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		noticeRepository.deleteById(noticeSeq);
-
-		return noticeSeq;
 	}
-
 }
