@@ -2,6 +2,7 @@ package com.ssafy.banana.api.service;
 
 import static java.time.LocalDateTime.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -30,11 +31,9 @@ import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuctionService {
 
 	private final UserRepository userRepository;
@@ -52,10 +51,8 @@ public class AuctionService {
 	 * @return
 	 */
 	@Transactional
-	public AuctionJoin joinAuction(Long curationArtSeq, Long userSeq) {
+	public void joinAuction(Long curationArtSeq, Long userSeq) {
 
-		User user = userRepository.findById(userSeq)
-			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		CurationArt curationArt = curationArtRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
@@ -64,11 +61,15 @@ public class AuctionService {
 			|| curationArt.getIsAuction() == 0) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
 		// 경매 참가 신청 추가
 		AuctionJoinId auctionJoinId = AuctionJoinId.builder()
 			.userSeq(user.getId())
 			.curationArtSeq(curationArt.getId())
 			.build();
+		// 이미 신청한 경매 
 		if (auctionJoinRepository.findById(auctionJoinId).isPresent()) {
 			throw new CustomException(CustomExceptionType.AUCTION_JOIN_CONFLICT);
 		}
@@ -84,12 +85,10 @@ public class AuctionService {
 		int auctionPeopleCount = auctionJoinRepository.countAuctionJoinPeople(curationArtSeq);
 		curationArt.setAuctionPeopleCnt(auctionPeopleCount);
 		curationArtRepository.save(curationArt);
-
-		return auctionJoin;
 	}
 
 	/**
-	 * 경매 생성
+	 * 경매 시작 (경매 테이블, 경매 입찰 로그 테이블 초기화)
 	 * @param curationSeq 큐레이션 pk
 	 * @param userSeq 로그인 유저 pk
 	 */
@@ -98,82 +97,75 @@ public class AuctionService {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
+		// 작가 본인이 아니면 경매 시작 불가
+		User artist = curation.getArtist().getUser();
+		if (artist.getId() != userSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
 		// 경매 가능한 작품 리스트
 		List<CurationArt> curationArtList =
 			curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
 				.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
-		User artist = curation.getArtist().getUser();
-
-		// 작가 본인이 아니면 경매 시작 불가
-		if (artist.getId() != userSeq) {
-			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
-		}
 
 		for (int i = 0; i < curationArtList.size(); i++) {
-			System.out.println("curationArtList = " + curationArtList.get(i));
-		}
-
-		for (int i = 0; i < curationArtList.size(); i++) {
+			// 현재 경매품
 			CurationArt curationArt = curationArtList.get(i);
-
+			// 이미 경매 정보가 생성됨
 			if (auctionRepository.findById(curationArt.getId()).isPresent()) {
 				throw new CustomException(CustomExceptionType.AUCTION_INFO_CONFLICT);
 			}
 
+			LocalDateTime currentTime = LocalDateTime.now();
+			// 경매 정보 초기화
 			Auction auction = Auction.builder()
 				.id(curationArt.getId())
 				.curationArt(curationArt)
 				.auctionStartPrice(curationArt.getIsAuction())
 				.auctionGap(curationArt.getAuctionGap())
-				.auctionStartTime(now())
-				.auctionEndTime(now())
-				.auctionPaidTime(now())
-				.auctionStatusTime(now())
+				.auctionStartTime(currentTime)
+				.auctionEndTime(currentTime)
+				.auctionPaidTime(currentTime)
+				.auctionStatusTime(currentTime)
 				.auctionEndPrice(curationArt.getIsAuction())
 				.auctionStatus(AuctionStatus.INIT)
 				.user(artist)
 				.build();
-
-			log.error("auction = {}", auction);
-
 			auctionRepository.save(auction);
+
+			// 입찰 로그 초기화 (초기 입찰자는 작가로 세팅)
+			AuctionBidLog auctionBidLog = AuctionBidLog.builder()
+				.auctionBidPrice(auction.getAuctionStartPrice())
+				.auctionBidTime(currentTime)
+				.user(artist)
+				.auction(auction)
+				.build();
+			auctionBidLogRepository.save(auctionBidLog);
 		}
 	}
 
 	/**
-	 * 경매 정보
+	 * 경매 정보 (현재 진행 경매)
 	 * @param curationSeq 큐레이션 pk
-	 * @param userSeq 로그인 유저 pk
 	 * @return 경매 정보 응답 DTO
 	 */
 	@Transactional
-	public AuctionResponse getAuctionInfo(Long curationSeq, Long userSeq) {
+	public AuctionResponse getAuctionInfo(Long curationSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		User artist = userRepository.findById(curation.getArtist().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
 		// 경매 가능한 작품 중, 경매가 진행되지 않은 작품
 		Auction auction = auctionRepository.findAuctionInfo(curationSeq, AuctionStatus.INIT)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
 
-		log.error("auction = {}", auction);
-
 		CurationArt curationArt = auction.getCurationArt();
 		// 현재 나타낼 경매 작품 정보
-		Art art = artRepository.findById(curationArt.getArt().getId())
+		Art art = artRepository.findById(auction.getCurationArt().getArt().getId())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
-		// 입찰 로그 초기화 (초기 입찰자는 작가로 세팅)
-		AuctionBidLog auctionBidLog = AuctionBidLog.builder()
-			.auctionBidPrice(auction.getAuctionStartPrice())
-			.auctionBidTime(now())
-			.user(artist)
-			.auction(auction)
-			.build();
-		auctionBidLogRepository.save(auctionBidLog);
-
+		LocalDateTime currentTime = LocalDateTime.now();
+		User artist = curation.getArtist().getUser();
 		AuctionResponse auctionResponse = AuctionResponse.builder()
 			.artistSeq(artist.getId())
 			.artistNickname(artist.getNickname())
@@ -183,8 +175,16 @@ public class AuctionService {
 			.auctionStartPrice(auction.getAuctionStartPrice())
 			.auctionCurrentPrice(auction.getAuctionStartPrice())
 			.auctionBidPrice(auction.getAuctionStartPrice() + curationArt.getAuctionGap())
+			.auctionEndTime(currentTime.plusMinutes(1))
 			.message("[HOST] 경매를 시작하겠습니다.")
 			.build();
+
+		auction
+			.setAuctionStatus(AuctionStatus.ONGOING)
+			.setAuctionStatusTime(currentTime)
+			.setAuctionStartTime(currentTime)
+			.setAuctionEndTime(currentTime.plusMinutes(1));
+		auctionRepository.save(auction);
 
 		return auctionResponse;
 	}
@@ -200,13 +200,14 @@ public class AuctionService {
 
 		Auction auction = auctionRepository.findById(auctionRequest.getCurationArtSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		CurationArt curationArt = curationArtRepository.findById(auction.getCurationArt().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
-		Curation curation = curationRepository.findById(curationArt.getCuration().getId())
-			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
+		// 진행 중인 경매가 아님
+		if (auction.getAuctionStatus() != AuctionStatus.ONGOING) {
+			throw new CustomException(CustomExceptionType.AUCTION_NOT_ONGOING);
+		}
 		// 작가는 본인의 경매 참여 불가
-		if (curation.getArtist().getId() == userSeq) {
+		Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+		if (artistSeq == userSeq) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
 		// 입찰자
@@ -217,23 +218,62 @@ public class AuctionService {
 		AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
 			auctionRequest.getCurationArtSeq());
 
+		LocalDateTime currentTime = LocalDateTime.now();
 		// 입찰 로그 기록
 		auctionBidLog = AuctionBidLog.builder()
 			.auctionBidPrice(auctionBidLog.getAuctionBidPrice() + auction.getAuctionGap())
-			.auctionBidTime(now())
+			.auctionBidTime(currentTime)
 			.user(user)
 			.auction(auction)
 			.build();
 		auctionBidLogRepository.save(auctionBidLog);
 
+		auction.setAuctionEndTime(currentTime.plusMinutes(1));
+		auctionRepository.save(auction);
+
 		int currentPrice = auctionBidLog.getAuctionBidPrice();
 		AuctionUpdateResponse auctionUpdateResponse = AuctionUpdateResponse.builder()
 			.auctionCurrentPrice(currentPrice)
 			.auctionBidPrice(currentPrice + auction.getAuctionGap())
+			.auctionEndTime(auction.getAuctionEndTime())
 			.message(String.format("[ %s ] 님의 입찰가 %d원", user.getNickname(), currentPrice))
 			.build();
 
 		return auctionUpdateResponse;
+	}
+
+	/**
+	 * 현재 경매 종료
+	 * @param curationArtSeq 큐레이션 작품 pk
+	 */
+	@Transactional
+	public void closeOneAuction(Long curationArtSeq) {
+
+		Auction auction = auctionRepository.findById(curationArtSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
+		if (auction.getAuctionStatus() == AuctionStatus.INIT
+			|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
+			// 최근 입찰자가 초기 세팅(작가)이면 FAILED, 낙찰되었다면 SUCCESS
+			Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+			AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(curationArtSeq);
+			if (auctionBidLog.getUser().getId() == artistSeq) {
+				auction.setAuctionStatus(AuctionStatus.FAILED);
+			} else {
+				auction
+					.setAuctionStatus(AuctionStatus.SUCCESS)
+					.setAuctionEndPrice(auctionBidLog.getAuctionBidPrice())
+					.setUser(auctionBidLog.getUser());
+			}
+
+			LocalDateTime currentTime = LocalDateTime.now();
+			auction
+				.setAuctionStatusTime(currentTime)
+				.setAuctionEndTime(currentTime);
+			auctionRepository.save(auction);
+		} else {
+			throw new CustomException(CustomExceptionType.AUCTION_CLOSE_CONFLICT);
+		}
 	}
 
 	/**
@@ -247,21 +287,42 @@ public class AuctionService {
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 		// 작가 본인이 아니면 경매 종료 불가
-		if (curation.getArtist().getId() == userSeq) {
+		if (curation.getArtist().getId() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		List<CurationArt> curationArtList
 			= curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
+		int closeAuctionCount = 0;
 		for (int i = 0; i < curationArtList.size(); i++) {
 			Auction auction = auctionRepository.findById(curationArtList.get(i).getId()).orElse(null);
 			if (auction.getAuctionStatus() == AuctionStatus.INIT
 				|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
-				auction.setAuctionStatus(AuctionStatus.FAILED);
-				auction.setAuctionStatusTime(now());
+				// 최근 입찰자가 초기 세팅(작가)이면 FAILED
+				Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+				AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
+					curationArtList.get(i).getId());
+				if (auctionBidLog.getUser().getId() == artistSeq) {
+					auction.setAuctionStatus(AuctionStatus.FAILED);
+				} else {
+					auction
+						.setAuctionStatus(AuctionStatus.SUCCESS)
+						.setAuctionEndPrice(auctionBidLog.getAuctionBidPrice())
+						.setUser(auctionBidLog.getUser());
+				}
+
+				LocalDateTime currentTime = LocalDateTime.now();
+				auction
+					.setAuctionStatusTime(currentTime)
+					.setAuctionEndTime(currentTime);
 				auctionRepository.save(auction);
+				closeAuctionCount++;
 			}
+		}
+		// 모든 경매가 이미 종료됨
+		if (closeAuctionCount == 0) {
+			throw new CustomException(CustomExceptionType.AUCTION_CLOSE_CONFLICT);
 		}
 	}
 }

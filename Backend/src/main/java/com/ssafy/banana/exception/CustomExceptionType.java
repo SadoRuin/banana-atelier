@@ -26,7 +26,9 @@ public enum CustomExceptionType {
 	AUCTION_FAIL(HttpStatus.BAD_REQUEST, "E021", "경매에 참여할 수 없습니다."),
 	AUCTION_JOIN_CONFLICT(HttpStatus.CONFLICT, "E022", "이미 참가 신청한 경매입니다."),
 	AUCTION_INFO_CONFLICT(HttpStatus.CONFLICT, "E023", "이미 경매 정보가 생성되었습니다."),
-	FOLLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "E024", "팔로워가 없습니다.");
+	FOLLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "E024", "팔로워가 없습니다."),
+	AUCTION_CLOSE_CONFLICT(HttpStatus.CONFLICT, "E025", "이미 종료된 경매입니다."),
+	AUCTION_NOT_ONGOING(HttpStatus.BAD_REQUEST, "E026", "진행 중인 경매가 아닙니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
