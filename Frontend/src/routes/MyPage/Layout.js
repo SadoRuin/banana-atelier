@@ -39,7 +39,7 @@ export async function loader ({params}) {
     });
   }
   return [nickname, userSeq, userData, likeList];
-
+}
 
 
 export default function Layout() {
@@ -118,4 +118,4 @@ export default function Layout() {
 
     </div>
   );
-}}
+}
