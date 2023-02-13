@@ -25,7 +25,7 @@ export const axiosReissue = () => {
             localStorage.removeItem("profileImg")
             localStorage.removeItem("role")
             localStorage.removeItem("userSeq")
-            redirect("/login")
+            return redirect("/login")
         })
     }
 }
