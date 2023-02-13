@@ -61,29 +61,20 @@ public class CurationDataResponse {
 			this.profileImg = cb.getUser().getProfileImg();
 		}
 
-		// public CurationSimple(com.ssafy.banana.db.entity.MyArtist ma) {
-		// 	Long artistSeq = ma.getArtist().getId();
-		// 	this.userNickname = ma
-		// 	this.curationName = cb.getCuration().getCurationName();
-		// 	this.curationThumbnail = cb.getCuration().getCurationThumbnail();
-		// 	this.curationBmCount = cb.getCuration().getCurationBmCount();
-		// 	this.curationHit = cb.getCuration().getCurationHit();
-		// 	this.curationStartTime = cb.getCuration().getCurationStartTime();
-		// 	this.curationStatus = cb.getCuration().getCurationStatus();
-		// 	this.curationSeq = cb.getId().getCurationSeq();
-		// 	this.profileImg = cb.getUser().getProfileImg();
-		// }
 	}
 
 	//큐레이션 하나만 조회
 
 	public static class Curation extends CurationSimple {
 		@JsonProperty
-		private String curation_summary;
+		private String curationSummary;
+		@JsonProperty
+		private long artistSeq;
 
 		public Curation(com.ssafy.banana.db.entity.Curation c) {
 			super(c);
-			this.curation_summary = c.getCurationSummary();
+			this.curationSummary = c.getCurationSummary();
+			this.artistSeq = c.getArtist().getId();
 		}
 
 	}
