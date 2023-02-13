@@ -46,7 +46,10 @@ export default function Layout() {
   const [nickname, userSeq, userData, likeList] = useLoaderData();
   const isMyPage = userSeq === localStorage.getItem('userSeq');
   const isArtist = userData.role === 'ROLE_ARTIST'
-
+  
+  // nickname 선언만 해서 빌드 오류날까봐 한 것. 삭제해도 괜찮음
+  console.log(nickname)
+  
   let wonderValue = likeList?.find(like => +like === +userSeq) || false
   console.log(wonderValue)
   const [wonder, setWonder] = useState(wonderValue)
@@ -95,7 +98,7 @@ export default function Layout() {
                 }
                 setWonder(prev=>!prev)
               }}>
-                <button id='follow'>{content}</button>
+                <YellowBtn id='follow'>{content}</YellowBtn>
               </form>
             </div>
           }
