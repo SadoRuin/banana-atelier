@@ -6,12 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.entity.CurationBookmark;
-
-interface OnlyCuration {
-	Curation getCuration();
-}
 
 public interface CurationBookmarkRepository extends JpaRepository<CurationBookmark, Long> {
 

@@ -141,10 +141,10 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
 
-	//북마크한 작품 리스트
+	//북마크한 큐레이션 리스트
 	@GetMapping("/{userSeq}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 큐레이션 리스트")
-	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getSearchList(@PathVariable Long userSeq,
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationBookmarkList(@PathVariable Long userSeq,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		Long tokenUserSeq = tokenProvider.getSubject(token);
@@ -152,4 +152,17 @@ public class CurationController {
 			tokenUserSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
+
+	// //팔로잉한 작가의 큐레이션 리스트
+	// @GetMapping("/{userSeq}/following")
+	// @ApiOperation(value = "유저가 팔로잉한 작가의 큐레이션 리스트")
+	// public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationFollowingList(
+	// 	@PathVariable Long userSeq,
+	// 	@RequestHeader String Authorization) {
+	// 	String token = Authorization.split(" ")[1];
+	// 	Long tokenUserSeq = tokenProvider.getSubject(token);
+	// 	List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationFollowingList(userSeq,
+	// 		tokenUserSeq);
+	// 	return ResponseEntity.status(HttpStatus.OK).body(curationList);
+	// }
 }
