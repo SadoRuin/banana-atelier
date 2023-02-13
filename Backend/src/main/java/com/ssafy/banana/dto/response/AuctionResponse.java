@@ -1,5 +1,7 @@
 package com.ssafy.banana.dto.response;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
@@ -47,6 +49,9 @@ public class AuctionResponse {
 
 	@ApiModelProperty(name = "경매 입찰가", example = "1500")
 	private int auctionBidPrice;
+
+	@ApiModelProperty(name = "경매 종료 시간", example = "[2023, 2, 13, 15, 12, 24, 203587900]")
+	private LocalDateTime auctionEndTime;
 
 	@ApiModelProperty(name = "메시지", example = "[HOST] : 경매를 시작하겠습니다.")
 	private String message;
