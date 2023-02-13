@@ -53,10 +53,8 @@ public class AuctionService {
 	 * @return
 	 */
 	@Transactional
-	public AuctionJoin joinAuction(Long curationArtSeq, Long userSeq) {
+	public void joinAuction(Long curationArtSeq, Long userSeq) {
 
-		User user = userRepository.findById(userSeq)
-			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 		CurationArt curationArt = curationArtRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
@@ -65,11 +63,15 @@ public class AuctionService {
 			|| curationArt.getIsAuction() == 0) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
+
 		// 경매 참가 신청 추가
 		AuctionJoinId auctionJoinId = AuctionJoinId.builder()
 			.userSeq(user.getId())
 			.curationArtSeq(curationArt.getId())
 			.build();
+		// 이미 신청한 경매 
 		if (auctionJoinRepository.findById(auctionJoinId).isPresent()) {
 			throw new CustomException(CustomExceptionType.AUCTION_JOIN_CONFLICT);
 		}
@@ -85,8 +87,6 @@ public class AuctionService {
 		int auctionPeopleCount = auctionJoinRepository.countAuctionJoinPeople(curationArtSeq);
 		curationArt.setAuctionPeopleCnt(auctionPeopleCount);
 		curationArtRepository.save(curationArt);
-
-		return auctionJoin;
 	}
 
 	/**

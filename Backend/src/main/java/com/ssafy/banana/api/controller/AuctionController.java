@@ -39,15 +39,18 @@ public class AuctionController {
 	private final AuctionService auctionService;
 
 	@ApiOperation(value = "경매 참가 신청", notes = "해당 큐레이션 작품에 대해 경매 참가 신청합니다")
-	@ApiImplicitParam(name = "curationArtSeq", value = "큐레이션 작품 번호", required = true)
-	@PostMapping("/join/{curationArtSeq}")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "seq", value = "큐레이션 작품 번호", required = true),
+		@ApiImplicitParam(name = "Authorization", value = "token", required = true),
+	})
+	@PostMapping("/join")
 	public ResponseEntity joinAuction(
-		@PathVariable Long curationArtSeq,
+		@RequestBody SeqRequest seqRequest,
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
 		Long userSeq = tokenProvider.getSubject(token);
-		AuctionJoin auctionJoin = auctionService.joinAuction(curationArtSeq, userSeq);
+		auctionService.joinAuction(seqRequest.getSeq(), userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("경매 참가 신청 완료"));
 	}
