@@ -21,15 +21,15 @@ export async function loader ({params}) {
     .catch(() => null)
 
   console.log(artData);
-  if (artData === 404) {
-    throw new Response("", {
-      status: 404,
-      statusText: "작품을 찾을 수 없습니다!",
-    });
-  }
-  else if (artData === 401) {
-    return redirect('/login');
-  }
+  // if (artData === 404) {
+  //   throw new Response("", {
+  //     status: 404,
+  //     statusText: "작품을 찾을 수 없습니다!",
+  //   });
+  // }
+  // else if (artData === 401) {
+  //   return redirect('/login');
+  // }
   return [artData, likeList];
 }
 
