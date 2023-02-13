@@ -1,7 +1,7 @@
 import React from 'react';
 import {Outlet, NavLink, Form, useLoaderData} from "react-router-dom";
-import { axiosAuth } from "../../_actions/axiosAuth";
-
+import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
+import { useState } from 'react';
 import ProfileImg from "../../components/commons/ProfileImg";
 import './Layout.css'
 
@@ -12,15 +12,23 @@ export async function loader ({params}) {
     .then(response => response.data)
     .catch(error => console.log(error))
 
-  return [nickname, userSeq, userData];
+  const likeList = await axiosAuth.get("users/follow")
+    .then(response => response.data)
+  console.log('likeList',likeList)
+  return [nickname, userSeq, userData, likeList];
 }
 
 
 export default function Layout() {
-  const [nickname, userSeq, userData] = useLoaderData();
-  console.log(userData);
+  const [nickname, userSeq, userData, likeList] = useLoaderData();
   const isMyPage = nickname === localStorage.getItem('nickname')
   const isArtist = userData.role === 'ROLE_ARTIST'
+
+  let wonderValue = likeList?.find(like => +like === +userSeq) || false
+  console.log(wonderValue)
+  const [wonder, setWonder] = useState(wonderValue)
+
+  let content = !wonder? "팔로우": "팔로우 취소"
 
   return (
     // 얘는 Mypage의 layout임!!! 마이페이지 어디를 가든 변하지 않고 항상 있어야 함 (==사이드바랑 위의 메뉴탭 4개)
@@ -47,7 +55,24 @@ export default function Layout() {
             </div>
             :
             <div id="profile_buttons">
-              <button id='follow'>팔로우버튼</button>
+              <form onSubmit={event => {
+                event.preventDefault()
+
+                if (!wonder) {
+                  let body = {"seq": +userSeq}
+                  axiosReissue()
+                  axiosAuth.post("users/follow", body)
+                    .then(response => console.log('팔로우 성공', response))
+                } else if (wonder) {
+                  let body = {"seq": +userSeq}
+                  axiosReissue()
+                  axiosAuth.delete("users/follow", {data: body})
+                    .then(response => console.log('팔로우 취소', response))
+                }
+                setWonder(prev=>!prev)
+              }}>
+                <button id='follow'>{content}</button>
+              </form>
             </div>
           }
       </div>
