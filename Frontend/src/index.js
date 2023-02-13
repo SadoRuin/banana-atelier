@@ -52,17 +52,18 @@ import { loader as myPageLoader } from "./routes/MyPage/Layout"
 
 // 작품탭
 // import ArtsRoot from "./routes/MyPage/ArtsRoot"
-import ArtsMyPage from "./routes/MyPage/ArtsMyPage";
-import { loader as ArtsMyPageLoader } from "./routes/MyPage/ArtsMyPage";
+import ArtsRoot from "./routes/MyPage/ArtsRoot";
+import { loader as ArtsMyPageLoader } from "./routes/MyPage/ArtsRoot";
 // import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
 // import ArtsIndex from "./routes/MyPage/ArtsIndex";
 // import ArtsMyCollections from "./routes/MyPage/ArtsMyCollections";
 // 공지사항탭
 import NoticesRoot from "./routes/MyPage/NoticesRoot";
-import NoticesMine from "./routes/MyPage/NoticesMine";
-import NoticesFollowing from "./routes/MyPage/NoticesFollowing";
+import { loader as NoticesLoader, action as NoticesAction } from "./routes/MyPage/NoticesRoot";
+// import NoticesMine from "./routes/MyPage/NoticesMine";
+// import NoticesFollowing from "./routes/MyPage/NoticesFollowing";
 import NoticesDetail, {loader as noticeLoader} from "./routes/MyPage/NoticesDetail"
-import { getNotices } from "./notices"
+// import { getNotices } from "./notices"
 // 큐레이션탭
 import CurationsRoot from "./routes/MyPage/CurationsRoot";
 import CurationsMine from "./routes/MyPage/CurationsMine";
@@ -131,7 +132,7 @@ const router = createBrowserRouter(
 
             <Route
               index
-              element={<ArtsMyPage />}
+              element={<ArtsRoot />}
               loader={ArtsMyPageLoader}
             >
               {/*<Route index element={ <ArtsIndex /> }>*/}
@@ -144,16 +145,18 @@ const router = createBrowserRouter(
             <Route
               path="notices"
               element={ <NoticesRoot /> }
+              loader={ NoticesLoader }
+              action={ NoticesAction }
             >
-              <Route
-                path="mine"
-                element={ <NoticesMine /> }
-                loader={getNotices}/>
-              <Route
-                path="following"
-                element={ <NoticesFollowing /> }
-                loader={getNotices}
-              />
+              {/*<Route*/}
+              {/*  path="mine"*/}
+              {/*  element={ <NoticesMine /> }*/}
+              {/*  loader={getNotices}/>*/}
+              {/*<Route*/}
+              {/*  path="following"*/}
+              {/*  element={ <NoticesFollowing /> }*/}
+              {/*  loader={getNotices}*/}
+              {/*/>*/}
               <Route
                 path=":notice_id"
                 element={<NoticesDetail/>}
