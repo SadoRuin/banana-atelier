@@ -4,12 +4,29 @@ import axios from "axios";
 import React, { Component } from "react";
 // import './App.css';
 import UserVideoComponent from "./UserVideoComponent";
+import UserVideoComponent2 from "./UserVideoComponent2";
+import CurationInfo from "../../components/Curations/curationInfo";
 // import OpenViduVideoComponent from './OvVideo';
+import styled from 'styled-components';
 
 // 어플리케이션 서버의 url
 // const APPLICATION_SERVER_URL = "http://localhost:4443/";
 const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447";
 const OPENVIDU_SERVER_SECRET = "dnjftlr";
+
+
+const Frame = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+`
+const LeftCam = styled.div`
+  grid-column: 1/span 1;
+`
+const RightInfo = styled.div`
+  grid-column: 2/span 1;
+`
+
+
 
 class App extends Component {
   constructor(props) {
@@ -259,7 +276,6 @@ class App extends Component {
           <div id="session">
             <div id="session-header">
               {/* <h1 id="session-title">{mySessionId}</h1> */}
-
               <button
                 className="btn btn-large btn-danger"
                 type="button"
@@ -269,35 +285,40 @@ class App extends Component {
               >
                 나가기
               </button>
-
-              
             </div>
+            <Frame>
+              <LeftCam>
+                {this.state.mainStreamManager !== undefined ? (
+                  <div id="main-video" >
+                    <UserVideoComponent streamManager={this.state.mainStreamManager} />
+                  </div>
+                ) : null}
+                <div id="video-container" >
+                  {/* {this.state.publisher !== undefined ? (
+                                    <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
+                                    <UserVideoComponent
+                                    streamManager={this.state.publisher} />
+                                    </div>
+                                ) : null} */}
+                  {this.state.subscribers.map((sub, i) => (
+                    <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
+                      <UserVideoComponent2 streamManager={sub} />
+                      </div>
+                  ))}
+                  {/* {this.state.publisher !== undefined ? (
+                    <div> {this.state.publisher} </div>
+                    ) : null}
+                  {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
 
-            {this.state.mainStreamManager !== undefined ? (
-              <div id="main-video" className="col-md-6">
-                <UserVideoComponent streamManager={this.state.mainStreamManager} />
-              </div>
-            ) : null}
-            <div id="video-container" className="col-md-6">
-              {/* {this.state.publisher !== undefined ? (
-                                <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
-                                <UserVideoComponent
-                                streamManager={this.state.publisher} />
-                                </div>
-                            ) : null} */}
-                            {this.state.subscribers.map((sub, i) => (
-                              <div key={i} className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(sub)}>
-                                <UserVideoComponent streamManager={sub} />
-                                </div>
-                            ))}
-                            {/* {this.state.publisher !== undefined ? (
-                              <div> {this.state.publisher} </div>
-                              ) : null}
-                            {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
+                                
+                </div>
 
-                            
-            </div>
-          component 위치
+              </LeftCam>
+              <RightInfo>
+                <CurationInfo/>
+
+              </RightInfo>
+            </Frame>
           </div>
         ) : null}
       </div>
