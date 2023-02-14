@@ -1,7 +1,7 @@
 import React from 'react';
 import {axiosAuth} from "../../_actions/axiosAuth";
 import {useLoaderData} from "react-router-dom";
-import ArtItem from "../../components/commons/artItem";
+import ArtComponent from "../../components/commons/ArtComponent";
 
 export async function loader () {
   const artList = await axiosAuth('arts/all')
@@ -19,7 +19,7 @@ function ArtsMainAll() {
       <div className="grid__main-components">
         {artList.map((art) =>
           <div key={`art-item_${art.artSeq}`}>
-            <ArtItem
+            <ArtComponent
               nickname={art.nickname}
               profileImg={art.profileImg}
               userSeq={art.userSeq}
@@ -38,7 +38,7 @@ function ArtsMainAll() {
       <div className="grid__main-components">
         {artList.map((art) =>
           <div key={`art-item_${art.artSeq}`}>
-            <ArtItem
+            <ArtComponent
               nickname={art.nickname}
               profileImg={art.profileImg}
               userSeq={art.userSeq}
@@ -58,7 +58,7 @@ function ArtsMainAll() {
       <div className="grid__main-components">
         {artList.map((art) =>
           <div key={`art-item_${art.artSeq}`}>
-            <ArtItem
+            <ArtComponent
               nickname={art.nickname}
               profileImg={art.profileImg}
               userSeq={art.userSeq}

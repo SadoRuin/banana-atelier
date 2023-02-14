@@ -10,7 +10,7 @@ export async function loader ({params}) {
   axiosReissue();
 
 
-  const userArts = await axiosAuth(`arts/${userSeq}`)
+  const userArts = await axiosAuth(`arts`)
     .then(response => response.data)
     .catch((error) => error.response.status === 401 ? error : null )
   const userLikes = await axiosAuth(`arts/${userSeq}/like`)

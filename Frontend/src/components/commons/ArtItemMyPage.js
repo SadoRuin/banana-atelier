@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { getArtThumbnail } from "./imageModule";
 // import ProfileImg from "./ProfileImg";
 import { LikeBtn } from "./buttons";
-import './artItem.css'
+import './ArtComponent.css'
 
 function ArtItemMyPage({nickname, userSeq, artThumbnail, artName, artSeq}) {
 

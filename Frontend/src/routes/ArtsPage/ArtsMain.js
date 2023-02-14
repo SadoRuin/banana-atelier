@@ -1,7 +1,7 @@
 import React , {useState} from 'react'
 import axiosCustom from '../../_actions/axiosCustom';
 import { useNavigate, useLoaderData } from 'react-router-dom';
-import ArtItem from "../../components/commons/artItem";
+import ArtComponent from "../../components/commons/ArtComponent";
 import { TabMenu, TabContent } from "../../components/commons/TabMenuComponent";
 
 // import {Category} from "../../components/commons/category";
@@ -48,7 +48,7 @@ function ArtsMain() {
         <div className="grid__main-components">
           {artsTrend?.map((art) =>
             <div key={`art-item_${art.artSeq}`}>
-              <ArtItem
+              <ArtComponent
                 nickname={art.nickname}
                 profileImg={art.profileImg}
                 userSeq={art.userSeq}
@@ -68,7 +68,7 @@ function ArtsMain() {
         <div className="grid__main-components">
           {artsAll?.map((art) =>
             <div key={`art-item_${art.artSeq}`}>
-              <ArtItem
+              <ArtComponent
                 nickname={art.nickname}
                 profileImg={art.profileImg}
                 userSeq={art.userSeq}
@@ -88,7 +88,7 @@ function ArtsMain() {
         <div className="grid__main-components">
           {artsNew.map((art) =>
             <div key={`art-item_${art.artSeq}`}>
-              <ArtItem
+              <ArtComponent
                 nickname={art.nickname}
                 profileImg={art.profileImg}
                 userSeq={art.userSeq}
@@ -108,7 +108,7 @@ function ArtsMain() {
         <div className="grid__main-components">
           {artsPopular.map((art) =>
             <div key={`art-item_${art.artSeq}`}>
-              <ArtItem
+              <ArtComponent
                 nickname={art.nickname}
                 profileImg={art.profileImg}
                 userSeq={art.userSeq}
