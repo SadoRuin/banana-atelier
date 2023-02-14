@@ -1,0 +1,64 @@
+.art-detail__container {
+    margin-top: 30px;
+    align-items: center;
+}
+.art-img {
+    border-radius: 10px;
+    width: 100%;
+}
+
+.art-detail_content {
+    box-sizing: border-box;
+    padding: 0 30px;
+}
+
+.art-detail__main-info {
+    margin-bottom: 50px;
+}
+.art-detail__title {
+    display: flex;
+    align-items: center;
+}
+.art-detail__title > h1 {
+    margin-right: 15px
+}
+
+.art-detail__profile {
+
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+.artist_profile * {
+    margin-right: 10px;
+}
+
+.art-detail__manage {
+    display: flex;
+}
+.art-detail__manage > * {
+    margin-right: 10px
+}
+
+.arts_description {
+    margin-bottom: 30px;
+}
+
+.art-detail__sub-info {
+    font-size: 12px;
+    color: #656565;
+    display: flex;
+    margin-bottom: 15px;
+}
+.art-detail__sub-info * {
+    margin-right: 5px;
+    display: flex;
+}
+
+.art-detail__btns {
+    display: flex;
+}
+.art-detail__btns > * {
+    margin-right: 15px;
+}
