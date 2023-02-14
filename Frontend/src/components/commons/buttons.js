@@ -11,7 +11,7 @@ export const YellowBtn = styled.button`
   border-radius: 15px;
   font-size: 13px;
   box-sizing: border-box;
-  padding: 7px 10px;
+  padding: 5px 9px;
   background-color: #F9D923;
   cursor: pointer;
   &:hover {
