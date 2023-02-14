@@ -22,7 +22,7 @@ function ArtItem({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, 
       </Link>
 
       <div className="art-info__container">
-          <Link to={`${nickname}@${userSeq}`} className="art-info__artist link">
+          <Link to={`/${nickname}@${userSeq}`} className="art-info__artist link">
             <ProfileImg width="25px" height="25px" url={ profileImg } userSeq={userSeq} />
             <span>{nickname}</span><span className="jakka">작가</span>
           </Link>
