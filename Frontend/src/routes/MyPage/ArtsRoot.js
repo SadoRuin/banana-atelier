@@ -4,7 +4,7 @@ import { useLoaderData, Link, redirect, useOutletContext } from "react-router-do
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
-import { GreenBtn } from "../../components/commons/buttons";
+import { GreenBtn, YellowBtn } from "../../components/commons/buttons";
 
 import './ArtsRoot.css'
 
@@ -64,6 +64,7 @@ function ArtsRoot() {
           <h3>대표작품</h3>
           { userMasterpieces?
             <div className="art-root__arts-container">
+              <YellowBtn style={{gridColumn: "1 / end", width: "150px"}}><Link className="link" to="set_masterpiece">대표작품 수정</Link></YellowBtn>
               {userMasterpieces.map((masterpiece) =>
                 <ArtItemMyPage
                   key={`my-page__arts-${masterpiece.artSeq}`}
