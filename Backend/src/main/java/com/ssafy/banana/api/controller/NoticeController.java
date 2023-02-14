@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.NoticeService;
-import com.ssafy.banana.db.entity.Notice;
 import com.ssafy.banana.dto.request.NoticeRequest;
 import com.ssafy.banana.dto.response.NoticeResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
@@ -92,9 +91,8 @@ public class NoticeController {
 
 		String token = Authorization.split(BLNAK)[1];
 		long userSeq = tokenProvider.getSubject(token);
-		Notice notice = noticeService.updateNotice(noticeRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(notice);
+		return ResponseEntity.status(HttpStatus.OK).body(noticeService.updateNotice(noticeRequest, userSeq));
 	}
 
 	@PreAuthorize("hasRole('ARTIST')")

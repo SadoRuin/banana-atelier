@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.banana.api.service.ArtService;
-import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
 import com.ssafy.banana.dto.request.MasterpieceRequest;
@@ -75,11 +74,10 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "나의 작품 리스트", notes = "작가의 작품 목록을 반환합니다")
-	@GetMapping
-	public ResponseEntity<List<ArtResponse>> getMyArtList(@RequestHeader String Authorization) {
+	@GetMapping("/{userSeq}")
+	public ResponseEntity<List<ArtResponse>> getMyArtList(
+		@PathVariable("userSeq") long userSeq) {
 
-		String token = Authorization.split(BLNAK)[1];
-		long userSeq = tokenProvider.getSubject(token);
 		List<ArtResponse> artList = artService.getMyArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
@@ -167,9 +165,8 @@ public class ArtController {
 
 		String token = Authorization.split(BLNAK)[1];
 		long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.addArtLike(seqRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(art);
+		return ResponseEntity.status(HttpStatus.OK).body(artService.addArtLike(seqRequest, userSeq));
 	}
 
 	@ApiOperation(value = "작품 좋아요 삭제하기", notes = "작품에 좋아요를 취소합니다")
@@ -180,9 +177,8 @@ public class ArtController {
 
 		String token = Authorization.split(BLNAK)[1];
 		long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.deleteArtLike(seqRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(art);
+		return ResponseEntity.status(HttpStatus.OK).body(artService.deleteArtLike(seqRequest, userSeq));
 	}
 
 	@ApiOperation(value = "작품 다운로드", notes = "작품을 다운로드합니다")
@@ -203,9 +199,8 @@ public class ArtController {
 
 		String token = Authorization.split(BLNAK)[1];
 		long userSeq = tokenProvider.getSubject(token);
-		Art art = artService.updateArt(artRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(art);
+		return ResponseEntity.status(HttpStatus.OK).body(artService.updateArt(artRequest, userSeq));
 	}
 
 	@PreAuthorize("hasRole('ARTIST')")
