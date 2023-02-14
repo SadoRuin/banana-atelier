@@ -125,29 +125,23 @@ function ArtsDetail() {
 
               <form onSubmit={(event) => {
                 event.preventDefault()
-
+                axiosReissue();
+                console.log(artData.artSeq)
+                let body = { "seq": artData.artSeq };
                 if (isLiked) {
-                  const userSeq = localStorage.getItem("userSeq")
-                  let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
-                  axiosReissue()
-                  let body = {"seq": artData.artSeq}
                   axiosAuth.delete(`arts/like`, {data: body})
                   .then(response => console.log('싫어요 response', response))
                   .catch(error => {
                     console.log("이게 왜 에러지", error)
                   })
                   setLikeCount(prev => prev - 1)
-
-                } else if (!isLiked) {
-                  const userSeq = localStorage.getItem("userSeq")
-                  let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
-                  axiosReissue()
+                }
+                else if (!isLiked) {
                   axiosAuth.post(`arts/like`, body)
                     .then(response => console.log('좋아요 response', response))
                   setLikeCount(prev => prev + 1)
                 }
                 setIsLiked(prev=>!prev)
-
               }}>
                 <LikeBtn isLike={isLiked} />
               </form>

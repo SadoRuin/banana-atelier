@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLoaderData, Link, redirect } from "react-router-dom";
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import { TabMenu, TabContent } from "../../components/commons/TabMenuComponent";
-import ArtItemMyPage from "../../components/commons/ArtItemMyPage";
+import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
 import {YellowBtn} from "../../components/commons/buttons";
 
 export async function loader ({params}) {
