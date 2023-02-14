@@ -29,13 +29,13 @@ public class MyArtist {
 	private MyArtistId id;
 
 	@MapsId("userSeq")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private User user;
 
 	@MapsId("artistSeq")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "artist_seq", nullable = false)
 	private Artist artist;

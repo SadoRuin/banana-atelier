@@ -44,7 +44,7 @@ public class Auction {
 	private Long id;
 
 	@MapsId
-	@OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.MERGE)
+	@OneToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.MERGE)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "curation_art_seq", nullable = false)
 	private CurationArt curationArt;
@@ -83,7 +83,7 @@ public class Auction {
 	private AuctionStatus auctionStatus;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private User user;

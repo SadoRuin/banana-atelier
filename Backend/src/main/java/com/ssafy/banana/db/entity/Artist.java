@@ -36,7 +36,7 @@ public class Artist {
 	private Long id;
 
 	@MapsId
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@OneToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	@JsonIgnore

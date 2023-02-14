@@ -31,14 +31,14 @@ public class MyArt {
 	private MyArtId id;
 
 	@MapsId("userSeq")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	@JsonIgnore
 	private User user;
 
 	@MapsId("artSeq")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "art_seq", nullable = false)
 	@JsonIgnore

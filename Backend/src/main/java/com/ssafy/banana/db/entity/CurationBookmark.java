@@ -29,13 +29,13 @@ public class CurationBookmark {
 	private CurationBookmarkId id;
 
 	@MapsId("userSeq")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private User user;
 
 	@MapsId("curationSeq")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "curation_seq", nullable = false)
 	private Curation curation;
