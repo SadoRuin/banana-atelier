@@ -103,9 +103,10 @@ public class AuctionService {
 		if (artist.getId() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		// 경매 가능한 작품 리스트
+		// 경매 가능한 작품 리스트 ( 경매 여부 값이 0이 아니고, 경매 희망 인원이 있음 )
 		List<CurationArt> curationArtList =
-			curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
+			curationArtRepository.findByCuration_IdAndIsAuctionNotAndAuctionPeopleCntNotOrderById(curation.getId(), 0,
+					0)
 				.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
 
 		for (int i = 0; i < curationArtList.size(); i++) {
@@ -115,7 +116,6 @@ public class AuctionService {
 			if (auctionRepository.findById(curationArt.getId()).isPresent()) {
 				throw new CustomException(CustomExceptionType.AUCTION_INFO_CONFLICT);
 			}
-
 			LocalDateTime currentTime = LocalDateTime.now();
 			// 경매 정보 초기화
 			Auction auction = Auction.builder()
@@ -290,8 +290,9 @@ public class AuctionService {
 		if (curation.getArtist().getId() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		List<CurationArt> curationArtList
-			= curationArtRepository.findByCuration_IdAndIsAuctionNotOrderById(curation.getId(), 0)
+		// 경매 가능한 작품 리스트 ( 경매 여부 값이 0이 아니고, 경매 희망 인원이 있음 )
+		List<CurationArt> curationArtList = curationArtRepository
+			.findByCuration_IdAndIsAuctionNotAndAuctionPeopleCntNotOrderById(curation.getId(), 0, 0)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
 		int closeAuctionCount = 0;
@@ -311,7 +312,6 @@ public class AuctionService {
 						.setAuctionEndPrice(auctionBidLog.getAuctionBidPrice())
 						.setUser(auctionBidLog.getUser());
 				}
-
 				LocalDateTime currentTime = LocalDateTime.now();
 				auction
 					.setAuctionStatusTime(currentTime)
