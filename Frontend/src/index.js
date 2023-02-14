@@ -35,6 +35,7 @@ import { loader as ArtsDetailLoader, action as ArtsDetailAction } from "./routes
 import CurationsMain from "./routes/CurationsPage/CurationsMain";
 import { loader as curationListLoader } from "./routes/CurationsPage/CurationsMain";
 import CurationsOnAir from "./routes/CurationsPage/CurationsOnAir"
+import { loader as CurationsOnAirLoader } from "./routes/CurationsPage/CurationsOnAir"
 import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
 import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
 import CurationsDetail from "./routes/CurationsPage/CurationsDetail";
@@ -106,9 +107,9 @@ const router = createBrowserRouter(
 
           {/* 큐레이션 페이지 */}
           <Route path="curations" element={ <CurationsMain /> } loader={curationListLoader}/>
-          <Route path="curations/on_air" element={ <CurationsOnAir /> } />
+          <Route path="curations/on_air" element={ <CurationsOnAir /> } loader={CurationsOnAirLoader} />
 
-          <Route path="curations/on_air/CurationsOpenVidu" element={<CurationsOpenVidu/>}/>
+          <Route path="curations/on_air/:curation_seq" element={<CurationsOpenVidu/>}/>
 
           <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
           <Route path="curations/end" element={ <CurationsEnd /> } />

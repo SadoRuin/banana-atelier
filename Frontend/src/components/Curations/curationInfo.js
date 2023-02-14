@@ -95,8 +95,21 @@ const WhiteCharacter = styled.div`
   padding: 10px;
 `
 
+// export async function Loader({params}){
+//   const curationsSeq = params.curation_seq
+//   const curationList = await axiosAuth.get('curations/on')
+//   .then(response => response.data)
+//   .catch(error => console.log(error))
+
+//   console.log(curationList);
+//   return null
+// }
 
 function CurationInfo () {
+
+  // let token = localStorage.getItem('token')
+
+
   return (
     <Frame>
       <Thumbnail>

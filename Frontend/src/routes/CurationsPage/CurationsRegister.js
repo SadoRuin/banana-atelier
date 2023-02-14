@@ -1,42 +1,64 @@
 import React, {useState} from 'react';
 import { useNavigate, Form } from "react-router-dom";
-
-
-
-
+import { axiosAuth } from '../../_actions/axiosAuth';
+// import axiosCustom from '../../_actions/axiosCustom';
+import { axiosReissue } from '../../_actions/axiosAuth';
 
 
 function CurationsRegister(props) {
+  let userSeq = localStorage.getItem("userSeq")
+  
+  
+  
+  axiosReissue()
+  
+  // const myArts = axiosAuth.get(`arts/${userSeq}`)
+  //   .then(response => response.data)
+  //   .catch(error => console.log(error))
+  const myArts1 = axiosAuth.get(`arts/${userSeq}`)
+    .then(response => response.data)
+    .catch(error => console.log(error));
+
+  myArts1.then(result => {
+    console.log('첫번째 케이스:',result); 
+    
+  });
+
+
+  async function getThumbnail(){
+    try {
+      const myArts = await axiosAuth.get(`arts/${userSeq}`);
+      console.log('두번째 케이스 : ', myArts.data[0]['artThumbnail']);
+      const myArtsName = myArts.data[0]['artName']
+      return myArtsName
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  let thumbNailP =  getThumbnail();
+
+  console.log('섬네일피',thumbNailP)
+
+  
+
+
+
   const masterpieces = [
-    {
-      id: 1,
-      title: '작품1'
-    },
-    {
-      id: 2,
-      title: '작품2'
-    },
-    {
-      id: 3,
-      title: '작품3'
-    },
-    {
-      id: 4,
-      title: '작품4'
-    },
-    {
-      id: 5,
-      title: '작품5'
-    },
-    {
-      id: 6,
-      title: '작품6'
-    },
-    {
-      id: 7,
-      title: '작품7'
-    },
+    
   ]
+  
+  
+  // myArts?.map((item, index) => (
+  //   <div key={index}>
+  //     {item}
+  //   </div>
+  // ))  
+
+  const curationOn = axiosAuth.get('curations/on')
+    .then(response => response.data)
+    .catch(error => console.log('error:', error))
+  console.log('curationOn :', curationOn)
+
 
   const navigate = useNavigate();
 
@@ -89,11 +111,14 @@ function CurationsRegister(props) {
           최대 10개의 작품을 가지고 팬들과 소통할 수 있습니다. <br/>
           팬들이 구매 의사가 있다면 경매도 진행할 수 있습니다.
         </p>
+        <div>
+        </div>
       </div>
 
       <Form>
         <label>큐레이션 이름
           <input type="text" name="curation_title" placeholder="큐레이션 이름"/>
+          
         </label>
         <label>큐레이션 진행 날짜
           {/* date에서 min과 max 속성을 통해 최대 2주까지 선택하게 하면 될듯 함 */}

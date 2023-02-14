@@ -1,5 +1,16 @@
 import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import { axiosAuth } from '../../_actions/axiosAuth';
+
+export async function loader ({params}) {
+  // const curationsSeq = params.curation_seq
+  const curationList = await axiosAuth.get('curations/on')
+    .then(response => response.data)
+    .catch(error => console.log(error))
+
+  console.log(curationList);
+  return null
+}
 
 function CurationsOnAir(props) {
   const navigate = useNavigate();
