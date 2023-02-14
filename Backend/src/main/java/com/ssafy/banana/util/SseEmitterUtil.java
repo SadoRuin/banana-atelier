@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -19,10 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class SseEmitterUtil {
-	private static final AtomicLong counter = new AtomicLong();
 	private final Map<Long, List<SseEmitter>> sessionsMap = new ConcurrentHashMap<>();
 
-	public SseEmitter connectSession(long curationArtSeq, SseEmitter emitter) {
+	public void connectSession(long curationArtSeq, SseEmitter emitter) {
 		if (sessionsMap.get(curationArtSeq) == null) {
 			sessionsMap.put(curationArtSeq, new CopyOnWriteArrayList<>());
 		}
@@ -38,8 +36,6 @@ public class SseEmitterUtil {
 			log.info("onTimeout callback");
 			emitter.complete();
 		});
-
-		return emitter;
 	}
 
 	public void closeAllSession(long curationArtSeq) {
@@ -64,9 +60,10 @@ public class SseEmitterUtil {
 						.name("auctionHost")
 						.data("TIME OVER"));
 				} else {
+					String message = second + "초 남았습니다.";
 					emitter.send(SseEmitter.event()
 						.name("auctionHost")
-						.data(second));
+						.data(message));
 				}
 			} catch (IOException e) {
 				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
