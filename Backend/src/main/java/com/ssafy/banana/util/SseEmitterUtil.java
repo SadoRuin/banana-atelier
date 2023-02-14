@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.ssafy.banana.dto.request.CountdownRequest;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
 
@@ -21,7 +22,7 @@ public class SseEmitterUtil {
 	private static final AtomicLong counter = new AtomicLong();
 	private final Map<Long, List<SseEmitter>> sessionsMap = new ConcurrentHashMap<>();
 
-	public SseEmitter add(long curationArtSeq, SseEmitter emitter) {
+	public SseEmitter connectSession(long curationArtSeq, SseEmitter emitter) {
 		if (sessionsMap.get(curationArtSeq) == null) {
 			sessionsMap.put(curationArtSeq, new CopyOnWriteArrayList<>());
 		}
@@ -41,14 +42,46 @@ public class SseEmitterUtil {
 		return emitter;
 	}
 
-	public void count(long curationArtSeq) {
-		long count = counter.incrementAndGet();
+	public void closeAllSession(long curationArtSeq) {
+		if (sessionsMap.get(curationArtSeq) == null) {
+			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		}
+		List<SseEmitter> emitters = sessionsMap.get(curationArtSeq);
+		for (SseEmitter emitter : emitters) {
+			emitter.complete();
+		}
+		log.info("emitters isEmpty: {}", emitters.isEmpty());
+	}
+
+	public void countdown(CountdownRequest countdownRequest) {
+		long curationArtSeq = countdownRequest.getCurationArtSeq();
+		long second = countdownRequest.getSecond();
+		List<SseEmitter> emitters = sessionsMap.get(curationArtSeq);
+		emitters.forEach(emitter -> {
+			try {
+				if (second == 0) {
+					emitter.send(SseEmitter.event()
+						.name("auctionHost")
+						.data("TIME OVER"));
+				} else {
+					emitter.send(SseEmitter.event()
+						.name("auctionHost")
+						.data(second));
+				}
+			} catch (IOException e) {
+				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+			}
+		});
+	}
+
+	public void bidding(long curationArtSeq, String Nickname, int bidPrice) {
+		String bidMessage = Nickname + " 님이 " + bidPrice + "원에 입찰하셨습니다.";
 		List<SseEmitter> emitters = sessionsMap.get(curationArtSeq);
 		emitters.forEach(emitter -> {
 			try {
 				emitter.send(SseEmitter.event()
-					.name("count")
-					.data(count));
+					.name("auctionHost")
+					.data(bidMessage));
 			} catch (IOException e) {
 				throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 			}

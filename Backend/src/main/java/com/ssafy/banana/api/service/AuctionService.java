@@ -27,6 +27,7 @@ import com.ssafy.banana.db.repository.CurationArtRepository;
 import com.ssafy.banana.db.repository.CurationRepository;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.request.AuctionRequest;
+import com.ssafy.banana.dto.request.CountdownRequest;
 import com.ssafy.banana.dto.response.AuctionResponse;
 import com.ssafy.banana.dto.response.AuctionUpdateResponse;
 import com.ssafy.banana.exception.CustomException;
@@ -235,6 +236,8 @@ public class AuctionService {
 
 		auction.setAuctionEndTime(currentTime.plusMinutes(1));
 		auctionRepository.save(auction);
+		sseEmitterUtil.bidding(auctionRequest.getCurationArtSeq(), user.getNickname(),
+			auctionBidLog.getAuctionBidPrice());
 
 		int currentPrice = auctionBidLog.getAuctionBidPrice();
 		AuctionUpdateResponse auctionUpdateResponse = AuctionUpdateResponse.builder()
@@ -275,6 +278,7 @@ public class AuctionService {
 				.setAuctionStatusTime(currentTime)
 				.setAuctionEndTime(currentTime);
 			auctionRepository.save(auction);
+			sseEmitterUtil.closeAllSession(curationArtSeq);
 		} else if (auction.getAuctionStatus() == AuctionStatus.INIT) {
 			throw new CustomException(CustomExceptionType.NOT_GOING_AUCTION);
 		} else {
@@ -324,6 +328,9 @@ public class AuctionService {
 					.setAuctionEndTime(currentTime);
 				auctionRepository.save(auction);
 				closeAuctionCount++;
+				if (auction.getAuctionStatus() == AuctionStatus.ONGOING) {
+					sseEmitterUtil.closeAllSession(curationArtList.get(i).getId());
+				}
 			}
 		}
 		// 모든 경매가 이미 종료됨
@@ -332,14 +339,13 @@ public class AuctionService {
 		}
 	}
 
-	public SseEmitter connectAuction(long curationArtSeq) {
-		SseEmitter emitter = new SseEmitter();
-		sseEmitterUtil.add(curationArtSeq, emitter);
+	public SseEmitter connectAuctionHost(long curationArtSeq) {
+		SseEmitter emitter = new SseEmitter(0L);
+		sseEmitterUtil.connectSession(curationArtSeq, emitter);
 		try {
 			emitter.send(SseEmitter.event()
-				.id(String.valueOf(curationArtSeq))
-				.name("경매")
-				.data("경매 접속됨"));
+				.name("auctionHost")
+				.data("경매 호스트 접속됨"));
 		} catch (IOException e) {
 			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
 		}
@@ -347,7 +353,11 @@ public class AuctionService {
 		return emitter;
 	}
 
-	public void countAuction(long curationArtSeq) {
-		sseEmitterUtil.count(curationArtSeq);
+	public void closeAllAuctionHost(long curationArtSeq) {
+		sseEmitterUtil.closeAllSession(curationArtSeq);
+	}
+
+	public void countdownAuctionHost(CountdownRequest countdownRequest) {
+		sseEmitterUtil.countdown(countdownRequest);
 	}
 }
