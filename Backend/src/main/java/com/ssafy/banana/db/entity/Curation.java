@@ -4,81 +4,82 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ssafy.banana.db.entity.enums.CurationStatus;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "curation")
 public class Curation {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "curation_seq", nullable = false)
 	private Long id;
 
+	@NotNull
 	@Column(name = "curation_start_time", nullable = false)
 	private LocalDateTime curationStartTime;
 
+	@NotNull
 	@Column(name = "curation_end_time", nullable = false)
 	private LocalDateTime curationEndTime;
 
+	@Size(max = 100)
+	@NotNull
 	@Column(name = "curation_name", nullable = false, length = 100)
 	private String curationName;
 
-	@Column(name = "curation_summury", length = 1000)
-	private String curationSummury;
+	@Size(max = 1000)
+	@Column(name = "curation_summary", length = 1000)
+	private String curationSummary;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@Enumerated(EnumType.STRING)
+	@Column(name = "curation_status", length = 10)
+	private CurationStatus curationStatus;
+
+	@NotNull
+	@Column(name = "curation_hit", nullable = false)
+	private int curationHit;
+
+	@NotNull
+	@Column(name = "curation_bm_cnt", nullable = false)
+	private int curationBmCount;
+
+	@Size(max = 100)
+	@NotNull
+	@Column(name = "curation_thumbnail", nullable = false, length = 100)
+	private String curationThumbnail;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
 	private Artist artist;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public LocalDateTime getCurationStartTime() {
-		return curationStartTime;
-	}
-
-	public void setCurationStartTime(LocalDateTime curationStartTime) {
-		this.curationStartTime = curationStartTime;
-	}
-
-	public LocalDateTime getCurationEndTime() {
-		return curationEndTime;
-	}
-
-	public void setCurationEndTime(LocalDateTime curationEndTime) {
-		this.curationEndTime = curationEndTime;
-	}
-
-	public String getCurationName() {
-		return curationName;
-	}
-
-	public void setCurationName(String curationName) {
-		this.curationName = curationName;
-	}
-
-	public String getCurationSummury() {
-		return curationSummury;
-	}
-
-	public void setCurationSummury(String curationSummury) {
-		this.curationSummury = curationSummury;
-	}
-
-	public Artist getArtist() {
-		return artist;
-	}
-
-	public void setArtist(Artist artist) {
-		this.artist = artist;
-	}
 
 }

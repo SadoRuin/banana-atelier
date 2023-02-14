@@ -1,0 +1,40 @@
+#nav_bar {
+    border-bottom: 1px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 100px;
+    box-sizing: border-box;
+}
+@media (max-width: 1024px) {
+    #nav_bar {
+        padding: 10px 30px;
+    }
+}
+
+.left-menu-bar {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+.left-menu-bar .link {
+    padding: 5px 2px;
+    margin-left: 15px;
+}
+.left-menu-bar .nav-active {
+    border-bottom: 3px solid #F9D923;
+}
+
+
+.right-menu-bar {
+    display: flex;
+    align-items: center;
+}
+.right-menu-bar > * {
+    margin-left: 15px;
+}
+
+
+/* 여기 쓰는 NavLink는 추후 모든 페이지에서 접근할 수 있게 빼놓아야 함! */
+

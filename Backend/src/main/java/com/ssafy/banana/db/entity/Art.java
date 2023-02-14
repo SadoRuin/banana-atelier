@@ -5,158 +5,101 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "art")
 public class Art {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "art_seq", nullable = false)
 	private Long id;
 
+	@Size(max = 100)
+	@NotNull
 	@Column(name = "art_name", nullable = false, length = 100)
 	private String artName;
 
+	@Size(max = 500)
+	@NotNull
 	@Column(name = "art_description", nullable = false, length = 500)
 	private String artDescription;
 
+	@NotNull
 	@Column(name = "art_reg_date", nullable = false)
 	private LocalDateTime artRegDate;
 
+	@NotNull
 	@Column(name = "art_hit", nullable = false)
 	private int artHit;
 
+	@NotNull
+	@Column(name = "art_download_count", nullable = false)
+	private int artDownloadCount;
+
+	@NotNull
 	@Column(name = "art_like_count", nullable = false)
 	private int artLikeCount;
 
+	@Size(max = 100)
+	@NotNull
 	@Column(name = "art_thumbnail", nullable = false, length = 100)
 	private String artThumbnail;
 
+	@Size(max = 100)
+	@NotNull
 	@Column(name = "art_img", nullable = false, length = 100)
 	private String artImg;
 
+	@NotNull
 	@Column(name = "is_digital", nullable = false)
 	private boolean isDigital;
 
+	@NotNull
 	@Column(name = "is_sold", nullable = false)
 	private boolean isSold;
 
+	@NotNull
 	@Column(name = "is_represent", nullable = false)
 	private boolean isRepresent;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "art_category_seq", nullable = false)
+	@JsonIgnore
 	private ArtCategory artCategory;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "user_seq", nullable = false)
+	@JsonIgnore
 	private Artist artist;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getArtName() {
-		return artName;
-	}
-
-	public void setArtName(String artName) {
-		this.artName = artName;
-	}
-
-	public String getArtDescription() {
-		return artDescription;
-	}
-
-	public void setArtDescription(String artDescription) {
-		this.artDescription = artDescription;
-	}
-
-	public LocalDateTime getArtRegDate() {
-		return artRegDate;
-	}
-
-	public void setArtRegDate(LocalDateTime artRegDate) {
-		this.artRegDate = artRegDate;
-	}
-
-	public int getArtHit() {
-		return artHit;
-	}
-
-	public void setArtHit(int artHit) {
-		this.artHit = artHit;
-	}
-
-	public int getArtLikeCount() {
-		return artLikeCount;
-	}
-
-	public void setArtLikeCount(int artLikeCount) {
-		this.artLikeCount = artLikeCount;
-	}
-
-	public String getArtThumbnail() {
-		return artThumbnail;
-	}
-
-	public void setArtThumbnail(String artThumbnail) {
-		this.artThumbnail = artThumbnail;
-	}
-
-	public String getArtImg() {
-		return artImg;
-	}
-
-	public void setArtImg(String artImg) {
-		this.artImg = artImg;
-	}
-
-	public boolean getIsDigital() {
-		return isDigital;
-	}
-
-	public void setIsDigital(boolean isDigital) {
-		this.isDigital = isDigital;
-	}
-
-	public boolean getIsSold() {
-		return isSold;
-	}
-
-	public void setIsSold(boolean isSold) {
-		this.isSold = isSold;
-	}
-
-	public boolean getIsRepresent() {
-		return isRepresent;
-	}
-
-	public void setIsRepresent(boolean isRepresent) {
-		this.isRepresent = isRepresent;
-	}
-
-	public ArtCategory getArtCategory() {
-		return artCategory;
-	}
-
-	public void setArtCategory(ArtCategory artCategory) {
-		this.artCategory = artCategory;
-	}
-
-	public Artist getArtist() {
-		return artist;
-	}
-
-	public void setArtist(Artist artist) {
-		this.artist = artist;
-	}
 
 }

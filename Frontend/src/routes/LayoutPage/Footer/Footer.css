@@ -1,0 +1,16 @@
+footer {
+    border-top: 1px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 100px;
+
+    color: #656565;
+
+}
+@media (max-width: 1024px) {
+    footer {
+        padding: 10px 30px;
+    }
+}
