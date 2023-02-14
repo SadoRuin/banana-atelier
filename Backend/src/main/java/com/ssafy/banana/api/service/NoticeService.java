@@ -101,7 +101,7 @@ public class NoticeService {
 		Notice notice = noticeRepository.findById(noticeRequest.getNoticeSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		if (notice.getArtist().getId() == userSeq) {
+		if (userSeq.equals(notice.getArtist().getId())) {
 			notice.setNoticeTitle(noticeRequest.getNoticeTitle());
 			notice.setNoticeContent(noticeRequest.getNoticeContent());
 			noticeRepository.save(notice);
