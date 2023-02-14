@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import {Outlet, NavLink, Form, useLoaderData, redirect} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { Outlet, NavLink, Form, useLoaderData, redirect } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faHouse } from "@fortawesome/free-solid-svg-icons";
 
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import ProfileImg from "../../components/commons/ProfileImg";
-import { YellowBtn } from "../../components/commons/buttons";
+import { YellowBtn, RedBtn } from "../../components/commons/buttons";
 
 import './Layout.css'
 
 export async function loader ({params}) {
   const [nickname, userSeq] = params.nickname_user_seq.split('@');
 
+  // 마이페이지 주인의 정보 가져오기
   const userData = await axiosAuth.get(`users/profile/${userSeq}`)
     .then(response => response.data)
     .catch((error) => error.response.status)
   console.log(userData);
 
+  // 이 주인이 팔로우한 사람 목록 가져오기
   const userFollow = await axiosAuth.get("users/follow")
     .then(response => response.data)
     .catch(() => null)
@@ -40,19 +42,16 @@ export async function loader ({params}) {
       statusText: "사용자를 찾을 수 없습니다",
     });
   }
-  return [nickname, userSeq, userData, userFollow];
+  return [userSeq, userData, userFollow];
 }
 
 
 
 export default function Layout() {
-  const [nickname, userSeq, userData, userFollow] = useLoaderData();
+  const [userSeq, userData, userFollow] = useLoaderData();
   const isMyPage = userSeq === localStorage.getItem('userSeq');
   const isArtist = userData.role === 'ROLE_ARTIST'
-  
-  // nickname 선언만 해서 빌드 오류날까봐 한 것. 삭제해도 괜찮음
-  console.log(nickname)
-  
+
   let isFollow = userFollow?.find(like => +like === +userSeq) || false
   const [wonder, setWonder] = useState(isFollow)
 
@@ -78,9 +77,10 @@ export default function Layout() {
 
         {/* userSeq가 내가 아니면 남의 버튼 렌더링, 나라면 나의 버튼 렌더링 */}
         { isMyPage ?
-          <div id="profile_buttons">
+          <div className="my-page__profile_buttons">
             <Form action={'edit_profile'}><YellowBtn style={{width: "120px"}} type="submit">정보 수정하기</YellowBtn></Form>
             <Form action={'upload'}><YellowBtn style={{width: "120px"}} type="submit">작품 업로드</YellowBtn></Form>
+            <RedBtn style={{width: "120px"}}>로그아웃</RedBtn>
           </div>
           :
           <div id="profile_buttons">
@@ -106,18 +106,15 @@ export default function Layout() {
       </div>
 
       <div className="my-page__content">
-        <nav>
-          <NavLink to='.' className={({isActive}) => isActive? 'link nav-active' : 'link' } end>작품</NavLink>
+        <nav className="my-page__nav">
+          <NavLink to='.' className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' } end>작품</NavLink>
           {/* 공지사항은 내 페이지도 아니고 작가도 아니면 아예 링크를 띄우지 말자 */}
-          { (!isMyPage && !isArtist)? null : <NavLink to={ 'notices' } className={({isActive}) => isActive? 'link nav-active' : 'link' }>공지사항</NavLink>}
-          <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' } className={({isActive}) => isActive? 'link nav-active' : 'link' } >큐레이션</NavLink>
-          {/*<NavLink to='commissions' className={({isActive}) => isActive? 'link nav-active' : 'link' } >커미션</NavLink>*/}
+          { (!isMyPage && !isArtist)? null : <NavLink to={ 'notices' } className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' }>공지사항</NavLink>}
+          <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' } className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' } >큐레이션</NavLink>
         </nav>
 
-        {/* 여기가 진짜 렌더링 해야하는 곳인데..... */}
         {/* 자식에게 props 전달 가능함! context를 이용한다. */}
         <Outlet context={[isMyPage, isArtist]} />
-
       </div>
 
     </div>

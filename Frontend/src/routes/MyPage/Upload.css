@@ -1,0 +1,30 @@
+#upload__preview {
+    border: 2px dotted #656565;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+
+}
+
+.upload__container {
+    display: flex;
+    flex-direction: column;
+}
+.upload__form {
+    flex: 1;
+    display: flex;
+    margin-bottom: 20px;
+}
+.upload__bold-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.upload_info-container {
+    flex: 1;
+}
+.upload__info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}

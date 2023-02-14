@@ -5,7 +5,7 @@ import { axiosReissue, axiosAuth } from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import { YellowBtn, RedBtn, LikeBtn } from "../../components/commons/buttons";
-import {Category} from "../../components/commons/category";
+import {Category} from "../../components/commons/Category";
 import './ArtsDetail.css'
 
 export async function loader ({params}) {
@@ -66,6 +66,7 @@ function ArtsDetail() {
   const navigate = useNavigate()
   console.log(likeList)
   console.log(likeState);
+
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
@@ -92,7 +93,7 @@ function ArtsDetail() {
             </Link>
 
             <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>
-            <div className="arts_description">
+            <div className="arts_description" style={{whiteSpace: "pre-line"}}>
               {artData.artDescription}
             </div>
 

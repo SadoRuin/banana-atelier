@@ -1,0 +1,17 @@
+.art-root__arts-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.art-root__arts-container > h3 {
+    grid-column: 1 / end;
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+.art-root__no-masterpiece, .art-root__no-arts, .art-root__no-likes {
+    grid-column: 1 / end;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 60px;
+    color: #656565;
+}
