@@ -1,4 +1,4 @@
-.login_container {
+.login-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -9,7 +9,7 @@
     background-color: #fff2ce;
 }
 
-.login_box {
+.login-box {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -23,13 +23,13 @@
     box-shadow: rgba(50, 50, 93, 0.1) 0px 50px 100px -5px, rgba(0, 0, 0, 0.2) 0px 30px 60px -30px, rgba(10, 37, 64, 0.25) 0px -1px 6px 0px inset;
 }
 
-#logo_img {
+#logo-img {
     width: 190px;
     height: 120.37px;
     margin-bottom: 20px;
 }
 
-#div-form {
+#div-on-form {
     text-align: left;
     margin: 20px 0 10px 0;
 }
@@ -37,22 +37,22 @@
 .label-input {
     display: flex;
     flex-direction: column;
-
+    margin-block: 10px;
 }
 
-.form-label {
+.label-of-form {
     margin-block: 0.5rem;
     padding-left: 5px;
 }
 
-input {
+.input-of-form {
     border: 0;
     border-radius: 15px;
     outline: none;
     padding-left: 10px;
     background-color: #fff8e3;
     color: #575757;
-    height: 2rem;
+    line-height: 3em;
 }
 
 .form-btn {
@@ -78,8 +78,19 @@ button:hover {
     }
 }
 
+.all-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.buttons {
+    text-align: center;
+    margin-block: 3px;
+}
+
 .hidden-msg {
     height: 10px;
     margin-top: 7px;
     padding-left: 5px;
+    color: #ff4949;
 }

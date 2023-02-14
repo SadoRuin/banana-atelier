@@ -74,30 +74,38 @@ export default function LoginPage(props) {
     dispatch(loginCode())
   }
   return (
-    <div className="login_container">
-      <div className='login_box'>
+    <div className="login-container">
+      <div className='login-box'>
         <div>
-          <img src={logo} alt="/" id="logo_img"/>
+          <img src={logo} alt="/" id="logo-img"/>
         </div>
-        <div id="div-form">
-          <form style={{display: 'flex', flexDirection: 'column'}}
-                onSubmit={onSubmitHandler}>
+        <div id="div-on-form">
+          <form
+            onSubmit={onSubmitHandler}>
             <div className="label-input">
-              <label className="form-label">Email</label>
-              <input type="email" value={Email} onChange={onEmailHandler}/>
+              <label className="label-of-form">Email</label>
+              <input type="email" value={Email} onChange={onEmailHandler} className="input-of-form"/>
             </div>
             <div className="label-input">
-              <label className="form-label">Password</label>
-              <input type="password" value={Password} onChange={onPasswordHandler}/>
+              <label className="label-of-form">Password</label>
+              <input type="password" value={Password} onChange={onPasswordHandler} className="input-of-form"/>
             </div>
             <br/>
-            <button className="form-btn">로그인</button>
-            <button onClick={event => {
-              event.preventDefault()
-              navigate("/signup")
-            }} className="form-btn">회원가입
-            </button>
-            <button onClick={handleFindPw} className="form-btn">비밀번호 재설정</button>
+            <div className="all-buttons">
+              <div className="buttons">
+                <button style={{marginRight: '5px', width: '165px'}} className="form-btn">로그인</button>
+                <button style={{marginLeft: '5px', width: '165px'}} onClick={event => {
+                  event.preventDefault()
+                  navigate("/signup")
+                }} className="form-btn">회원가입
+                </button>
+              </div>
+              <div className="buttons">
+                <button onClick={handleFindPw} className="form-btn" style={{width: '340px'}}>비밀번호
+                  재설정
+                </button>
+              </div>
+            </div>
           </form>
           <div className="hidden-msg">
             {pwMessage}
