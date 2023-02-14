@@ -55,7 +55,7 @@ public class AuctionController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		auctionService.joinAuction(seqRequest.getSeq(), userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("경매 참가 신청 완료"));
@@ -73,7 +73,7 @@ public class AuctionController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		auctionService.createAuction(seqRequest.getSeq(), userSeq);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse("경매가 시작됩니다."));
@@ -105,7 +105,7 @@ public class AuctionController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		AuctionUpdateResponse auctionUpdateResponse = auctionService.updateAuction(auctionRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(auctionUpdateResponse);
@@ -134,7 +134,7 @@ public class AuctionController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		auctionService.closeAllAuction(seqRequest.getSeq(), userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("경매가 모두 종료되었습니다."));

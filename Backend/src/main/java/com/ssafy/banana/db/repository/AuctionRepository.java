@@ -18,7 +18,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 		+ "in (select ca.id "
 		+ "from CurationArt ca "
 		+ "where ca.curation.id = :curationSeq "
-		+ "and ca.isAuction <> 0) "
+		+ "and ca.auctionStartPrice <> 0) "
 		+ "order by a.id")
 	Optional<Auction> findAuctionInfo(
 		@Param("curationSeq") Long curationSeq,

@@ -54,7 +54,7 @@ public class CurationService {
 	}
 
 	//특정 사용자의 큐레이션 조회
-	public List<CurationDataResponse.CurationSimple> getUSerCurationList(Long userSeq) {
+	public List<CurationDataResponse.CurationSimple> getUSerCurationList(long userSeq) {
 		return curationRepository.findAllByArtist_Id(userSeq)
 			.stream()
 			.map(CurationDataResponse.CurationSimple::new)
@@ -96,7 +96,7 @@ public class CurationService {
 
 		for (int i = 0; i < curationRequest.getCurationArtList().size(); i++) {
 			CurationArt curationArt = CurationArt.builder()
-				.isAuction(curationRequest.getCurationArtList().get(i).getIsAuction())
+				.auctionStartPrice(curationRequest.getCurationArtList().get(i).getAuctionStartPrice())
 				.auctionGap(curationRequest.getCurationArtList().get(i).getAuctionGap())
 				.art(artRepository.findById(curationRequest.getCurationArtList().get(i).getArtSeq()).orElse(null))
 				.curation(curationRepository.findById(curation.getId())
@@ -129,7 +129,7 @@ public class CurationService {
 
 		for (int i = 0; i < curationRequest.getCurationArtList().size(); i++) {
 			CurationArt curationArt = CurationArt.builder()
-				.isAuction(curationRequest.getCurationArtList().get(i).getIsAuction())
+				.auctionStartPrice(curationRequest.getCurationArtList().get(i).getAuctionStartPrice())
 				.auctionGap(curationRequest.getCurationArtList().get(i).getAuctionGap())
 				.art(artRepository.findById(curationRequest.getCurationArtList().get(i).getArtSeq()).orElse(null))
 				.curation(curationRepository.findById(curation.getId())
@@ -165,8 +165,7 @@ public class CurationService {
 
 	//큐레이션 북마크 추가
 	@Transactional
-	public Curation addCurationBookmark(MyCurationRequest myCurationRequest, Long userSeq) {
-
+	public Curation addCurationBookmark(MyCurationRequest myCurationRequest, long userSeq) {
 		if (myCurationRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
@@ -198,7 +197,7 @@ public class CurationService {
 
 	//큐레이션 북마크 취소
 	@Transactional
-	public Curation deleteCurationBookmark(MyCurationRequest myCurationRequest, Long userSeq) {
+	public Curation deleteCurationBookmark(MyCurationRequest myCurationRequest, long userSeq) {
 
 		if (myCurationRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
@@ -230,7 +229,7 @@ public class CurationService {
 	}
 
 	//큐레이션 북마크 리스트
-	public List<CurationDataResponse.CurationSimple> getCurationBookmarkList(Long userSeq, Long tokenUserSeq) {
+	public List<CurationDataResponse.CurationSimple> getCurationBookmarkList(long userSeq, long tokenUserSeq) {
 		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
@@ -248,7 +247,7 @@ public class CurationService {
 	}
 
 	//팔로잉한 작가의 큐레이션 리스트
-	public List<CurationDataResponse.CurationSimple> getCurationFollowingList(Long userSeq, Long tokenUserSeq) {
+	public List<CurationDataResponse.CurationSimple> getCurationFollowingList(long userSeq, long tokenUserSeq) {
 		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
@@ -257,9 +256,9 @@ public class CurationService {
 		List<CurationDataResponse.CurationSimple> curationSimpleList = new ArrayList<>();
 
 		if (artistList.size() > 0) {
-			for (int artist = 0; artist < artistList.size(); artist++) {
+			for (MyArtist myArtist : artistList) {
 				List<CurationDataResponse.CurationSimple> followingCurations = curationRepository.findAllByArtist_Id(
-						artistList.get(artist).getArtist().getId())
+						myArtist.getArtist().getId())
 					.stream()
 					.map(CurationDataResponse.CurationSimple::new)
 					.collect(Collectors.toList());

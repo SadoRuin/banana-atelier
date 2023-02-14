@@ -79,7 +79,7 @@ public class ArtController {
 	public ResponseEntity<List<ArtResponse>> getMyArtList(@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		List<ArtResponse> artList = artService.getMyArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
@@ -88,7 +88,7 @@ public class ArtController {
 	@ApiOperation(value = "대표 작품 리스트", notes = "작가의 대표작 목록을 반환합니다")
 	@GetMapping("/{userSeq}/masterpiece")
 	public ResponseEntity getMasterpieceList(
-		@PathVariable("userSeq") Long artistSeq) {
+		@PathVariable("userSeq") long artistSeq) {
 
 		List<ArtResponse> artList = artService.getMasterpieceList(artistSeq);
 
@@ -101,7 +101,7 @@ public class ArtController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		List<ArtResponse> artList = artService.getLikedArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
@@ -115,7 +115,7 @@ public class ArtController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		artService.setMasterpieceList(masterpieceRequestList, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("대표 작품 설정 완료"));
@@ -124,7 +124,7 @@ public class ArtController {
 	@ApiOperation(value = "카테고리별 작품 리스트", notes = "카테고리별 작품 목록을 반환합니다")
 	@GetMapping("/category/{artCategorySeq}")
 	public ResponseEntity<List<ArtResponse>> getArtListbyCategory(
-		@PathVariable Long artCategorySeq) {
+		@PathVariable long artCategorySeq) {
 
 		List<ArtResponse> artList = artService.getArtListbyCategory(artCategorySeq);
 
@@ -152,7 +152,7 @@ public class ArtController {
 	@ApiOperation(value = "작품 상세 정보", notes = "작품의 상세 정보를 반환합니다")
 	@GetMapping("/detail/{artSeq}")
 	public ResponseEntity getArt(
-		@PathVariable Long artSeq) {
+		@PathVariable long artSeq) {
 
 		ArtDetailResponse artDetailResponse = artService.getArt(artSeq);
 
@@ -166,7 +166,7 @@ public class ArtController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		Art art = artService.addArtLike(seqRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
@@ -179,7 +179,7 @@ public class ArtController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		Art art = artService.deleteArtLike(seqRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);
@@ -202,7 +202,7 @@ public class ArtController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		Art art = artService.updateArt(artRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(art);

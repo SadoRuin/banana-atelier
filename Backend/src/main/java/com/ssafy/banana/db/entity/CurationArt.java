@@ -33,8 +33,8 @@ public class CurationArt {
 	@Column(name = "curation_art_seq", nullable = false)
 	private Long id;
 
-	@Column(name = "is_auction", nullable = false)
-	private int isAuction;
+	@Column(name = "auction_start_price", nullable = false)
+	private int auctionStartPrice;
 
 	@Column(name = "auction_gap", nullable = false)
 	private int auctionGap;
