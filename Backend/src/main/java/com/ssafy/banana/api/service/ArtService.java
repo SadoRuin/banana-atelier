@@ -254,7 +254,7 @@ public class ArtService {
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		if (artistSeq == userSeq) {
+		if (userSeq.equals(artistSeq)) {
 			art.setArtName(artRequest.getArtName());
 			art.setArtDescription(artRequest.getArtDescription());
 			art.setArtCategory(artCategory);

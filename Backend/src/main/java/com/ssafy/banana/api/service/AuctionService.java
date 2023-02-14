@@ -62,7 +62,7 @@ public class AuctionService {
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
 		// 작가 본인 작품, 또는 작가가 경매를 원하지 않는 작품은 경매 참여 불가
-		if (curationArt.getCuration().getArtist().getId() == userSeq
+		if (userSeq.equals(curationArt.getCuration().getArtist().getId())
 			|| curationArt.getIsAuction() == 0) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
@@ -212,7 +212,7 @@ public class AuctionService {
 		}
 		// 작가는 본인의 경매 참여 불가
 		Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
-		if (artistSeq == userSeq) {
+		if (userSeq.equals(artistSeq)) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
 		// 입찰자
@@ -261,7 +261,7 @@ public class AuctionService {
 			// 최근 입찰자가 초기 세팅(작가)이면 FAILED, 낙찰되었다면 SUCCESS
 			Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
 			AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(curationArtSeq);
-			if (auctionBidLog.getUser().getId() == artistSeq) {
+			if (artistSeq.equals(auctionBidLog.getUser().getId())) {
 				auction.setAuctionStatus(AuctionStatus.FAILED);
 			} else {
 				auction
@@ -310,7 +310,7 @@ public class AuctionService {
 				Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
 				AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
 					curationArtList.get(i).getId());
-				if (auctionBidLog.getUser().getId() == artistSeq) {
+				if (artistSeq.equals(auctionBidLog.getUser().getId())) {
 					auction.setAuctionStatus(AuctionStatus.FAILED);
 				} else {
 					auction
