@@ -15,6 +15,8 @@ public interface CurationArtRepository extends JpaRepository<CurationArt, Long> 
 
 	List<CurationArt> findAllByCuration(Curation curation);
 
+	List<CurationArt> findAllByCuration_Id(Long curationSeq);
+
 	void deleteAllByCuration_Id(Long curationSeq);
 
 	Optional<List<CurationArt>> findByCuration_IdAndIsAuctionNotAndAuctionPeopleCntNotOrderById(

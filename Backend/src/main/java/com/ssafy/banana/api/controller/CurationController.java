@@ -165,4 +165,5 @@ public class CurationController {
 			tokenUserSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
+
 }

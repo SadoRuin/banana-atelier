@@ -34,3 +34,4 @@ public class CurationArtDataResponse {
 		this.artHit = ca.getArt().getArtHit();
 	}
 }
+
