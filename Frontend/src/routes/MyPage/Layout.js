@@ -78,6 +78,7 @@ export default function Layout() {
             <div id="profile_buttons">
               <Form action={'edit_profile'}><button type="submit">정보 수정하기</button></Form>
               <Form action={'upload'}><button type="submit">작품 업로드</button></Form>
+              <Form action={'curation_register'}><button type="submit">큐레이션 등록</button></Form>
             </div>
             :
             <div id="profile_buttons">

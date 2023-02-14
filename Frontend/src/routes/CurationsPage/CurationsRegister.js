@@ -2,6 +2,10 @@ import React, {useState} from 'react';
 import { useNavigate, Form } from "react-router-dom";
 
 
+
+
+
+
 function CurationsRegister(props) {
   const masterpieces = [
     {
@@ -69,6 +73,9 @@ function CurationsRegister(props) {
 
   const minDay = getDateToString(new Date(year, month, day));
   const maxDay = getDateToString(new Date(year, month, day+14));
+
+  const newMinDay = todayDay.toISOString()
+  console.log('newMindat :',newMinDay)
 
   console.log(minDay);
   console.log(maxDay);
