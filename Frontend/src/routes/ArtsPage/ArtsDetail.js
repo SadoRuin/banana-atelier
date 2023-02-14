@@ -16,7 +16,7 @@ export async function loader ({params}) {
     .then(response => response.data)
     .catch(error => error.response.status)
   
-  const likeList = await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
+  const likeList = await axiosAuth.get(`arts/like`)
     .then(response=> response.data)
     .catch(() => null)
 
@@ -61,12 +61,12 @@ export async function action ({request, params}) {
 function ArtsDetail() {
 
   const [artData, likeList] = useLoaderData();
+  const [likeCnt, setLikeCnt] = useState(artData.artLikeCount);
 
   axiosReissue();
-
-  console.log(likeList)
-  let wonderValue = likeList?.find((like) => like.artSeq === artData.artSeq) || false;
-  console.log(wonderValue);
+  let wonderValue = false
+  let alreadyLike = likeList?.find((like) => like.artSeq === artData.artSeq);
+  alreadyLike? wonderValue = true : wonderValue = false
   
   const [wonder, setWonder] = useState(wonderValue)
   return (
@@ -99,7 +99,6 @@ function ArtsDetail() {
             </div>
 
 
-
             <Category className="art-detail__category">
               {artData.artCategory.artCategoryName}
             </Category>
@@ -117,7 +116,8 @@ function ArtsDetail() {
               </div>
               <div className="likes">
                 <img src="ArtsMain" alt="" />
-                좋아요 : {artData.artLikeCount}
+                {/* 좋아요 : {artData.artLikeCount} */}
+                좋아요 : {likeCnt}
               </div>
             </div>
             <div className="art-detail__btns">
@@ -129,24 +129,22 @@ function ArtsDetail() {
                 event.preventDefault()
 
                 if (wonder) {
-                  const userSeq = localStorage.getItem("userSeq")
-                  let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
                   axiosReissue()
-                  axiosAuth.delete(`arts/like`, {
-                    data: body
-                  })
+                  let body = {"seq": artData.artSeq}
+                  axiosAuth.delete(`arts/like`, {data: body})
                   .then(response => console.log('싫어요 response', response))
                   .catch(error => {
                     console.log("이게 왜 에러지", error)
                   })
+                  setLikeCnt(prev=>prev-1)
                   
 
                 } else if (!wonder) {
-                  const userSeq = localStorage.getItem("userSeq")
-                  let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
+                  let body = {"seq": artData.artSeq}
                   axiosReissue()
                   axiosAuth.post(`arts/like`, body)
                   .then(response => console.log('좋아요 response', response))
+                  setLikeCnt(prev=>prev+1)
                 }
                 setWonder(prev=>!prev)
 
