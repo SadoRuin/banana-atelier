@@ -1,5 +1,6 @@
 package com.ssafy.banana.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class MasterpieceRequest {
 
-	private Long userSeq;
+	@ApiModelProperty(name = "작품 번호", example = "123")
 	private Long artSeq;
+	@ApiModelProperty(name = "대표 작품 여부", example = "true or false")
 	private boolean isRepresent;
 }
