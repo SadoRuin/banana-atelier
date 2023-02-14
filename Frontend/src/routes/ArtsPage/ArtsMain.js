@@ -1,6 +1,9 @@
 import React , {useState} from 'react'
 import axiosCustom from '../../_actions/axiosCustom';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLoaderData } from 'react-router-dom';
+import { landingRenderingReset } from '../../_actions/user_action'
 import ArtItem from "../../components/commons/artItem";
 import { TabMenu, TabContent } from "../../components/commons/TabMenuComponent";
 
@@ -39,6 +42,20 @@ export async function loader ({request}) {
 
 function ArtsMain() {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const landingStatus = useSelector(state => state.user.landing_status);
+  if (landingStatus === 2) {
+    dispatch(landingRenderingReset())
+      .then(
+        window.location.reload()
+      )
+  } else if (landingStatus === 3) {
+    dispatch(landingRenderingReset())
+      .then(
+        window.location.reload()
+      )
+  }
+
   const [artsTrend, artsPopular, artsNew, artsAll] = useLoaderData();
 
   const artsSortMenuData = [
