@@ -28,8 +28,6 @@ import { loader as LandingLoader } from './routes/LandingPage/LandingPage'
 // 작품 페이지
 import ArtsMain from "./routes/ArtsPage/ArtsMain";
 import { loader as ArtsLoader } from "./routes/ArtsPage/ArtsMain";
-import ArtsMainCategory from './routes/ArtsPage/ArtsMainCategory';
-import { loader as ArtsMainCategoryLoader } from './routes/ArtsPage/ArtsMainCategory';
 import ArtsDetail from "./routes/ArtsPage/ArtsDetail";
 import { loader as ArtsDetailLoader, action as ArtsDetailAction } from "./routes/ArtsPage/ArtsDetail";
 
@@ -54,19 +52,14 @@ import MyPageLayout from "./routes/MyPage/Layout";
 import { loader as MyPageLoader } from "./routes/MyPage/Layout"
 
 // 작품탭
-// import ArtsRoot from "./routes/MyPage/ArtsRoot"
 import ArtsRoot from "./routes/MyPage/ArtsRoot";
 import { loader as ArtsMyPageLoader } from "./routes/MyPage/ArtsRoot";
-// import ArtsFavorite from "./routes/MyPage/ArtsFavorite";
-// import ArtsIndex from "./routes/MyPage/ArtsIndex";
-// import ArtsMyCollections from "./routes/MyPage/ArtsMyCollections";
+
 // 공지사항탭
 import NoticesRoot from "./routes/MyPage/NoticesRoot";
 import { loader as NoticesLoader, action as NoticesAction } from "./routes/MyPage/NoticesRoot";
-// import NoticesMine from "./routes/MyPage/NoticesMine";
-// import NoticesFollowing from "./routes/MyPage/NoticesFollowing";
 import NoticesDetail, {loader as noticeLoader} from "./routes/MyPage/NoticesDetail"
-// import { getNotices } from "./notices"
+
 // 큐레이션탭
 import CurationsRoot from "./routes/MyPage/CurationsRoot";
 import CurationsMine from "./routes/MyPage/CurationsMine";
@@ -75,9 +68,9 @@ import CurationsBookmark from "./routes/MyPage/CurationsBookmark";
 // 커미션탭
 // import Commissions from "./routes/MyPage/Commissions"
 // import MyPageCommissionsDetail from "./routes/MyPage/CommissionsDetail"
+
 // 모달(프로필 수정, 작품 업로드, 대표작품 설정)
 import EditProfile from "./routes/MyPage/EditProfile";
-
 // 작품 업로드
 import Upload from "./routes/MyPage/Upload"
 import { action as UploadAction } from "./routes/MyPage/Upload"
@@ -109,7 +102,6 @@ const router = createBrowserRouter(
 
           {/* 작품 페이지 */}
           <Route path="arts" element={ <ArtsMain /> } loader={ArtsLoader} />
-            <Route path="arts/:category_seq" element={ <ArtsMainCategory />} loader={ArtsMainCategoryLoader} />
           <Route path=":nickname/:art_seq" element={ <ArtsDetail /> } loader={ArtsDetailLoader} action={ArtsDetailAction} />
 
           {/* 큐레이션 페이지 */}
@@ -140,13 +132,7 @@ const router = createBrowserRouter(
                 index
                 element={<ArtsRoot />}
                 loader={ArtsMyPageLoader}
-              >
-                {/*<Route index element={ <ArtsIndex /> }>*/}
-                {/*  /!* 대표작품 설정 페이지 들어갈거임 *!/*/}
-                {/*</Route>*/}
-                {/*<Route path="favorite" element={ <ArtsFavorite /> }/>*/}
-                {/*<Route path="owns" element={ <ArtsMyCollections /> } />*/}
-              </Route>
+              />
               {/* 마이페이지 공지 */}
               <Route
                 path="notices"

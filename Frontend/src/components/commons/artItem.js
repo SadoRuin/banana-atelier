@@ -13,7 +13,7 @@ function ArtItem({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, 
   return (
     <div className="art-item__container">
 
-      <Link to={`${nickname}/${artSeq}`} className="art-img__container">
+      <Link to={`/${nickname}/${artSeq}`} className="art-img__container">
         <div className="art-thumbnail" style={{backgroundImage : `url("${getArtThumbnail(artThumbnail, userSeq)}")`}} />
         <div className="hidden">
           <div>{artName}</div>
