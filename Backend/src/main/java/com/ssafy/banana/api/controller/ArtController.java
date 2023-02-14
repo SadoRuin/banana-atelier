@@ -94,12 +94,10 @@ public class ArtController {
 	}
 
 	@ApiOperation(value = "좋아요한 작품 리스트", notes = "유저가 좋아요를 누른 작품 목록을 반환합니다")
-	@GetMapping("/like")
+	@GetMapping("/{userSeq}/like")
 	public ResponseEntity<List<ArtResponse>> getLikedArtList(
-		@RequestHeader String Authorization) {
+		@PathVariable("userSeq") long userSeq) {
 
-		String token = Authorization.split(BLNAK)[1];
-		long userSeq = tokenProvider.getSubject(token);
 		List<ArtResponse> artList = artService.getLikedArtList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
