@@ -2,6 +2,7 @@ package com.ssafy.banana.api.service;
 
 import static java.time.LocalDateTime.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
