@@ -1,0 +1,85 @@
+.login_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff2ce;
+}
+
+.login_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 70px 40px;
+    width: 23em;
+    height: 30em;
+    border: none;
+    border-radius: 40px;
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.1) 0px 50px 100px -5px, rgba(0, 0, 0, 0.2) 0px 30px 60px -30px, rgba(10, 37, 64, 0.25) 0px -1px 6px 0px inset;
+}
+
+#logo_img {
+    width: 190px;
+    height: 120.37px;
+    margin-bottom: 20px;
+}
+
+#div-form {
+    text-align: left;
+    margin: 20px 0 10px 0;
+}
+
+.label-input {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.form-label {
+    margin-block: 0.5rem;
+    padding-left: 5px;
+}
+
+input {
+    border: 0;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 10px;
+    background-color: #fff8e3;
+    color: #575757;
+    height: 2rem;
+}
+
+.form-btn {
+    background-color: #ffd657;
+    border: 0 none #e2e8f0;
+    border-radius: 15px;
+    color: #575757;
+    line-height: 4px;
+    text-align: center;
+    box-shadow: 1px 1px 2px rgba(166, 175, 195, 0.2);
+    margin-block: 0.2rem;
+}
+
+button:hover {
+    background-color: #fff2ce;
+    color: #232323;
+}
+
+@media (min-width: 768px) {
+    button {
+        font-size: 0.8rem;
+        padding: 1rem 2rem;
+    }
+}
+
+.hidden-msg {
+    height: 10px;
+    margin-top: 7px;
+    padding-left: 5px;
+}

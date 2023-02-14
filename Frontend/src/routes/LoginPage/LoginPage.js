@@ -1,12 +1,12 @@
-import React from 'react'
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { loginUser, loginCode } from '../../_actions/user_action'
-import { useNavigate } from 'react-router-dom'
+import React, {useState} from 'react'
+import {useDispatch} from 'react-redux'
+import './LoginPage.css'
+import {landingRendering, loginCode, loginUser} from '../../_actions/user_action'
+import {useNavigate} from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
 import axios from 'axios'
-import { landingRendering } from '../../_actions/user_action'
 // import { useSelector } from 'react-redux'
+import '../../components/commons/commons.css'
 
 export default function LoginPage(props) {
   const dispatch = useDispatch()
@@ -37,7 +37,7 @@ export default function LoginPage(props) {
         }
       })
   }
-  
+
   const onEmailHandler = event => {
     setEmail(event.target.value)
   }
@@ -74,26 +74,37 @@ export default function LoginPage(props) {
     dispatch(loginCode())
   }
   return (
-    <div>
-
-      <img src={logo} alt="/" />
-
-      <form style={{display: 'flex', flexDirection: 'column'}}
-        onSubmit = {onSubmitHandler}>
-        <label>Email</label>
-        <input type="email" value={Email} onChange = {onEmailHandler} />
-        <label>Password</label>
-        <input type="password" value={Password} onChange = {onPasswordHandler} />
-        <br />
-        <button>로그인</button>
-        <button onClick={event => {
-          event.preventDefault()
-          navigate("/signup")
-        }}>회원가입</button>
-        <button onClick={handleFindPw}>비밀번호 재설정</button>
-        { pwMessage }
-      </form>
-
+    <div className="login_container">
+      <div className='login_box'>
+        <div>
+          <img src={logo} alt="/" id="logo_img"/>
+        </div>
+        <div id="div-form">
+          <form style={{display: 'flex', flexDirection: 'column'}}
+                onSubmit={onSubmitHandler}>
+            <div className="label-input">
+              <label className="form-label">Email</label>
+              <input type="email" value={Email} onChange={onEmailHandler}/>
+            </div>
+            <div className="label-input">
+              <label className="form-label">Password</label>
+              <input type="password" value={Password} onChange={onPasswordHandler}/>
+            </div>
+            <br/>
+            <button className="form-btn">로그인</button>
+            <button onClick={event => {
+              event.preventDefault()
+              navigate("/signup")
+            }} className="form-btn">회원가입
+            </button>
+            <button onClick={handleFindPw} className="form-btn">비밀번호 재설정</button>
+          </form>
+          <div className="hidden-msg">
+            {pwMessage}
+          </div>
+        </div>
+      </div>
     </div>
+
   )
 }
