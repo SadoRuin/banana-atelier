@@ -78,7 +78,11 @@ public class SecurityConfig {
 				"/notices/**",
 				"/curation-art/list/**",
 				"/auctions/**",
-				"/curations/search/**"
+				"/curations/search/**",
+				"/curation-art/end-list/**",
+				"/curations/init",
+				"/curations/on",
+				"/curations/end"
 			).permitAll()
 			.anyRequest().authenticated()
 
