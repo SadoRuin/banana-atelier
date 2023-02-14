@@ -22,7 +22,7 @@ public class ArtistService {
 	private final UserRepository userRepository;
 	private final TokenProvider tokenProvider;
 
-	public Artist checkArtist(Long userSeq) {
+	public Artist checkArtist(long userSeq) {
 		User user = userRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 		Artist artist = artistRepository.findById(userSeq).orElse(null);
@@ -35,7 +35,6 @@ public class ArtistService {
 				.youtubeLink("")
 				.blogLink("")
 				.artistIntro(intro)
-				.artistCommissionAvg((double)0)
 				.build();
 			user.setRole(Role.ROLE_ARTIST);
 			userRepository.save(user);

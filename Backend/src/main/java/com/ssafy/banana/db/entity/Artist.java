@@ -62,7 +62,4 @@ public class Artist {
 	@Column(name = "artist_intro", length = 500)
 	private String artistIntro;
 
-	@Column(name = "artist_commission_avg", nullable = false)
-	private Double artistCommissionAvg;
-
 }

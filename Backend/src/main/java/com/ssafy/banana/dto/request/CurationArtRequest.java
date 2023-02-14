@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CurationArtRequest {
-	private int isAuction;
+	private int auctionStartPrice;
 	private int auctionGap;
 	private long artSeq;
 }

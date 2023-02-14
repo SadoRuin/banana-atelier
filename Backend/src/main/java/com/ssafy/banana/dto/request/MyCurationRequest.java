@@ -14,6 +14,6 @@ import lombok.experimental.Accessors;
 @Builder
 @Accessors(chain = true)
 public class MyCurationRequest {
-	private Long userSeq;
-	private Long curationSeq;
+	private long userSeq;
+	private long curationSeq;
 }

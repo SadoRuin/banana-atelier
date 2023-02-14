@@ -46,7 +46,7 @@ public class NoticeController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		noticeService.uploadNotice(noticeRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("공지사항이 등록되었습니다."));
@@ -58,7 +58,7 @@ public class NoticeController {
 	public ResponseEntity<List> getMyNoticeList(@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		List<NoticeResponse> myNoticeList = noticeService.getMyNoticeList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(myNoticeList);
@@ -69,7 +69,7 @@ public class NoticeController {
 	public ResponseEntity<List> getMyArtistsNoticeList(@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		List<NoticeResponse> myArtistNoticeList = noticeService.getMyArtistsNoticeList(userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(myArtistNoticeList);
@@ -77,7 +77,7 @@ public class NoticeController {
 
 	@ApiOperation(value = "공지사항 상세", notes = "공지사항 상세 정보를 반환합니다")
 	@GetMapping("/detail/{notice_seq}")
-	public ResponseEntity getNotice(@PathVariable("notice_seq") Long noticeSeq) {
+	public ResponseEntity getNotice(@PathVariable("notice_seq") long noticeSeq) {
 
 		NoticeResponse noticeResponse = noticeService.getNotice(noticeSeq);
 
@@ -91,7 +91,7 @@ public class NoticeController {
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		Notice notice = noticeService.updateNotice(noticeRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(notice);
@@ -100,11 +100,11 @@ public class NoticeController {
 	@PreAuthorize("hasRole('ARTIST')")
 	@ApiOperation(value = "공지사항 삭제", notes = "등록된 공지사항을 삭제합니다")
 	@DeleteMapping("/{notice_seq}")
-	public ResponseEntity deleteNotice(@PathVariable("notice_seq") Long noticeSeq,
+	public ResponseEntity deleteNotice(@PathVariable("notice_seq") long noticeSeq,
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		noticeService.deleteNotice(noticeSeq, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("공지사항이 삭제되었습니다."));

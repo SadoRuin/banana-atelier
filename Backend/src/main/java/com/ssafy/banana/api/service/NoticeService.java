@@ -31,7 +31,7 @@ public class NoticeService {
 	 * @param userSeq 로그인 유저 pk
 	 */
 	@Transactional
-	public void uploadNotice(NoticeRequest noticeRequest, Long userSeq) {
+	public void uploadNotice(NoticeRequest noticeRequest, long userSeq) {
 
 		Artist artist = artistRepository.findById(userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
@@ -51,7 +51,7 @@ public class NoticeService {
 	 * @param userSeq 로그인 유저 pk
 	 * @return 공지사항 내용 응답 DTO 리스트
 	 */
-	public List<NoticeResponse> getMyNoticeList(Long userSeq) {
+	public List<NoticeResponse> getMyNoticeList(long userSeq) {
 
 		List<NoticeResponse> myNoticeList = noticeRepository.findByUserSeq(userSeq);
 		if (!CollectionUtils.isEmpty(myNoticeList)) {
@@ -66,7 +66,7 @@ public class NoticeService {
 	 * @param userSeq 로그인 유저 pk
 	 * @return 공지사항 내용 응답 DTO 리스트
 	 */
-	public List<NoticeResponse> getMyArtistsNoticeList(Long userSeq) {
+	public List<NoticeResponse> getMyArtistsNoticeList(long userSeq) {
 
 		List<NoticeResponse> myArtistNoticeList = noticeRepository.findMyArtistNotice(userSeq);
 		if (!CollectionUtils.isEmpty(myArtistNoticeList)) {
@@ -81,7 +81,7 @@ public class NoticeService {
 	 * @param noticeSeq 공지사항 pk
 	 * @return 공지사항 정보
 	 */
-	public NoticeResponse getNotice(Long noticeSeq) {
+	public NoticeResponse getNotice(long noticeSeq) {
 
 		Notice notice = noticeRepository.findById(noticeSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
@@ -96,12 +96,12 @@ public class NoticeService {
 	 * @return 공지사항 내용 응답 DTO
 	 */
 	@Transactional
-	public Notice updateNotice(NoticeRequest noticeRequest, Long userSeq) {
+	public Notice updateNotice(NoticeRequest noticeRequest, long userSeq) {
 
 		Notice notice = noticeRepository.findById(noticeRequest.getNoticeSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		if (userSeq.equals(notice.getArtist().getId())) {
+		if (userSeq == notice.getArtist().getId()) {
 			notice.setNoticeTitle(noticeRequest.getNoticeTitle());
 			notice.setNoticeContent(noticeRequest.getNoticeContent());
 			noticeRepository.save(notice);
@@ -117,7 +117,7 @@ public class NoticeService {
 	 * @param noticeSeq 공지사항 pk
 	 * @param userSeq 로그인 유저 pk
 	 */
-	public void deleteNotice(Long noticeSeq, Long userSeq) {
+	public void deleteNotice(long noticeSeq, long userSeq) {
 
 		Notice notice = noticeRepository.findById(noticeSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
