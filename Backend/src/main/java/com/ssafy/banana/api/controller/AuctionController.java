@@ -1,5 +1,7 @@
 package com.ssafy.banana.api.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ssafy.banana.api.service.AuctionService;
 import com.ssafy.banana.dto.request.AuctionRequest;
+import com.ssafy.banana.dto.request.CountdownRequest;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.AuctionResponse;
 import com.ssafy.banana.dto.response.AuctionUpdateResponse;
+import com.ssafy.banana.dto.response.ExceptionResponse;
 import com.ssafy.banana.dto.response.SuccessResponse;
 import com.ssafy.banana.security.jwt.TokenProvider;
 
@@ -26,6 +30,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -107,7 +113,7 @@ public class AuctionController {
 
 	@ApiOperation(value = "현재 경매 종료", notes = "경매 시간이 남지 않으면 현재 경매를 종료합니다")
 	@ApiImplicitParam(name = "seq", value = "큐레이션 작품 번호", required = true)
-	@PutMapping("/closeOne")
+	@PutMapping("/close-one")
 	public ResponseEntity closeOneAuction(
 		@RequestBody SeqRequest seqRequest) {
 
@@ -122,7 +128,7 @@ public class AuctionController {
 		@ApiImplicitParam(name = "seq", value = "큐레이션 번호", required = true),
 		@ApiImplicitParam(name = "Authorization", value = "token", required = true),
 	})
-	@PutMapping("/closeAll")
+	@PutMapping("/close-all")
 	public ResponseEntity closeAllAuction(
 		@RequestBody SeqRequest seqRequest,
 		@RequestHeader String Authorization) {
@@ -136,19 +142,38 @@ public class AuctionController {
 
 	@ApiOperation(value = "경매 호스트 접속", notes = "경매 자동호스트에 접속")
 	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "경매호스트 접속 성공", response = List.class),
+		@ApiResponse(code = 400, message = "경매호스트 접속 오류.", response = ExceptionResponse.class)
+	})
 	@GetMapping(value = "/connect/{curationArtSeq}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public ResponseEntity<SseEmitter> connectAuction(
+	public ResponseEntity<SseEmitter> connectAuctionHost(
 		@PathVariable long curationArtSeq) {
 
-		return ResponseEntity.ok(auctionService.connectAuction(curationArtSeq));
+		return ResponseEntity.ok(auctionService.connectAuctionHost(curationArtSeq));
 	}
 
-	@ApiOperation(value = "경매 호스트 접속", notes = "경매 자동호스트에 접속")
+	@PreAuthorize("hasRole('ARTIST')")
+	@ApiOperation(value = "경매 호스트 접속 일괄 종료", notes = "경매 자동호스트 접속 종료")
 	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
-	@GetMapping("/count/{curationArtSeq}")
-	public ResponseEntity<SuccessResponse> countAuction(
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "경매호스트 일괄 종료 성공", response = List.class),
+		@ApiResponse(code = 404, message = "진행중인 경매호스트가 없음.", response = ExceptionResponse.class)
+	})
+	@GetMapping(value = "/close-all/{curationArtSeq}")
+	public ResponseEntity<SuccessResponse> closeAllAuctionHost(
 		@PathVariable long curationArtSeq) {
-		auctionService.countAuction(curationArtSeq);
-		return ResponseEntity.ok(new SuccessResponse("카운트 성공"));
+		auctionService.closeAllAuctionHost(curationArtSeq);
+		return ResponseEntity.ok(new SuccessResponse("경매 호스트가 종료되었습니다."));
+	}
+
+	@PreAuthorize("hasRole('ARTIST')")
+	@ApiOperation(value = "경매 호스트 카운트다운", notes = "경매 자동호스트에 카운트 다운")
+	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
+	@PostMapping("/countdown")
+	public ResponseEntity<SuccessResponse> countAuction(
+		@RequestBody CountdownRequest countdownRequest) {
+		auctionService.countdownAuctionHost(countdownRequest);
+		return ResponseEntity.ok(new SuccessResponse("카운트다운 성공"));
 	}
 }
