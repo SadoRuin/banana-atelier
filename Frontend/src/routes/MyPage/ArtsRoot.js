@@ -60,30 +60,34 @@ function ArtsRoot() {
   const artMenuData = [
     { name: '작품',
       content:
-        <div className="art-root__arts-container">
+        <div>
           <h3>대표작품</h3>
           { userMasterpieces?
-            userMasterpieces.map((masterpiece) =>
-              <ArtItemMyPage
-                key={`my-page__arts-${masterpiece.artSeq}`}
-                nickname={masterpiece.nickname}
-                userSeq={masterpiece.userSeq}
-                artThumbnail={masterpiece.artThumbnail}
-                artName={masterpiece.artName}
-                artSeq={masterpiece.artSeq}
-              /> ) : noMasterpiece
+            <div className="art-root__arts-container">
+              {userMasterpieces.map((masterpiece) =>
+                <ArtItemMyPage
+                  key={`my-page__arts-${masterpiece.artSeq}`}
+                  nickname={masterpiece.nickname}
+                  userSeq={masterpiece.userSeq}
+                  artThumbnail={masterpiece.artThumbnail}
+                  artName={masterpiece.artName}
+                  artSeq={masterpiece.artSeq}
+                />)}
+            </div> : noMasterpiece
           }
           <h3>전체 작품</h3>
           { userArts?
-            userArts.map((art) =>
-              <ArtItemMyPage
-                key={`my-page__arts-${art.artSeq}`}
-                nickname={art.nickname}
-                userSeq={art.userSeq}
-                artThumbnail={art.artThumbnail}
-                artName={art.artName}
-                artSeq={art.artSeq}
-              />) : noArts
+            <div className="art-root__arts-container">
+              {userArts.map((art) =>
+                <ArtItemMyPage
+                  key={`my-page__arts-${art.artSeq}`}
+                  nickname={art.nickname}
+                  userSeq={art.userSeq}
+                  artThumbnail={art.artThumbnail}
+                  artName={art.artName}
+                  artSeq={art.artSeq}
+                />)}
+            </div> : noArts
           }
         </div>
     },
