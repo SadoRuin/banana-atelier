@@ -273,4 +273,16 @@ public class CurationService {
 			throw new CustomException(CustomExceptionType.NO_CONTENT);
 		}
 	}
+
+	public boolean getBookmarkFlag(long userSeq, long tokenUserSeq, long curationSeq) {
+		if (userSeq != tokenUserSeq) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		CurationBookmark curationBookmark = curationBookmarkRepository.findByCuration_IdAndUser_Id(curationSeq,
+			userSeq);
+		if (curationBookmark == null) {
+			return false;
+		}
+		return true;
+	}
 }

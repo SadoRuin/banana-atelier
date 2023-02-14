@@ -21,4 +21,6 @@ public interface CurationBookmarkRepository extends JpaRepository<CurationBookma
 	int countCurationBookmark(@Param("curationSeq") Long curationSeq);
 
 	List<CurationBookmark> findAllByUser_Id(Long userId);
+
+	CurationBookmark findByCuration_IdAndUser_Id(long curationSeq, long userSeq);
 }

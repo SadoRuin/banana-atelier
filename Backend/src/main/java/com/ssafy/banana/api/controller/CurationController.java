@@ -166,4 +166,17 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
 
+	//북마크 여부 조회
+	@GetMapping("/{userSeq}/{curationSeq}")
+	@ApiOperation(value = "유저가 북마크 했는지 여부")
+	public ResponseEntity getDoBookmark(
+		@PathVariable Long userSeq,
+		@PathVariable long curationSeq,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		Long tokenUserSeq = tokenProvider.getSubject(token);
+		Boolean flag = curationService.getBookmarkFlag(userSeq,
+			tokenUserSeq, curationSeq);
+		return ResponseEntity.status(HttpStatus.OK).body(flag);
+	}
 }
