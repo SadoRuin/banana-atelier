@@ -5,7 +5,7 @@ import { axiosReissue, axiosAuth } from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import { YellowBtn, RedBtn, LikeBtn } from "../../components/commons/buttons";
-import {Category} from "../../components/commons/category";
+import {Category} from "../../components/commons/Category";
 import './ArtsDetail.css'
 
 export async function loader ({params}) {
