@@ -57,14 +57,14 @@ public class AuctionService {
 	 * @return
 	 */
 	@Transactional
-	public void joinAuction(Long curationArtSeq, Long userSeq) {
+	public void joinAuction(long curationArtSeq, long userSeq) {
 
 		CurationArt curationArt = curationArtRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
 		// 작가 본인 작품, 또는 작가가 경매를 원하지 않는 작품은 경매 참여 불가
-		if (userSeq.equals(curationArt.getCuration().getArtist().getId())
-			|| curationArt.getIsAuction() == 0) {
+		if (userSeq == curationArt.getCuration().getArtist().getId()
+			|| curationArt.getAuctionStartPrice() == 0) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
 		User user = userRepository.findById(userSeq)
@@ -99,25 +99,26 @@ public class AuctionService {
 	 * @param userSeq 로그인 유저 pk
 	 */
 	@Transactional
-	public void createAuction(Long curationSeq, Long userSeq) {
+	public void createAuction(long curationSeq, long userSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
 		// 작가 본인이 아니면 경매 시작 불가
 		User artist = curation.getArtist().getUser();
-		if (artist.getId() != userSeq) {
+		long artistSeq = artist.getId();
+		if (artistSeq != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
 		// 경매 가능한 작품 리스트 ( 경매 여부 값이 0이 아니고, 경매 희망 인원이 있음 )
 		List<CurationArt> curationArtList =
-			curationArtRepository.findByCuration_IdAndIsAuctionNotAndAuctionPeopleCntNotOrderById(curation.getId(), 0,
+			curationArtRepository.findByCuration_IdAndAuctionStartPriceNotAndAuctionPeopleCntNotOrderById(
+					curation.getId(), 0,
 					0)
 				.orElseThrow(() -> new CustomException(CustomExceptionType.UNABLE_AUCTION));
 
-		for (int i = 0; i < curationArtList.size(); i++) {
+		for (CurationArt curationArt : curationArtList) {
 			// 현재 경매품
-			CurationArt curationArt = curationArtList.get(i);
 			// 이미 경매 정보가 생성됨
 			if (auctionRepository.findById(curationArt.getId()).isPresent()) {
 				throw new CustomException(CustomExceptionType.AUCTION_INFO_CONFLICT);
@@ -127,13 +128,13 @@ public class AuctionService {
 			Auction auction = Auction.builder()
 				.id(curationArt.getId())
 				.curationArt(curationArt)
-				.auctionStartPrice(curationArt.getIsAuction())
+				.auctionStartPrice(curationArt.getAuctionStartPrice())
 				.auctionGap(curationArt.getAuctionGap())
 				.auctionStartTime(currentTime)
 				.auctionEndTime(currentTime)
 				.auctionPaidTime(currentTime)
 				.auctionStatusTime(currentTime)
-				.auctionEndPrice(curationArt.getIsAuction())
+				.auctionEndPrice(curationArt.getAuctionStartPrice())
 				.auctionStatus(AuctionStatus.INIT)
 				.user(artist)
 				.build();
@@ -156,7 +157,7 @@ public class AuctionService {
 	 * @return 경매 정보 응답 DTO
 	 */
 	@Transactional
-	public AuctionResponse getAuctionInfo(Long curationSeq) {
+	public AuctionResponse getAuctionInfo(long curationSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
@@ -202,7 +203,7 @@ public class AuctionService {
 	 * @return 경매 입찰 정보 응답 DTO
 	 */
 	@Transactional
-	public AuctionUpdateResponse updateAuction(AuctionRequest auctionRequest, Long userSeq) {
+	public AuctionUpdateResponse updateAuction(AuctionRequest auctionRequest, long userSeq) {
 
 		Auction auction = auctionRepository.findById(auctionRequest.getCurationArtSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
@@ -212,8 +213,8 @@ public class AuctionService {
 			throw new CustomException(CustomExceptionType.AUCTION_NOT_ONGOING);
 		}
 		// 작가는 본인의 경매 참여 불가
-		Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
-		if (userSeq.equals(artistSeq)) {
+		long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+		if (userSeq == artistSeq) {
 			throw new CustomException(CustomExceptionType.AUCTION_FAIL);
 		}
 		// 입찰자
@@ -255,16 +256,16 @@ public class AuctionService {
 	 * @param curationArtSeq 큐레이션 작품 pk
 	 */
 	@Transactional
-	public void closeOneAuction(Long curationArtSeq) {
+	public void closeOneAuction(long curationArtSeq) {
 
 		Auction auction = auctionRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
 		if (auction.getAuctionStatus() == AuctionStatus.ONGOING) {
 			// 최근 입찰자가 초기 세팅(작가)이면 FAILED, 낙찰되었다면 SUCCESS
-			Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
+			long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
 			AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(curationArtSeq);
-			if (artistSeq.equals(auctionBidLog.getUser().getId())) {
+			if (artistSeq == auctionBidLog.getUser().getId()) {
 				auction.setAuctionStatus(AuctionStatus.FAILED);
 			} else {
 				auction
@@ -292,7 +293,7 @@ public class AuctionService {
 	 * @param userSeq 로그인 유저 pk
 	 */
 	@Transactional
-	public void closeAllAuction(Long curationSeq, Long userSeq) {
+	public void closeAllAuction(long curationSeq, long userSeq) {
 
 		Curation curation = curationRepository.findById(curationSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
@@ -302,18 +303,18 @@ public class AuctionService {
 		}
 		// 경매 가능한 작품 리스트 ( 경매 여부 값이 0이 아니고, 경매 희망 인원이 있음 )
 		List<CurationArt> curationArtList = curationArtRepository
-			.findByCuration_IdAndIsAuctionNotAndAuctionPeopleCntNotOrderById(curation.getId(), 0, 0)
+			.findByCuration_IdAndAuctionStartPriceNotAndAuctionPeopleCntNotOrderById(curation.getId(), 0, 0)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
 		int closeAuctionCount = 0;
-		for (int i = 0; i < curationArtList.size(); i++) {
-			Auction auction = auctionRepository.findById(curationArtList.get(i).getId()).orElse(null);
+		for (CurationArt curationArt : curationArtList) {
+			Auction auction = auctionRepository.findById(curationArt.getId()).orElse(null);
 			if (auction.getAuctionStatus() == AuctionStatus.INIT
 				|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
 				// 최근 입찰자가 초기 세팅(작가)이면 FAILED
 				Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
 				AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
-					curationArtList.get(i).getId());
+					curationArt.getId());
 				if (artistSeq.equals(auctionBidLog.getUser().getId())) {
 					auction.setAuctionStatus(AuctionStatus.FAILED);
 				} else {
@@ -329,7 +330,7 @@ public class AuctionService {
 				auctionRepository.save(auction);
 				closeAuctionCount++;
 				if (auction.getAuctionStatus() == AuctionStatus.ONGOING) {
-					sseEmitterUtil.closeAllSession(curationArtList.get(i).getId());
+					sseEmitterUtil.closeAllSession(curationArt.getId());
 				}
 			}
 		}

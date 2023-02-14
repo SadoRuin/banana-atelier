@@ -90,7 +90,7 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getMyArtList(Long userSeq) {
+	public List<ArtResponse> getMyArtList(long userSeq) {
 
 		List<ArtResponse> myArtList = artRepository.findMyArts(userSeq);
 		if (!CollectionUtils.isEmpty(myArtList)) {
@@ -100,7 +100,7 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getMasterpieceList(Long userSeq) {
+	public List<ArtResponse> getMasterpieceList(long userSeq) {
 
 		List<ArtResponse> masterpieceList = artRepository.findMasterpieces(userSeq);
 		if (!CollectionUtils.isEmpty(masterpieceList)) {
@@ -110,7 +110,7 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getLikedArtList(Long userSeq) {
+	public List<ArtResponse> getLikedArtList(long userSeq) {
 
 		List<ArtResponse> likedArtList = artRepository.findLikedArt(userSeq);
 		if (!CollectionUtils.isEmpty(likedArtList)) {
@@ -121,11 +121,10 @@ public class ArtService {
 	}
 
 	@Transactional
-	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList, Long userSeq) {
+	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList, long userSeq) {
 
-		Art art = null;
-		for (int i = 0; i < masterpieceRequestList.size(); i++) {
-			MasterpieceRequest masterpieceRequest = masterpieceRequestList.get(i);
+		Art art;
+		for (MasterpieceRequest masterpieceRequest : masterpieceRequestList) {
 			art = artRepository.findById(masterpieceRequest.getArtSeq())
 				.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
 
@@ -137,7 +136,7 @@ public class ArtService {
 		}
 	}
 
-	public List<ArtResponse> getArtListbyCategory(Long artCategorySeq) {
+	public List<ArtResponse> getArtListbyCategory(long artCategorySeq) {
 
 		List<ArtResponse> artListbyCategory = artRepository.findArtsbyCategory(artCategorySeq);
 		if (!CollectionUtils.isEmpty(artListbyCategory)) {
@@ -169,7 +168,7 @@ public class ArtService {
 	}
 
 	@Transactional
-	public ArtDetailResponse getArt(Long artSeq) {
+	public ArtDetailResponse getArt(long artSeq) {
 
 		Art art = artRepository.findById(artSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
@@ -187,7 +186,7 @@ public class ArtService {
 	}
 
 	@Transactional
-	public Art addArtLike(SeqRequest seqRequest, Long userSeq) {
+	public Art addArtLike(SeqRequest seqRequest, long userSeq) {
 
 		Art art = artRepository.findById(seqRequest.getSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
@@ -216,7 +215,7 @@ public class ArtService {
 	}
 
 	@Transactional
-	public Art deleteArtLike(SeqRequest seqRequest, Long userSeq) {
+	public Art deleteArtLike(SeqRequest seqRequest, long userSeq) {
 
 		MyArt myArt = myArtRepository.findMyArt(seqRequest.getSeq(), userSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
@@ -246,15 +245,15 @@ public class ArtService {
 	}
 
 	@Transactional
-	public Art updateArt(ArtRequest artRequest, Long userSeq) {
+	public Art updateArt(ArtRequest artRequest, long userSeq) {
 
 		Art art = artRepository.findById(artRequest.getArtSeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
-		Long artistSeq = art.getArtist().getId();
+		long artistSeq = art.getArtist().getId();
 		ArtCategory artCategory = artCategoryRepository.findById(artRequest.getArtCategorySeq())
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		if (userSeq.equals(artistSeq)) {
+		if (userSeq == artistSeq) {
 			art.setArtName(artRequest.getArtName());
 			art.setArtDescription(artRequest.getArtDescription());
 			art.setArtCategory(artCategory);

@@ -79,7 +79,7 @@ public class CurationController {
 	public ResponseEntity registerCuration(@RequestBody CurationRequest curationRequest,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 
 		curationService.registerCuration(userSeq, curationRequest);
 
@@ -93,7 +93,7 @@ public class CurationController {
 		@RequestBody CurationRequest curationRequest,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 
 		curationService.updateCuration(userSeq, curationRequest, curation_seq);
 		return ResponseEntity.status(HttpStatus.OK).body("update completed");
@@ -104,7 +104,7 @@ public class CurationController {
 	@ApiOperation(value = "큐레이션 삭제")
 	public ResponseEntity deleteCuration(@PathVariable long curation_seq, @RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 
 		curationService.deleteCuration(userSeq, curation_seq);
 		return ResponseEntity.status(HttpStatus.OK).body("delete complete");
@@ -116,7 +116,7 @@ public class CurationController {
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		Curation curation = curationService.addCurationBookmark(myCurationRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(curation);
@@ -127,7 +127,7 @@ public class CurationController {
 	public ResponseEntity deleteArtLike(@RequestBody MyCurationRequest myCurationRequest,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		Long userSeq = tokenProvider.getSubject(token);
+		long userSeq = tokenProvider.getSubject(token);
 		Curation curation = curationService.deleteCurationBookmark(myCurationRequest, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(curation);
@@ -144,10 +144,10 @@ public class CurationController {
 	//북마크한 큐레이션 리스트
 	@GetMapping("/{userSeq}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 큐레이션 리스트")
-	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationBookmarkList(@PathVariable Long userSeq,
+	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationBookmarkList(@PathVariable long userSeq,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		Long tokenUserSeq = tokenProvider.getSubject(token);
+		long tokenUserSeq = tokenProvider.getSubject(token);
 		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationBookmarkList(userSeq,
 			tokenUserSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
@@ -157,10 +157,10 @@ public class CurationController {
 	@GetMapping("/{userSeq}/following")
 	@ApiOperation(value = "유저가 팔로잉한 작가의 큐레이션 리스트")
 	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationFollowingList(
-		@PathVariable Long userSeq,
+		@PathVariable long userSeq,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
-		Long tokenUserSeq = tokenProvider.getSubject(token);
+		long tokenUserSeq = tokenProvider.getSubject(token);
 		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationFollowingList(userSeq,
 			tokenUserSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
