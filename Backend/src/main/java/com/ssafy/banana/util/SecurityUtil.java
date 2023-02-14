@@ -2,24 +2,23 @@ package com.ssafy.banana.util;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.ssafy.banana.security.UserPrincipal;
 
-@Component
-public class SecurityUtil {
+import lombok.extern.slf4j.Slf4j;
 
-	private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
+@Component
+@Slf4j
+public class SecurityUtil {
 
 	public Optional<String> getCurrentUsername() {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication == null) {
-			logger.debug("Security Context에 인증 정보가 없습니다.");
+			log.debug("Security Context에 인증 정보가 없습니다.");
 			return Optional.empty();
 		}
 

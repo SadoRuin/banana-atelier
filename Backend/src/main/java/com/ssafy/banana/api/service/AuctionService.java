@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ssafy.banana.db.entity.Art;
 import com.ssafy.banana.db.entity.Auction;
@@ -29,13 +30,15 @@ import com.ssafy.banana.dto.response.AuctionResponse;
 import com.ssafy.banana.dto.response.AuctionUpdateResponse;
 import com.ssafy.banana.exception.CustomException;
 import com.ssafy.banana.exception.CustomExceptionType;
+import com.ssafy.banana.util.SseEmitterUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuctionService {
-
 	private final UserRepository userRepository;
 	private final CurationArtRepository curationArtRepository;
 	private final AuctionRepository auctionRepository;
@@ -43,6 +46,7 @@ public class AuctionService {
 	private final ArtRepository artRepository;
 	private final CurationRepository curationRepository;
 	private final AuctionBidLogRepository auctionBidLogRepository;
+	private final SseEmitterUtil sseEmitterUtil;
 
 	/**
 	 * 경매 참여
@@ -69,7 +73,7 @@ public class AuctionService {
 			.userSeq(user.getId())
 			.curationArtSeq(curationArt.getId())
 			.build();
-		// 이미 신청한 경매 
+		// 이미 신청한 경매
 		if (auctionJoinRepository.findById(auctionJoinId).isPresent()) {
 			throw new CustomException(CustomExceptionType.AUCTION_JOIN_CONFLICT);
 		}
@@ -324,5 +328,24 @@ public class AuctionService {
 		if (closeAuctionCount == 0) {
 			throw new CustomException(CustomExceptionType.AUCTION_CLOSE_CONFLICT);
 		}
+	}
+
+	public SseEmitter connectAuction(long curationArtSeq) {
+		SseEmitter emitter = new SseEmitter();
+		sseEmitterUtil.add(curationArtSeq, emitter);
+		try {
+			emitter.send(SseEmitter.event()
+				.id(String.valueOf(curationArtSeq))
+				.name("경매")
+				.data("경매 접속됨"));
+		} catch (IOException e) {
+			throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
+		}
+
+		return emitter;
+	}
+
+	public void countAuction(long curationArtSeq) {
+		sseEmitterUtil.count(curationArtSeq);
 	}
 }

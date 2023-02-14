@@ -1,6 +1,7 @@
 package com.ssafy.banana.api.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.ssafy.banana.api.service.AuctionService;
 import com.ssafy.banana.dto.request.AuctionRequest;
@@ -130,4 +132,21 @@ public class AuctionController {
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("경매가 모두 종료되었습니다."));
 	}
 
+	@ApiOperation(value = "경매 호스트 접속", notes = "경매 자동호스트에 접속")
+	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
+	@GetMapping(value = "/connect/{curationArtSeq}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public ResponseEntity<SseEmitter> connectAuction(
+		@PathVariable long curationArtSeq) {
+
+		return ResponseEntity.ok(auctionService.connectAuction(curationArtSeq));
+	}
+
+	@ApiOperation(value = "경매 호스트 접속", notes = "경매 자동호스트에 접속")
+	@ApiImplicitParam(name = "curationArtSeq", value = "경매품 번호", required = true)
+	@GetMapping("/count/{curationArtSeq}")
+	public ResponseEntity<SuccessResponse> countAuction(
+		@PathVariable long curationArtSeq) {
+		auctionService.countAuction(curationArtSeq);
+		return ResponseEntity.ok(new SuccessResponse("카운트 성공"));
+	}
 }
