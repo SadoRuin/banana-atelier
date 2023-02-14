@@ -9,64 +9,25 @@ function CurationsRegister(props) {
   let userSeq = localStorage.getItem("userSeq")
   
   
-  
   axiosReissue()
-  
-  // const myArts = axiosAuth.get(`arts/${userSeq}`)
-  //   .then(response => response.data)
-  //   .catch(error => console.log(error))
-  const myArts1 = axiosAuth.get(`arts/${userSeq}`)
-    .then(response => response.data)
-    .catch(error => console.log(error));
+  async function getAllArts() {
+  const myArts = await axiosAuth.get(`arts/${userSeq}`)
+  console.log('나의 작품 리스트', myArts.data)
 
-  myArts1.then(result => {
-    console.log('첫번째 케이스:',result); 
-    
-  });
-
-
-  async function getThumbnail(){
-    try {
-      const myArts = await axiosAuth.get(`arts/${userSeq}`);
-      console.log('두번째 케이스 : ', myArts.data[0]['artThumbnail']);
-      const myArtsName = myArts.data[0]['artName']
-      return myArtsName
-    } catch (error) {
-      console.log(error);
-    }
+  // myArts.data를 return해도 계속 promise 형태
   }
-  let thumbNailP =  getThumbnail();
 
-  console.log('섬네일피',thumbNailP)
-
-  
+  getAllArts()
 
 
-
-  const masterpieces = [
-    
-  ]
-  
-  
-  // myArts?.map((item, index) => (
-  //   <div key={index}>
-  //     {item}
-  //   </div>
-  // ))  
-
-  const curationOn = axiosAuth.get('curations/on')
-    .then(response => response.data)
-    .catch(error => console.log('error:', error))
-  console.log('curationOn :', curationOn)
-
+  const masterpieces = []
 
   const navigate = useNavigate();
 
   const [selectedPieces, setSelectedPieces] = useState([]);
 
   const handleSelected = (e) => {
-    let pieceId = Number(e.target.value);
-    console.log(pieceId);
+    let pieceId = Number(e.target.value);;
     if (e.target.checked) {
       if (selectedPieces.length === 10) {
         alert('최대 10개의 작품만 선택할 수 있습니다');
@@ -99,8 +60,6 @@ function CurationsRegister(props) {
   const newMinDay = todayDay.toISOString()
   console.log('newMindat :',newMinDay)
 
-  console.log(minDay);
-  console.log(maxDay);
   return (
     <div>
       <div>
