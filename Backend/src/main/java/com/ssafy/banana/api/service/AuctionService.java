@@ -315,7 +315,7 @@ public class AuctionService {
 				Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
 				AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(
 					curationArt.getId());
-				if (artistSeq.equals(auctionBidLog.getUser().getId())) {
+				if (artistSeq == auctionBidLog.getUser().getId()) {
 					auction.setAuctionStatus(AuctionStatus.FAILED);
 				} else {
 					auction
