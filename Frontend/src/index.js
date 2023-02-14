@@ -113,7 +113,7 @@ const router = createBrowserRouter(
           <Route path="curations/upcoming" element={ <CurationsUpcoming /> } />
           <Route path="curations/end" element={ <CurationsEnd /> } />
           <Route path="curations/detail" element={ <CurationsDetail /> } />
-          <Route path="curations/register" element={ <CurationsRegister /> } />
+          <Route path=":nickname/curation_register" element={ <CurationsRegister /> } />
 
           {/* 커미션 페이지 */}
           {/*<Route path="commissions" element={ <CommissionsMain /> } />*/}
@@ -127,7 +127,7 @@ const router = createBrowserRouter(
             loader={MyPageLoader}
           >
             <Route errorElement={ <Error /> }>
-              {/* 마아페이지 작품 */}
+              {/* 마이페이지 작품 */}
               <Route
                 index
                 element={<ArtsRoot />}

@@ -130,9 +130,8 @@ function ArtsDetail() {
                   const userSeq = localStorage.getItem("userSeq")
                   let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
                   axiosReissue()
-                  axiosAuth.delete(`arts/like`, {
-                    data: body
-                  })
+                  let body = {"seq": artData.artSeq}
+                  axiosAuth.delete(`arts/like`, {data: body})
                   .then(response => console.log('싫어요 response', response))
                   .catch(error => {
                     console.log("이게 왜 에러지", error)
