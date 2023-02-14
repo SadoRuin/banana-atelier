@@ -6,7 +6,7 @@ export const TabMenu = styled.ul`
   flex-direction: row;
   align-items: center;
   list-style: none;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-top: 10px;
   padding-left: 0;
   
@@ -31,7 +31,7 @@ export const TabMenu = styled.ul`
 `;
 
 export const TabContent = styled.div`
-  text-align: center;
+  width: 100%;
 `;
 
 export default function TabMenuComponent({menuData, index, setIndex}) {

@@ -4,7 +4,9 @@ import { useLoaderData, Link, redirect, useOutletContext } from "react-router-do
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
-import { YellowBtn } from "../../components/commons/buttons";
+import { GreenBtn } from "../../components/commons/buttons";
+
+import './ArtsRoot.css'
 
 export async function loader ({params}) {
   const userSeq = params.nickname_user_seq.split('@')[1];
@@ -40,8 +42,8 @@ function ArtsRoot() {
 
   const noMasterpiece = isMyPage?
     <div className="art-root__no-masterpiece">
-      <div>대표 작품을 설정해보세요!</div>
-      <Link to="set_masterpiece"><YellowBtn>대표작품 설정하기</YellowBtn></Link>
+      <p>대표 작품을 설정해보세요!</p>
+      <Link to="set_masterpiece"><GreenBtn>대표작품 설정하기</GreenBtn></Link>
     </div> :
     <div className="art-root__no-masterpiece">
       대표작품이 존재하지 않습니다
@@ -51,45 +53,45 @@ function ArtsRoot() {
     <div className="art-root__no-arts">
       <p>나의 작품이 존재하지 않습니다</p>
       <p>작품을 올리고 작가가 되어보세요!</p>
-      <Link to="upload"><YellowBtn>작품 업로드</YellowBtn></Link>
+      <Link to="upload"><GreenBtn>작품 업로드</GreenBtn></Link>
     </div> :
     <div className="art-root__no-arts">작품이 존재하지 않습니다</div>
 
   const artMenuData = [
     { name: '작품',
       content:
-        userArts?
-          <div>
-            <h3>대표작품</h3>
-            { userMasterpieces?
-                userMasterpieces.map((masterpiece) =>
-                  <ArtItemMyPage
-                    key={`my-page__arts-${masterpiece.artSeq}`}
-                    nickname={masterpiece.nickname}
-                    userSeq={masterpiece.userSeq}
-                    artThumbnail={masterpiece.artThumbnail}
-                    artName={masterpiece.artName}
-                    artSeq={masterpiece.artSeq}
-                  /> ) : noMasterpiece
-            }
-            <h3>전체 작품</h3>
-            {
-              userArts.map((art) =>
-                <ArtItemMyPage
-                  key={`my-page__arts-${art.artSeq}`}
-                  nickname={art.nickname}
-                  userSeq={art.userSeq}
-                  artThumbnail={art.artThumbnail}
-                  artName={art.artName}
-                  artSeq={art.artSeq}
-                /> )}
-          </div>
-          : noArts
+        <div className="art-root__arts-container">
+          <h3>대표작품</h3>
+          { userMasterpieces?
+            userMasterpieces.map((masterpiece) =>
+              <ArtItemMyPage
+                key={`my-page__arts-${masterpiece.artSeq}`}
+                nickname={masterpiece.nickname}
+                userSeq={masterpiece.userSeq}
+                artThumbnail={masterpiece.artThumbnail}
+                artName={masterpiece.artName}
+                artSeq={masterpiece.artSeq}
+              /> ) : noMasterpiece
+          }
+          <h3>전체 작품</h3>
+          { userArts?
+            userArts.map((art) =>
+              <ArtItemMyPage
+                key={`my-page__arts-${art.artSeq}`}
+                nickname={art.nickname}
+                userSeq={art.userSeq}
+                artThumbnail={art.artThumbnail}
+                artName={art.artName}
+                artSeq={art.artSeq}
+              />) : noArts
+          }
+        </div>
     },
     { name: '좋아요 목록',
       content:
         userLikes?
-          <div className="art-root__likes">
+          <div className="art-root__arts-container">
+            {/* 여기서 넘어오는 nickname이랑 userSeq는 좋아요를 누를 사람의 userSeq임 ㅠㅠ */}
             { userLikes.map((like) =>
               <ArtItemMyPage
                 key={`my-page__art-likes-${like.artSeq}`}
@@ -100,7 +102,7 @@ function ArtsRoot() {
                 artSeq={like.artSeq}
               />) }
           </div>
-          : <div className="art-root__likes" >좋아요한 작품이 없습니다.</div>
+          : <div className="art-root__no-likes" >좋아요한 작품이 없습니다.</div>
     }
   ]
 

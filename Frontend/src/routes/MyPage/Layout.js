@@ -106,7 +106,7 @@ export default function Layout() {
       </div>
 
       <div className="my-page__content">
-        <nav>
+        <nav className="my-page__nav">
           <NavLink to='.' className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' } end>작품</NavLink>
           {/* 공지사항은 내 페이지도 아니고 작가도 아니면 아예 링크를 띄우지 말자 */}
           { (!isMyPage && !isArtist)? null : <NavLink to={ 'notices' } className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' }>공지사항</NavLink>}
