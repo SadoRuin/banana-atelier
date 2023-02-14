@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.banana.api.service.CurationService;
-import com.ssafy.banana.db.entity.Curation;
 import com.ssafy.banana.db.entity.enums.CurationStatus;
 import com.ssafy.banana.dto.request.CurationRequest;
 import com.ssafy.banana.dto.request.MyCurationRequest;
@@ -117,9 +116,9 @@ public class CurationController {
 		String token = Authorization.split(" ")[1];
 
 		long userSeq = tokenProvider.getSubject(token);
-		Curation curation = curationService.addCurationBookmark(myCurationRequest, userSeq);
+		boolean flag = curationService.addCurationBookmark(myCurationRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(curation);
+		return ResponseEntity.status(HttpStatus.OK).body(flag);
 	}
 
 	@ApiOperation(value = "큐레이션 북마크 삭제하기", notes = "큐레이션에 북마크를 취소합니다")
@@ -128,9 +127,9 @@ public class CurationController {
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		long userSeq = tokenProvider.getSubject(token);
-		Curation curation = curationService.deleteCurationBookmark(myCurationRequest, userSeq);
+		boolean flag = curationService.deleteCurationBookmark(myCurationRequest, userSeq);
 
-		return ResponseEntity.status(HttpStatus.OK).body(curation);
+		return ResponseEntity.status(HttpStatus.OK).body(flag);
 	}
 
 	//큐레이션명 및 큐레이션 설명에서 해당 내용 검색
