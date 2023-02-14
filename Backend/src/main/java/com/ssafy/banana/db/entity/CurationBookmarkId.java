@@ -21,15 +21,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class MyArtistId implements Serializable {
+public class CurationBookmarkId implements Serializable {
 	private static final long serialVersionUID = 7238271834440935619L;
 	@NotNull
 	@Column(name = "user_seq", nullable = false)
 	private Long userSeq;
 
 	@NotNull
-	@Column(name = "artist_seq", nullable = false)
-	private Long artistSeq;
+	@Column(name = "curation_seq", nullable = false)
+	private Long curationSeq;
 
 	@Override
 	public boolean equals(Object o) {
@@ -37,14 +37,14 @@ public class MyArtistId implements Serializable {
 			return true;
 		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
 			return false;
-		MyArtistId entity = (MyArtistId)o;
-		return Objects.equals(this.artistSeq, entity.artistSeq) &&
+		CurationBookmarkId entity = (CurationBookmarkId)o;
+		return Objects.equals(this.curationSeq, entity.curationSeq) &&
 			Objects.equals(this.userSeq, entity.userSeq);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(artistSeq, userSeq);
+		return Objects.hash(curationSeq, userSeq);
 	}
 
 }

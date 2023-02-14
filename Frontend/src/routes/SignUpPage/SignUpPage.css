@@ -1,0 +1,12 @@
+#sign_up_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#logo_img {
+    width: 190px;
+    height: 120.37px;
+}
+

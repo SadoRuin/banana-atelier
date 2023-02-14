@@ -1,0 +1,60 @@
+version: "3.8"
+services:
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: dnjftlrdl
+    volumes:
+      - ~/mariadb/databases:/var/lib/mysql/
+    ports:
+      - 3324:3306
+    restart: unless-stopped
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    volumes:
+      - /usr/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /jenkins:/var/jenkins_home
+      - ~/back:/back
+    ports:
+      - 8093:8080
+    privileged: true
+    user: root
+    restart: unless-stopped
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass dnjftlrdl --port 6379
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - ~/redis/data:/data
+    restart: unless-stopped
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ~/nginx/conf.d:/etc/nginx/conf.d
+      - ~/certbot/conf:/etc/letsencrypt
+      - ~/certbot/www:/var/www/certbot
+    restart: unless-stopped
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ~/certbot/conf:/etc/letsencrypt
+      - ~/certbot/www:/var/www/certbot
+    restart: unless-stopped
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
