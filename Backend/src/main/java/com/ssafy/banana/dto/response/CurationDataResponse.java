@@ -60,7 +60,6 @@ public class CurationDataResponse {
 			this.curationSeq = cb.getId().getCurationSeq();
 			this.profileImg = cb.getUser().getProfileImg();
 		}
-
 	}
 
 	//큐레이션 하나만 조회

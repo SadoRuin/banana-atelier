@@ -165,7 +165,7 @@ public class CurationService {
 
 	//큐레이션 북마크 추가
 	@Transactional
-	public Curation addCurationBookmark(MyCurationRequest myCurationRequest, long userSeq) {
+	public boolean addCurationBookmark(MyCurationRequest myCurationRequest, long userSeq) {
 		if (myCurationRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
@@ -192,12 +192,12 @@ public class CurationService {
 		curation.setCurationBmCount(curationBookmarkCount);
 		curationRepository.save(curation);
 
-		return curation;
+		return true;
 	}
 
 	//큐레이션 북마크 취소
 	@Transactional
-	public Curation deleteCurationBookmark(MyCurationRequest myCurationRequest, long userSeq) {
+	public boolean deleteCurationBookmark(MyCurationRequest myCurationRequest, long userSeq) {
 
 		if (myCurationRequest.getUserSeq() != userSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
@@ -217,7 +217,7 @@ public class CurationService {
 		curation.setCurationBmCount(curationBookmarkCount);
 		curationRepository.save(curation);
 
-		return curation;
+		return true;
 	}
 
 	//큐레이션명 및 큐레이션 설명에서 해당 내용 검색
