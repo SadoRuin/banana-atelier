@@ -257,8 +257,7 @@ public class AuctionService {
 		Auction auction = auctionRepository.findById(curationArtSeq)
 			.orElseThrow(() -> new CustomException(CustomExceptionType.RUNTIME_EXCEPTION));
 
-		if (auction.getAuctionStatus() == AuctionStatus.INIT
-			|| auction.getAuctionStatus() == AuctionStatus.ONGOING) {
+		if (auction.getAuctionStatus() == AuctionStatus.ONGOING) {
 			// 최근 입찰자가 초기 세팅(작가)이면 FAILED, 낙찰되었다면 SUCCESS
 			Long artistSeq = auction.getCurationArt().getCuration().getArtist().getId();
 			AuctionBidLog auctionBidLog = auctionBidLogRepository.findTopByAuction_IdOrderByIdDesc(curationArtSeq);
@@ -276,6 +275,8 @@ public class AuctionService {
 				.setAuctionStatusTime(currentTime)
 				.setAuctionEndTime(currentTime);
 			auctionRepository.save(auction);
+		} else if (auction.getAuctionStatus() == AuctionStatus.INIT) {
+			throw new CustomException(CustomExceptionType.NOT_GOING_AUCTION);
 		} else {
 			throw new CustomException(CustomExceptionType.AUCTION_CLOSE_CONFLICT);
 		}

@@ -29,7 +29,8 @@ public enum CustomExceptionType {
 	FOLLOWER_NOT_FOUND(HttpStatus.NOT_FOUND, "E024", "팔로워가 없습니다."),
 	AUCTION_CLOSE_CONFLICT(HttpStatus.CONFLICT, "E025", "이미 종료된 경매입니다."),
 	AUCTION_NOT_ONGOING(HttpStatus.BAD_REQUEST, "E026", "진행 중인 경매가 아닙니다."),
-	ART_LIKE_CONFLICT(HttpStatus.CONFLICT, "E027", "이미 좋아요한 작품입니다.");
+	ART_LIKE_CONFLICT(HttpStatus.CONFLICT, "E027", "이미 좋아요한 작품입니다."),
+	NOT_GOING_AUCTION(HttpStatus.BAD_REQUEST, "E028", "진행중인 경매가 아닙니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
