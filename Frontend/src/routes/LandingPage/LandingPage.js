@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import axiosCustom from "../../_actions/axiosCustom";
 import { logoutCode } from '../../_actions/user_action';
 import { landingRenderingLogout, landingRenderingReset } from '../../_actions/user_action' 
-import ArtItem from "../../components/commons/artItem";
+import ArtComponent from "../../components/commons/ArtComponent";
 import { useDispatch } from 'react-redux';
 // import { useDispatch, useSelector } from 'react-redux';
 
@@ -64,7 +64,7 @@ function LandingPage() {
         <div className="grid__main-components">
           {arts.map((art) =>
             <div key={`art-item_${art.artSeq}`}>
-              <ArtItem
+              <ArtComponent
                 nickname={art.nickname}
                 profileImg={art.profileImg}
                 userSeq={art.userSeq}

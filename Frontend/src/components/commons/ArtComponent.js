@@ -5,19 +5,17 @@ import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 
 import { getArtThumbnail } from "./imageModule";
 import ProfileImg from "./ProfileImg";
-import { LikeBtn } from "./buttons";
-import './artItem.css'
+import './ArtComponent.css'
 
-function ArtItem({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, artHit, artLikeCount}) {
+function ArtComponent({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, artHit, artLikeCount}) {
 
   return (
     <div className="art-item__container">
 
       <Link to={`/${nickname}/${artSeq}`} className="art-img__container">
         <div className="art-thumbnail" style={{backgroundImage : `url("${getArtThumbnail(artThumbnail, userSeq)}")`}} />
-        <div className="hidden">
+        <div className="hidden__gradient">
           <div>{artName}</div>
-          <LikeBtn isLike={false} />
         </div>
       </Link>
 
@@ -35,4 +33,4 @@ function ArtItem({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, 
   );
 }
 
-export default ArtItem;
+export default ArtComponent;

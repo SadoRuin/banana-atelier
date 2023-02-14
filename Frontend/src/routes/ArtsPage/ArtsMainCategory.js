@@ -1,6 +1,6 @@
 import React from 'react'
 import axiosCustom from '../../_actions/axiosCustom';
-import ArtItem from "../../components/commons/artItem";
+import ArtComponent from "../../components/commons/ArtComponent";
 import { useLoaderData } from 'react-router-dom';
 
 export async function loader({params}) {
@@ -21,7 +21,7 @@ function ArtsMainCategory() {
       <div className="grid__main-components">
         {artsList.map((art) =>
           <div key={`art-item_${art.artSeq}`}>
-            <ArtItem
+            <ArtComponent
             nickname={art.nickname}
             profileImg={art.profileImg}
             userSeq={art.userSeq}

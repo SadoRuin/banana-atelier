@@ -1,13 +1,12 @@
-import React from 'react'
-import {Link, useLoaderData, redirect, Form } from 'react-router-dom'
-import { axiosReissue } from '../../_actions/axiosAuth';
-import { axiosAuth } from '../../_actions/axiosAuth';
+import React, { useState } from 'react'
+import { Link, useLoaderData, redirect, Form, useNavigate } from 'react-router-dom'
+import { axiosReissue, axiosAuth } from '../../_actions/axiosAuth';
+
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
-import {YellowBtn, RedBtn, LikeBtn} from "../../components/commons/buttons";
+import { YellowBtn, RedBtn, LikeBtn } from "../../components/commons/buttons";
 import {Category} from "../../components/commons/category";
 import './ArtsDetail.css'
-import { useState } from 'react';
 
 export async function loader ({params}) {
   let artSeq = params.art_seq;
@@ -15,8 +14,8 @@ export async function loader ({params}) {
   const artData = await axiosAuth.get(`arts/detail/${artSeq}`)
     .then(response => response.data)
     .catch(error => error.response.status)
-  
-  const likeList = await axiosAuth.get(`arts/like`)
+
+  const likeList = await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
     .then(response=> response.data)
     .catch(() => null)
 
@@ -59,16 +58,14 @@ export async function action ({request, params}) {
 
 
 function ArtsDetail() {
-
   const [artData, likeList] = useLoaderData();
-  const [likeCnt, setLikeCnt] = useState(artData.artLikeCount);
-
-  axiosReissue();
-  let wonderValue = false
-  let alreadyLike = likeList?.find((like) => like.artSeq === artData.artSeq);
-  alreadyLike? wonderValue = true : wonderValue = false
-  
-  const [wonder, setWonder] = useState(wonderValue)
+  let likeState = likeList?.find((like) => like.artSeq === artData.artSeq) || false;
+  const [isLiked, setIsLiked] = useState(!!likeState)
+  const [likeCount, setLikeCount] = useState(artData.artLikeCount)
+  const [downloadCount, setDownloadCount] = useState(artData.artDownloadCount)
+  const navigate = useNavigate()
+  console.log(likeList)
+  console.log(likeState);
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
@@ -81,25 +78,27 @@ function ArtsDetail() {
         {/* 작품 상세 정보 */}
         <div className="art-detail_content">
           <div className="art-detail__main-info">
-            <h1>{artData.artName}</h1>
-            <Link className="artist_profile link" to={`../${artData.nickname}@${artData.userSeq}`}>
+            <div className="art-detail__title">
+              <h1>{artData.artName}</h1>
+              { artData.userSeq === +localStorage.getItem('userSeq') &&
+                <div className="art-detail__manage">
+                  <Form method="delete"><RedBtn type="submit">삭제하기</RedBtn></Form>
+                  <Form method="put"><YellowBtn type="submit">수정하기</YellowBtn></Form>
+                </div> }
+            </div>
+            <Link className="art-detail__profile link" to={`../${artData.nickname}@${artData.userSeq}`}>
               <ProfileImg height="30px" width="30px" url={artData.profileImg} userSeq={artData.userSeq} />
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
 
             <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>
-            {artData.userSeq === +localStorage.getItem('userSeq') ?
-              <div className="art-detail__manage">
-                <Form method="delete"><RedBtn type="submit">삭제하기</RedBtn></Form>
-                <Form method="put">수정하기</Form>
-              </div> : null
-            }
             <div className="arts_description">
               {artData.artDescription}
             </div>
 
 
-            <Category className="art-detail__category">
+
+            <Category className="art-detail__category" onClick={() => {navigate({pathname: '/arts', search: `?category=${artData.artCategory.id}`})}}>
               {artData.artCategory.artCategoryName}
             </Category>
           </div>
@@ -112,12 +111,11 @@ function ArtsDetail() {
               </div>
               <div className="downloaded">
                 <img src="ArtsMain" alt="" />
-                다운로드 : {artData.artDownloadCount}
+                다운로드 : {downloadCount}
               </div>
               <div className="likes">
                 <img src="ArtsMain" alt="" />
-                {/* 좋아요 : {artData.artLikeCount} */}
-                좋아요 : {likeCnt}
+                좋아요 : {likeCount}
               </div>
             </div>
             <div className="art-detail__btns">
@@ -128,7 +126,9 @@ function ArtsDetail() {
               <form onSubmit={(event) => {
                 event.preventDefault()
 
-                if (wonder) {
+                if (isLiked) {
+                  const userSeq = localStorage.getItem("userSeq")
+                  let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
                   axiosReissue()
                   let body = {"seq": artData.artSeq}
                   axiosAuth.delete(`arts/like`, {data: body})
@@ -136,26 +136,23 @@ function ArtsDetail() {
                   .catch(error => {
                     console.log("이게 왜 에러지", error)
                   })
-                  setLikeCnt(prev=>prev-1)
-                  
+                  setLikeCount(prev => prev - 1)
 
-                } else if (!wonder) {
-                  let body = {"seq": artData.artSeq}
+                } else if (!isLiked) {
+                  const userSeq = localStorage.getItem("userSeq")
+                  let body = { "userSeq": userSeq, "artSeq": artData.artSeq }
                   axiosReissue()
                   axiosAuth.post(`arts/like`, body)
-                  .then(response => console.log('좋아요 response', response))
-                  setLikeCnt(prev=>prev+1)
+                    .then(response => console.log('좋아요 response', response))
+                  setLikeCount(prev => prev + 1)
                 }
-                setWonder(prev=>!prev)
+                setIsLiked(prev=>!prev)
 
               }}>
-                <LikeBtn isLike={wonder} />
+                <LikeBtn isLike={isLiked} />
               </form>
-              
 
-
-
-              <form action={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`} method="get">
+              <form action={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`} method="get" onSubmit={() => setDownloadCount(prev => prev + 1)}>
                 <YellowBtn type="submit">다운로드</YellowBtn>
               </form>
             </div>
