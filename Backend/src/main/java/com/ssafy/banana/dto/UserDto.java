@@ -9,22 +9,33 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 /**
- * A DTO for the {@link User} entity
+ * A DTO for the {@link com.ssafy.banana.db.entity.User} entity
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Accessors(chain = true)
+@SuperBuilder
 public class UserDto implements Serializable {
-	private Long id;
 	private String email;
-	private String password;
 	private String nickname;
 	private String profileImg;
 	private int artistLikeCount;
 	private Role role;
+
+	public static UserDto from(User user) {
+		if (user == null)
+			return null;
+
+		return UserDto.builder()
+			.email(user.getEmail())
+			.nickname(user.getNickname())
+			.profileImg(user.getProfileImg())
+			.artistLikeCount(user.getArtistLikeCount())
+			.role(user.getRole())
+			.build();
+	}
 }

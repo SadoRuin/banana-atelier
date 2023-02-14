@@ -5,33 +5,31 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.Hibernate;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Embeddable
 public class MyArtId implements Serializable {
-	private static final long serialVersionUID = -2102078239052971755L;
+	private static final long serialVersionUID = -3349915661325168656L;
+	@NotNull
 	@Column(name = "user_seq", nullable = false)
 	private Long userSeq;
 
+	@NotNull
 	@Column(name = "art_seq", nullable = false)
 	private Long artSeq;
-
-	public Long getUserSeq() {
-		return userSeq;
-	}
-
-	public void setUserSeq(Long userSeq) {
-		this.userSeq = userSeq;
-	}
-
-	public Long getArtSeq() {
-		return artSeq;
-	}
-
-	public void setArtSeq(Long artSeq) {
-		this.artSeq = artSeq;
-	}
 
 	@Override
 	public boolean equals(Object o) {
