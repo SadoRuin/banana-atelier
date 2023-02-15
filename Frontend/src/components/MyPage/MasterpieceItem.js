@@ -4,7 +4,7 @@ import {faCircleCheck} from "@fortawesome/free-regular-svg-icons";
 
 import { getArtThumbnail } from "../commons/imageModule";
 import '../commons/ArtComponent.css'
-import './MasterPieceItem.css'
+import './MasterpieceItem.css'
 
 function MasterpieceItem({isRepresent = false, artThumbnail, artName, userSeq}) {
   if (isRepresent) {
