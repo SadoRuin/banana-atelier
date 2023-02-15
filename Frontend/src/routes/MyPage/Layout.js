@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { Outlet, NavLink, Form, useLoaderData, redirect } from "react-router-dom";
+import { Outlet, NavLink, Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faHouse } from "@fortawesome/free-solid-svg-icons";
 
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import ProfileImg from "../../components/commons/ProfileImg";
 import { YellowBtn, RedBtn } from "../../components/commons/buttons";
+import { landingRenderingLogout } from '../../_actions/user_action';
+import { logoutCode } from '../../_actions/user_action';
 
 import './Layout.css'
+import { useDispatch } from 'react-redux';
+
 
 export async function loader ({params}) {
   const [nickname, userSeq] = params.nickname_user_seq.split('@');
@@ -51,6 +55,16 @@ export default function Layout() {
   const [userSeq, userData, userFollow] = useLoaderData();
   const isMyPage = userSeq === localStorage.getItem('userSeq');
   const isArtist = userData.role === 'ROLE_ARTIST'
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = event => {
+    event.preventDefault()
+    localStorage.clear()
+    dispatch(landingRenderingLogout())
+    dispatch(logoutCode())
+    navigate('/')
+  }
 
   let isFollow = userFollow?.find(like => +like === +userSeq) || false
   const [wonder, setWonder] = useState(isFollow)
@@ -80,7 +94,7 @@ export default function Layout() {
           <div className="my-page__profile_buttons">
             <Form action={'edit_profile'}><YellowBtn style={{width: "120px"}} type="submit">정보 수정하기</YellowBtn></Form>
             <Form action={'upload'}><YellowBtn style={{width: "120px"}} type="submit">작품 업로드</YellowBtn></Form>
-            <RedBtn style={{width: "120px"}}>로그아웃</RedBtn>
+            <RedBtn style={{width: "120px"}} onClick={handleLogout}>로그아웃</RedBtn>
           </div>
           :
           <div id="profile_buttons">
