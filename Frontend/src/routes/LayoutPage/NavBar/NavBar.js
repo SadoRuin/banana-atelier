@@ -47,7 +47,7 @@ function NavBar() {
         <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/commissions">커미션</NavLink>
       </div>
 
-      <div className="search_bar">
+      <div id="search-bar" className="search_bar">
         <input type="text" id="search" name='search' placeholder='검색하기'/>
       </div>
 
