@@ -39,7 +39,9 @@ function CurationsDetail() {
   // 큐레이션 날짜 (진행중, 예정, 종료에 따라 다르게 렌더링)
   let curationDate = null
   if (curationStatus === "INIT") {
-      curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}${"  "+(curationStartTime[3]+'').padStart(2, "0") +":" + (curationStartTime[4]+"").padStart(2, "0") + " 예정"}`}</div>
+      curationDate = <div>{`${curationStartTime[0]}.
+                            ${(curationStartTime[1]+'').padStart(2, "0")}.
+                            ${(curationStartTime[2]+'').padStart(2, "0")}  ${(curationStartTime[3]+'').padStart(2, "0") +":" + (curationStartTime[4]+"").padStart(2, "0") + " 예정"}`}</div>
   } else if (curationStatus === "ON") {
       curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0") + " 진행중"}`}</div>
   } else {

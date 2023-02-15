@@ -12,7 +12,7 @@ function CurationComponent({ nickname, profileImg, userSeq, curationThumbnail, c
     let content = null
 
     if (curationStatus === "INIT") {
-        content = <div><FontAwesomeIcon icon={ faCalendar } /> {`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}${"  "+(curationStartTime[3]) +":" + (curationStartTime[4]) + " 예정"}`}  <FontAwesomeIcon icon={ faBookmark } /> {curationBmCount}</div>
+        content = <div><FontAwesomeIcon icon={ faCalendar } /> {`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}  ${(curationStartTime[3]+'').padStart(2, "0") +":" + (curationStartTime[4]+'').padStart(2, "0") + " 예정"}`}  <FontAwesomeIcon icon={ faBookmark } /> {curationBmCount}</div>
     } else if (curationStatus === "ON") {
         content = <div><FontAwesomeIcon icon={ faCalendar } /> {`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}`}  <FontAwesomeIcon icon={ faBookmark } /> {curationBmCount}</div>
     } else {
