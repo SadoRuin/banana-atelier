@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.banana.api.service.ArtService;
 import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
-import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
@@ -107,12 +106,12 @@ public class ArtController {
 	@ApiOperation(value = "대표 작품 설정", notes = "작가 본인의 대표작을 설정합니다")
 	@PutMapping("/masterpiece")
 	public ResponseEntity<?> setMasterpieceList(
-		@RequestBody List<MasterpieceRequest> masterpieceRequestList,
+		@RequestBody List<SeqRequest> artSeqRequestList,
 		@RequestHeader String Authorization) {
 
 		String token = Authorization.split(BLNAK)[1];
 		long userSeq = tokenProvider.getSubject(token);
-		artService.setMasterpieceList(masterpieceRequestList, userSeq);
+		artService.setMasterpieceList(artSeqRequestList, userSeq);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("대표 작품 설정 완료"));
 	}

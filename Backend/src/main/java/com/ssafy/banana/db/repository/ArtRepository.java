@@ -2,6 +2,7 @@ package com.ssafy.banana.db.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -71,4 +72,5 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 		+ "where a.artist.id = :userSeq")
 	int countArtByArtistSeq(@Param("userSeq") Long userSeq);
 
+	Optional<List<Art>> findAllByArtist_Id(long userSeq);
 }
