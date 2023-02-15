@@ -6,19 +6,18 @@ import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/글씨_250.png'
 import axios from 'axios'
 import { landingRendering } from '../../_actions/user_action'
-// import { useSelector } from 'react-redux'
+import { signup_login_reset } from '../../_actions/user_action'
+import { useSelector } from 'react-redux'
 
 export default function LoginPage(props) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
   const [pwMessage, setPwMessage] = useState('')
-  // const userExample = useSelector(state => state.user)
-  // console.log("useSelector 해서 state 가져온 것", userExample)
-  // const loginWonder = useSelector(state => state.user.login_status)
-  // console.log("로그인 했나요?", loginWonder)
-  // console.log("겁나 빡세네", loginWonder === true)
+  const afterSignup = useSelector(state=> state.user.sign_login)
+  console.log("afterSignup ===>>>", afterSignup)
 
   const handleFindPw = (event) => {
     event.preventDefault()
@@ -48,7 +47,7 @@ export default function LoginPage(props) {
 
   const onSubmitHandler = event => {
     event.preventDefault()
-
+    
     let body = {
       email: Email,
       password: Password
@@ -65,7 +64,12 @@ export default function LoginPage(props) {
         localStorage.setItem("userSeq", response.payload.data.userSeq)
         let token = localStorage.getItem("token")
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        navigate(-1)
+        if (afterSignup) {
+          dispatch(signup_login_reset())
+          navigate("/")
+        } else {
+          navigate(-1)
+        }
       })
       .catch(error => {
         console.log(error)
