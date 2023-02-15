@@ -28,8 +28,7 @@ export async function action ({request}) {
   const body = []
   for (const [key, value] of formData){
     body.push({
-      [key]: value,
-      represent: true
+      [key]: value
     })
   }
   console.log(body);
@@ -98,8 +97,8 @@ function SetMasterpiece() {
                   return (
                     <label key={`my-page__masterpiece-all-${art.artSeq}`}>
                       {isRepresent ?
-                        <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected} checked/> :
-                        <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected}/>
+                        <input style={{display: "none"}} type="checkbox" name="seq" value={art.artSeq} onChange={handleSelected} checked/> :
+                        <input style={{display: "none"}} type="checkbox" name="seq" value={art.artSeq} onChange={handleSelected}/>
                       }
                       <MasterpieceItem
                         artName={art.artName}
