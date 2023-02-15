@@ -27,6 +27,7 @@
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.6",
+    "swiper": "^8.4.5",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
@@ -52,7 +53,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ],
-    "proxy": "https://i8a108.p.ssafy.io:8447"
+    ]
   }
 }
