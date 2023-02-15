@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
-import { useNavigate, useLoaderData } from "react-router-dom";
+import { useNavigate, useLoaderData, redirect } from "react-router-dom";
 import { axiosAuth, axiosReissue } from '../../_actions/axiosAuth';
 
 import CurationPieceItem from "../../components/MyPage/CurationPieceItem";
 
 export async function loader ({params}) {
+  console.log(params);
   const [, userSeq] = params.nickname_user_seq.split('@')
-
+  console.log(userSeq);
   axiosReissue();
   const userArts = await axiosAuth.get(`arts/${userSeq}`)
     .then(response => response.data)
@@ -49,7 +50,6 @@ function CurationsRegister() {
         }
         console.log(auctionGap, auctionStartPrice)
 
-
         if (Number.isInteger(auctionGap) && Number.isInteger(auctionStartPrice) && auctionStartPrice > 0 && auctionGap > 0){
           const curationArt = userArts.find((art)=>art.artSeq === artSeq);
           const newCurationArt = {
@@ -80,7 +80,6 @@ function CurationsRegister() {
     const curationName = document.querySelector("#curationName").value;
     const curationStartTime = document.querySelector("#curationStartTime").value + ':00';
     const curationSummary = document.querySelector("#curationSummary").value;
-
     const body = {
       artistSeq: artistSeq,
       curationArtList: curationArtList,
@@ -89,10 +88,8 @@ function CurationsRegister() {
       curationSummary: curationSummary
     }
 
-    console.log(body)
-
     await axiosAuth.post('curations', body)
-      .then(response => response)
+      .then(() => redirect('/curations'))
       .catch(error => console.log(error))
   }
 

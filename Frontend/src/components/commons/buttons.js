@@ -11,9 +11,13 @@ export const YellowBtn = styled.button`
   border-radius: 15px;
   font-size: 13px;
   box-sizing: border-box;
-  padding: 5px 9px;
+  padding: 5px 10px;
   background-color: #F9D923;
   cursor: pointer;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     background-color: #E7C508;
   }
@@ -24,7 +28,7 @@ export const GreenBtn = styled.button`
   border-radius: 15px;
   font-size: 13px;
   box-sizing: border-box;
-  padding: 5px 9px;
+  padding: 5px 10px;
   background-color: #36AE7C;
   cursor: pointer;
   color: white;
@@ -38,7 +42,7 @@ export const BlueBtn = styled.button`
   border-radius: 15px;
   font-size: 13px;
   box-sizing: border-box;
-  padding: 5px 9px;
+  padding: 5px 10px;
   background-color: #187498;
   cursor: pointer;
   color: white;
@@ -52,7 +56,7 @@ export const RedBtn = styled.button`
   border-radius: 15px;
   font-size: 13px;
   box-sizing: border-box;
-  padding: 5px 9px;
+  padding: 5px 10px;
   background-color: #EB5353;
   cursor: pointer;
   color: white;
@@ -66,7 +70,7 @@ export const WhiteBtn = styled.button`
   box-sizing: border-box;
   font-size: 13px;
   border-radius: 15px;
-  padding: 5px 9px;
+  padding: 5px 10px;
   background-color: #FFFFFF;
   cursor: pointer;
   &:hover {
