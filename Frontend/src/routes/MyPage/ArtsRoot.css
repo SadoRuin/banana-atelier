@@ -1,12 +1,30 @@
 .art-root__arts-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+    padding-bottom: 20px;
+}
+.art-root__masterpiece-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    padding-bottom: 20px;
+}
+.art-root__masterpiece-container  {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    padding-bottom: 20px;
 }
 .art-root__arts-container > h3 {
     grid-column: 1 / end;
     margin-bottom: 0;
     margin-top: 5px;
+}
+.art-root__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .art-root__no-masterpiece, .art-root__no-arts, .art-root__no-likes {
     grid-column: 1 / end;

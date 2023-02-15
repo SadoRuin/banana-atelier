@@ -4,6 +4,7 @@ import { useLoaderData, Link, redirect, useOutletContext } from "react-router-do
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
+import ArtComponent from "../../components/commons/ArtComponent";
 import { GreenBtn, YellowBtn } from "../../components/commons/buttons";
 
 import './ArtsRoot.css'
@@ -61,10 +62,13 @@ function ArtsRoot() {
     { name: '작품',
       content:
         <div>
-          <h3>대표작품</h3>
+          <div className="art-root__head">
+            <h3>대표작품</h3>
+            { userMasterpieces &&
+              <YellowBtn><Link className="link link-bold" to="set_masterpiece">대표작품 수정</Link></YellowBtn> }
+          </div>
           { userMasterpieces?
-            <div className="art-root__arts-container">
-              <YellowBtn style={{gridColumn: "1 / end", width: "150px"}}><Link className="link" to="set_masterpiece">대표작품 수정</Link></YellowBtn>
+            <div className="art-root__masterpiece-container">
               {userMasterpieces.map((masterpiece) =>
                 <ArtItemMyPage
                   key={`my-page__arts-${masterpiece.artSeq}`}
@@ -96,11 +100,11 @@ function ArtsRoot() {
       content:
         userLikes?
           <div className="art-root__arts-container">
-            {/* 여기서 넘어오는 nickname이랑 userSeq는 좋아요를 누를 사람의 userSeq임 ㅠㅠ */}
             { userLikes.map((like) =>
-              <ArtItemMyPage
+              <ArtComponent
                 key={`my-page__art-likes-${like.artSeq}`}
                 nickname={like.nickname}
+                profileImg={like.profileImg}
                 userSeq={like.userSeq}
                 artThumbnail={like.artThumbnail}
                 artName={like.artName}

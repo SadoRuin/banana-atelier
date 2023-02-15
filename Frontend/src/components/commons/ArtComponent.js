@@ -24,9 +24,10 @@ function ArtComponent({nickname, profileImg, userSeq, artThumbnail, artName, art
             <ProfileImg width="25px" height="25px" url={ profileImg } userSeq={userSeq} />
             <span>{nickname}</span><span className="jakka">작가</span>
           </Link>
+        { (artHit && artLikeCount) &&
           <div className="art-info__sub">
             <div><FontAwesomeIcon icon={ faEye } /> {artHit}<FontAwesomeIcon icon={ faThumbsUp } /> {artLikeCount}</div>
-          </div>
+          </div> }
       </div>
 
     </div>
