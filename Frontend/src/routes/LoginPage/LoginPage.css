@@ -14,24 +14,24 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    padding: 70px 40px;
+    padding: 75px 50px;
     width: 23em;
     height: 30em;
     border: none;
-    border-radius: 40px;
+    border-radius: 15px;
     background-color: white;
-    box-shadow: rgba(50, 50, 93, 0.1) 0px 50px 100px -5px, rgba(0, 0, 0, 0.2) 0px 30px 60px -30px, rgba(10, 37, 64, 0.25) 0px -1px 6px 0px inset;
+    box-shadow: rgba(50, 50, 93, 0.1) 0px 50px 100px 1px, rgba(0, 0, 0, 0.2) 0px 30px 60px -30px, rgba(10, 37, 64, 0.25) 0px -1px 6px 0px inset;
 }
 
 #logo-img {
     width: 190px;
     height: 120.37px;
-    margin: 15px 0;
+    margin: 25px 0 15px 0;
 }
 
 #div-on-form {
     text-align: left;
-    margin: 20px 0 10px 0;
+    margin: 10px 0;
 }
 
 .label-input {
@@ -43,29 +43,33 @@
 .label-of-form {
     margin-block: 0.5rem;
     padding-left: 5px;
+    font-family: Pretendard-Regular;
 }
 
 .input-of-form {
     border: 0;
-    border-radius: 15px;
+    border-radius: 10px;
     outline: none;
     padding-left: 10px;
     background-color: #fff8e3;
     color: #575757;
     line-height: 3em;
+    box-shadow: 1px 1px rgba(166, 175, 195, 0.2) inset;
 }
 
 .form-btn {
     background-color: #ffd657;
     border: 0 none #e2e8f0;
-    border-radius: 15px;
-    color: #575757;
+    border-radius: 10px;
+    color: #363636;
     line-height: 4px;
     text-align: center;
     box-shadow: 1px 1px 2px rgba(166, 175, 195, 0.2);
     margin-block: 0.2rem;
     cursor: pointer;
     padding: 1rem 2rem;
+    font-family: Pretendard-Regular;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 20px -50px, rgba(10, 37, 64, 0.1) 0px -1px 1px 0px inset;
 }
 
 .form-btn:hover {
@@ -75,7 +79,7 @@
 
 .all-buttons {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .buttons {
@@ -85,7 +89,7 @@
 
 .hidden-msg {
     height: 10px;
-    margin-top: 7px;
+    margin-top: 10px;
     padding-left: 5px;
     color: #ff4949;
 }
