@@ -4,6 +4,7 @@ import { useLoaderData, Link, redirect, useOutletContext } from "react-router-do
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
+import ArtComponent from "../../components/commons/ArtComponent";
 import { GreenBtn, YellowBtn } from "../../components/commons/buttons";
 
 import './ArtsRoot.css'
@@ -99,11 +100,11 @@ function ArtsRoot() {
       content:
         userLikes?
           <div className="art-root__arts-container">
-            {/* 여기서 넘어오는 nickname이랑 userSeq는 좋아요를 누를 사람의 userSeq임 ㅠㅠ */}
             { userLikes.map((like) =>
-              <ArtItemMyPage
+              <ArtComponent
                 key={`my-page__art-likes-${like.artSeq}`}
                 nickname={like.nickname}
+                profileImg={like.profileImg}
                 userSeq={like.userSeq}
                 artThumbnail={like.artThumbnail}
                 artName={like.artName}
