@@ -3,6 +3,7 @@ import { Link, useLoaderData } from 'react-router-dom';
 import {axiosAuth} from '../../_actions/axiosAuth'
 
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
+import CurationComponent from '../../components/commons/CurationComponent';
 
 export async function loader() {
   const curationsInitList = await axiosAuth.get(`curations/init`)
@@ -17,71 +18,236 @@ export async function loader() {
   return { curationsInitList, curationsOnList, curationsEndList }
 }
 
+
 function CurationsMain() {
   const { curationsInitList, curationsOnList, curationsEndList } = useLoaderData();
+
+  console.log(curationsEndList)
 
   const [onAirIndex, setOnAirIndex] = useState(0);
   const [initIndex, setInitIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(0);
 
+  function sortByDate (data, keyword) {
+    // 오름차순 == 과거순
+    if (keyword === "old") {
+      return data?.sort((a, b) =>
+        a.curationStartTime[0] - b.curationStartTime[0] ||
+        a.curationStartTime[1] - b.curationStartTime[1] ||
+        a.curationStartTime[2] - b.curationStartTime[2] ||
+        a.curationStartTime[3] - b.curationStartTime[3] ||
+        a.curationStartTime[4] - b.curationStartTime[4] ||
+        a.curationStartTime[5] - b.curationStartTime[5] );
+    }
+
+    // 내림차순 == 최신순
+    else if (keyword === "new") {
+      return data.sort((a, b) =>
+        b.curationStartTime[0] - a.curationStartTime[0] ||
+        b.curationStartTime[1] - a.curationStartTime[1] ||
+        b.curationStartTime[2] - a.curationStartTime[2] ||
+        b.curationStartTime[3] - a.curationStartTime[3] ||
+        b.curationStartTime[4] - a.curationStartTime[4] ||
+        b.curationStartTime[5] - a.curationStartTime[5] );
+    }
+  }
+  function sortByBookmark (data) {
+    return data.sort((a, b) => b.curationBmCount - a.curationBmCount);
+  }
+
   const onMenuData = [
-    { name: '북마크를 많이 받은 순', content: [...curationsOnList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
-    { name: '최신순', content: [...curationsOnList]
-        .sort((a, b) =>
-          b.curationStartTime[0] - a.curationStartTime[0] ||
-          b.curationStartTime[1] - a.curationStartTime[1] ||
-          b.curationStartTime[2] - a.curationStartTime[2] ||
-          b.curationStartTime[3] - a.curationStartTime[3] ||
-          b.curationStartTime[4] - a.curationStartTime[4] ||
-          b.curationStartTime[5] - a.curationStartTime[5] )},
-    { name: '오래된 순', content: [...curationsOnList]
-        .sort((a, b) =>
-          a.curationStartTime[0] - b.curationStartTime[0] ||
-          a.curationStartTime[1] - b.curationStartTime[1] ||
-          a.curationStartTime[2] - b.curationStartTime[2] ||
-          a.curationStartTime[3] - b.curationStartTime[3] ||
-          a.curationStartTime[4] - b.curationStartTime[4] ||
-          a.curationStartTime[5] - b.curationStartTime[5] )},
+    { 
+      name: '북마크를 많이 받은 순', 
+      content: 
+        <div className="grid__main-components">
+          {sortByBookmark(curationsOnList).map((list) => 
+            <div key={list.curationSeq}>
+                <CurationComponent
+                  nickname={list.userNickname}
+                  profileImg={list.profileImg}
+                  userSeq={list.userSeq}
+                  curationThumbnail={list.curationThumbnail}
+                  curationName={list.curationName}
+                  curationSeq={list.curationSeq}
+                  curationHit={list.curationHit}
+                  curationBmCount={list.curationBmCount}
+                  curationStartTime={list.curationStartTime}
+                  curationStatus={list.curationStatus}
+                />
+            </div>)},
+        </div>
+    },
+    { 
+      name: '최신순', 
+      content: 
+        <div className="grid__main-components">
+          {sortByDate(curationsOnList, "new").map((list) => 
+            <div key={list.curationSeq}>
+              <CurationComponent
+                nickname={list.userNickname}
+                profileImg={list.profileImg}
+                userSeq={list.userSeq}
+                curationThumbnail={list.curationThumbnail}
+                curationName={list.curationName}
+                curationSeq={list.curationSeq}
+                curationHit={list.curationHit}
+                curationBmCount={list.curationBmCount}
+                curationStartTime={list.curationStartTime}
+                curationStatus={list.curationStatus}
+              />
+            </div>)}
+        </div>
+    },
+    { 
+      name: '오래된 순', 
+      content: 
+        <div className="grid__main-components">
+          {sortByDate(curationsOnList, "old").map((list) => 
+            <div key={list.curationSeq}>
+              <CurationComponent
+                nickname={list.userNickname}
+                profileImg={list.profileImg}
+                userSeq={list.userSeq}
+                curationThumbnail={list.curationThumbnail}
+                curationName={list.curationName}
+                curationSeq={list.curationSeq}
+                curationHit={list.curationHit}
+                curationBmCount={list.curationBmCount}
+                curationStartTime={list.curationStartTime}
+                curationStatus={list.curationStatus}
+              />
+            </div>)}
+        </div>
+    },
   ];
   const initMenuData = [
-    { name: '북마크를 많이 받은 순', content: [...curationsInitList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
-    { name: '최신순', content: [...curationsInitList]
-        .sort((a, b) =>
-          b.curationStartTime[0] - a.curationStartTime[0] ||
-          b.curationStartTime[1] - a.curationStartTime[1] ||
-          b.curationStartTime[2] - a.curationStartTime[2] ||
-          b.curationStartTime[3] - a.curationStartTime[3] ||
-          b.curationStartTime[4] - a.curationStartTime[4] ||
-          b.curationStartTime[5] - a.curationStartTime[5] )},
-    { name: '오래된 순', content: [...curationsInitList]
-        .sort((a, b) =>
-          a.curationStartTime[0] - b.curationStartTime[0] ||
-          a.curationStartTime[1] - b.curationStartTime[1] ||
-          a.curationStartTime[2] - b.curationStartTime[2] ||
-          a.curationStartTime[3] - b.curationStartTime[3] ||
-          a.curationStartTime[4] - b.curationStartTime[4] ||
-          a.curationStartTime[5] - b.curationStartTime[5] )},
+    { 
+      name: '북마크를 많이 받은 순', 
+      content: 
+      <div className="grid__main-components">
+        {sortByBookmark(curationsInitList).map((list) => 
+          <div key={list.curationSeq}>
+            <CurationComponent
+              nickname={list.userNickname}
+              profileImg={list.profileImg}
+              userSeq={list.userSeq}
+              curationThumbnail={list.curationThumbnail}
+              curationName={list.curationName}
+              curationSeq={list.curationSeq}
+              curationHit={list.curationHit}
+              curationBmCount={list.curationBmCount}
+              curationStartTime={list.curationStartTime}
+              curationStatus={list.curationStatus}
+            />
+          </div>)}
+        </div>}
+      ,
+    { 
+      name: '최신순', 
+      content: 
+      <div className="grid__main-components">
+        {sortByDate(curationsInitList, "new").map((list) => 
+          <div key={list.curationSeq}>
+            <CurationComponent
+              nickname={list.userNickname}
+              profileImg={list.profileImg}
+              userSeq={list.userSeq}
+              curationThumbnail={list.curationThumbnail}
+              curationName={list.curationName}
+              curationSeq={list.curationSeq}
+              curationHit={list.curationHit}
+              curationBmCount={list.curationBmCount}
+              curationStartTime={list.curationStartTime}
+              curationStatus={list.curationStatus}
+            />
+        </div>)}
+      </div>
+    },
+    { 
+      name: '오래된 순', 
+      content: 
+      <div className="grid__main-components">
+        {sortByDate(curationsInitList, "old").map((list) => 
+          <div key={list.curationSeq}>
+            <CurationComponent
+              nickname={list.userNickname}
+              profileImg={list.profileImg}
+              userSeq={list.userSeq}
+              curationThumbnail={list.curationThumbnail}
+              curationName={list.curationName}
+              curationSeq={list.curationSeq}
+              curationHit={list.curationHit}
+              curationBmCount={list.curationBmCount}
+              curationStartTime={list.curationStartTime}
+              curationStatus={list.curationStatus}
+            />
+          </div>)}
+      </div>},
   ];
   const endMenuData = [
-    { name: '북마크를 많이 받은 순', content: [...curationsEndList].sort((a, b) => b.curationBmCount - a.curationBmCount) },
-    { name: '최신순', content: [...curationsEndList]
-        .sort((a, b) =>
-          b.curationStartTime[0] - a.curationStartTime[0] ||
-          b.curationStartTime[1] - a.curationStartTime[1] ||
-          b.curationStartTime[2] - a.curationStartTime[2] ||
-          b.curationStartTime[3] - a.curationStartTime[3] ||
-          b.curationStartTime[4] - a.curationStartTime[4] ||
-          b.curationStartTime[5] - a.curationStartTime[5] )},
-    { name: '오래된 순', content: [...curationsEndList]
-        .sort((a, b) =>
-          a.curationStartTime[0] - b.curationStartTime[0] ||
-          a.curationStartTime[1] - b.curationStartTime[1] ||
-          a.curationStartTime[2] - b.curationStartTime[2] ||
-          a.curationStartTime[3] - b.curationStartTime[3] ||
-          a.curationStartTime[4] - b.curationStartTime[4] ||
-          a.curationStartTime[5] - b.curationStartTime[5] )},
-  ];
-
+      { 
+        name: '북마크를 많이 받은 순', 
+        content: 
+        <div className="grid__main-components">
+          {sortByBookmark(curationsEndList).map((list) => 
+            <div key={list.curationSeq}>
+              <CurationComponent
+                nickname={list.userNickname}
+                profileImg={list.profileImg}
+                userSeq={list.userSeq}
+                curationThumbnail={list.curationThumbnail}
+                curationName={list.curationName}
+                curationSeq={list.curationSeq}
+                curationHit={list.curationHit}
+                curationBmCount={list.curationBmCount}
+                curationStartTime={list.curationStartTime}
+                curationStatus={list.curationStatus}
+              />
+            </div>)}
+          </div>}
+        ,
+      { 
+        name: '최신순', 
+        content: 
+        <div className="grid__main-components">
+          {sortByDate(curationsEndList, "new").map((list) => 
+            <div key={list.curationSeq}>
+              <CurationComponent
+                nickname={list.userNickname}
+                profileImg={list.profileImg}
+                userSeq={list.userSeq}
+                curationThumbnail={list.curationThumbnail}
+                curationName={list.curationName}
+                curationSeq={list.curationSeq}
+                curationHit={list.curationHit}
+                curationBmCount={list.curationBmCount}
+                curationStartTime={list.curationStartTime}
+                curationStatus={list.curationStatus}
+              />
+          </div>)}
+        </div>
+      },
+      { 
+        name: '오래된 순', 
+        content: 
+        <div className="grid__main-components">
+          {sortByDate(curationsEndList, "old").map((list) => 
+            <div key={list.curationSeq}>
+              <CurationComponent
+                nickname={list.userNickname}
+                profileImg={list.profileImg}
+                userSeq={list.userSeq}
+                curationThumbnail={list.curationThumbnail}
+                curationName={list.curationName}
+                curationSeq={list.curationSeq}
+                curationHit={list.curationHit}
+                curationBmCount={list.curationBmCount}
+                curationStartTime={list.curationStartTime}
+                curationStatus={list.curationStatus}
+              />
+            </div>)}
+        </div>},
+    ];
 
 
   return (

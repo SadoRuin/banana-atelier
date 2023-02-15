@@ -7,7 +7,6 @@ import { logoutCode } from '../../_actions/user_action';
 import { landingRenderingLogout, landingRenderingReset } from '../../_actions/user_action' 
 import ArtComponent from "../../components/commons/ArtComponent";
 import { useDispatch } from 'react-redux';
-// import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
 
@@ -22,29 +21,18 @@ function LandingPage() {
   const landingStatus = useSelector(state => state.user.landing_status);
   if (landingStatus === 2) {
     dispatch(landingRenderingReset())
-      .then(
-        window.location.reload()
-      )
+      .then(window.location.reload())
   } else if (landingStatus === 3) {
     dispatch(landingRenderingReset())
-      .then(
-        window.location.reload()
-      )
+      .then(window.location.reload())
   }
   const handleLogOut = event => {
     event.preventDefault()
-    localStorage.removeItem("token")
-    localStorage.removeItem("expiration")
-    localStorage.removeItem("nickname")
-    localStorage.removeItem("profileImg")
-    localStorage.removeItem("role")
-    localStorage.removeItem("userSeq")
+    localStorage.clear()
     dispatch(landingRenderingLogout())
     dispatch(logoutCode())
-    // console.log("로그인 했나요?", loginWonder)
   }
   const {arts} = useLoaderData();
-  // console.log(arts)
 
   return (
     <div>
@@ -54,10 +42,10 @@ function LandingPage() {
         <p>현재 진행중인 큐레이션 {`->`} 진행 예정 큐레이션 보여주기</p>
       </div>
 
-      <div>
-        <h1><Link className='link' to="commissions">요즘 뜨는 커미션 작가💰</Link></h1>
-        <p>이 곳에는 요즘 뜨는 커미션 작가가 들어간다</p>
-      </div>
+      {/*<div>*/}
+      {/*  <h1><Link className='link' to="commissions">요즘 뜨는 커미션 작가💰</Link></h1>*/}
+      {/*  <p>이 곳에는 요즘 뜨는 커미션 작가가 들어간다</p>*/}
+      {/*</div>*/}
 
       <div >
         <h1><Link className='link' to="arts">트렌딩🔥</Link></h1>
