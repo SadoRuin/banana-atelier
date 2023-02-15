@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Form, useLoaderData, useNavigate} from 'react-router-dom';
+import {Form, useLoaderData, useNavigate, redirect} from 'react-router-dom';
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
 import MasterpieceItem from "../../components/MyPage/MasterpieceItem";
 import './ArtsRoot.css'
@@ -34,7 +34,7 @@ export async function action ({request}) {
   }
   console.log(body);
   await axiosAuth.put('arts/masterpiece', body)
-  return null
+  return redirect('../')
 }
 
 function SetMasterpiece() {
