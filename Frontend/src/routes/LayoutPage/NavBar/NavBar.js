@@ -25,8 +25,10 @@ function NavBar() {
     content =
       <div className="right-menu-bar">
         <Link className="link link-bold" to={`${nickname}@${userSeq}`}><YellowBtn>나의 아뜰리에</YellowBtn></Link>
-        <div style={{ color: '#F9D923', fontSize: '20px' }}><FontAwesomeIcon icon={ faBell }/></div>
-        <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq}/>
+        <div style={{ color: '#F9D923', fontSize: '20px', cursor: 'pointer' }}><FontAwesomeIcon icon={ faBell }/></div>
+        <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq} style={{cursor: 'pointer'}} onClick={event => {
+          navigate(`${nickname}@${userSeq}`)
+        }} />
       </div>
   } else if (!loginWonder) {
     content =

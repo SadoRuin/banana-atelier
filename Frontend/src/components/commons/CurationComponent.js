@@ -22,7 +22,7 @@ function CurationComponent({ nickname, profileImg, userSeq, curationThumbnail, c
     return (
     <div className="art-item__container">
 
-        <Link to={`/${nickname}/${curationSeq}`} className="art-img__container">
+        <Link to={`detail/${curationSeq}`} className="art-img__container">
             <div className="art-thumbnail" style={{backgroundImage : `url("${getArtThumbnail(curationThumbnail, userSeq)}")`}} />
             <div className="hidden__gradient">
             <div>{curationName}</div>

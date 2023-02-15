@@ -226,6 +226,7 @@ class App extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
+    const nickname = localStorage.getItem("nickname")
 
     return (
       <div className="container">
@@ -235,19 +236,19 @@ class App extends Component {
               {/* <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="OpenVidu logo" /> */}
             </div>
             <div id="join-dialog" className="jumbotron vertical-center">
-              <h1> 큐레이션 개최 </h1>
+              <h1> 큐레이션 시작하기 </h1>
               <form className="form-group" onSubmit={this.joinSession}>
-                <p>
+                {/* <p>
                   <label>사용자명: </label>
                   <input
                     className="form-control"
                     type="text"
                     id="userName"
-                    value={myUserName}
+                    value={nickname}
                     onChange={this.handleChangeUserName}
                     required
                   />
-                </p>
+                </p> */}
                 <p>
                   <label> 세션명（이건 랜덤으로 생성하는게 맞을듯?）: </label>
                   <input
