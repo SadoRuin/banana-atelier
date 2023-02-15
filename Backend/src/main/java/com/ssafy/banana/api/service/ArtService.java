@@ -176,7 +176,7 @@ public class ArtService {
 
 	public List<ArtResponse> getPopularArtList() {
 
-		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtLikeCount();
+		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtHit();
 		if (!CollectionUtils.isEmpty(popularArtList)) {
 			return popularArtList;
 		} else {
