@@ -178,4 +178,5 @@ public class CurationController {
 			tokenUserSeq, curationSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(flag);
 	}
+
 }
