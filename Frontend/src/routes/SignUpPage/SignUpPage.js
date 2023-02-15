@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import './SignUpPage.css'
 import logo from '../../assets/글씨_250.png'
 import { useNavigate } from 'react-router-dom'
@@ -13,14 +13,16 @@ import {
   check_email,
   check_email_code,
   check_nickname,
-  send_code } from '../../_actions/user_action'
+  send_code,
+  signup_login } from '../../_actions/user_action'
 
 
 function SignUpPage(props) {
   
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  
+  const afterSignup = useSelector(state => state.user.sign_login)
+  console.log("afterSignup ===>>>", afterSignup)
   // 이메일 인증번호 발송 하단 멘트 (인증번호가 발송되었습니다.)
   const [emailValidMessage, SetEmailValidMessage] = useState('')
   
@@ -79,11 +81,9 @@ function SignUpPage(props) {
     let body = {
       nickname: nickname.value
     }
-    console.log(body)
 
     dispatch(check_nickname(body))
     .then((response) => {
-      console.log(response);
       if (response.payload.message === "사용가능한 닉네임입니다.") {
         setNicknameCheck('사용가능한 닉네임입니다.')
         SetNicknameValidCheck(true)
@@ -98,20 +98,14 @@ function SignUpPage(props) {
   const emailVerify = () => {
     SetVerifyMessage('인증번호 재발송')
     const emailValid = document.querySelector('#email')
-    console.log(emailValid);
     let body = {
       email: emailValid.value
     }
-    console.log('body :', body);
     dispatch(check_email(body))
       .then((response) => {
-        console.log('response는', response);
         SetEmailValidMessage('사용 가능한 이메일입니다.')
-        console.log(body)
         dispatch(send_code(body))
         .then(response => {
-          console.log(body)
-          console.log(response)
           SetEmailValidMessage('인증번호가 발송되었습니다.')
         })
 
@@ -131,7 +125,6 @@ function SignUpPage(props) {
     }
     dispatch(check_email_code(body))
       .then(response => {
-        console.log(response);
         if (response.payload.code === 'success') {
           SetEmailCodeValidMessage('인증이 완료되었습니다.')
           SetEmailCheck(true)
@@ -160,15 +153,13 @@ function SignUpPage(props) {
     } else {
       dispatch(signUpUser(body))
         .then(response => {
-          console.log('response : ', response);
+          dispatch(signup_login())
           alert('회원가입이 완료되었습니다.')
           navigate("/login")
         })
         .catch(error => {
-          console.log(error);
           alert(error)
-          console.log('signUp dispatch 실패');
-      navigate('/login')
+          navigate('/login')
     })}
     
   }
