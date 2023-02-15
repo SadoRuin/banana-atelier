@@ -1,21 +1,24 @@
 import React from 'react';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCircleCheck} from "@fortawesome/free-regular-svg-icons";
 
 import { getArtThumbnail } from "../commons/imageModule";
 import '../commons/ArtComponent.css'
+import './MasterPieceItem.css'
 
 function MasterpieceItem({isRepresent = false, artThumbnail, artName, userSeq}) {
-  console.log(isRepresent);
+  console.log(artThumbnail);
   if (isRepresent) {
     return (
       <div className="art-img__container"
-           style={{backgroundImage : `rgba(0, 0, 0, 0.5), url("${getArtThumbnail(artThumbnail, userSeq)}")`,
+           style={{backgroundImage : `url("${getArtThumbnail(artThumbnail, userSeq)}")`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     cursor: "pointer"}}
       >
         <div className="masterpiece__selected">
-          <div>{artName}</div>
+          <FontAwesomeIcon icon={faCircleCheck} />
         </div>
       </div>
     );
