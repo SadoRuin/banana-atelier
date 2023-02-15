@@ -71,13 +71,12 @@ public class CurationDataResponse {
 	public static class Curation extends CurationSimple {
 		@JsonProperty
 		private String curationSummary;
-		@JsonProperty
-		private long artistSeq;
+		// @JsonProperty
+		// private long artistSeq;
 
 		public Curation(com.ssafy.banana.db.entity.Curation c) {
 			super(c);
 			this.curationSummary = c.getCurationSummary();
-			this.artistSeq = c.getArtist().getId();
 		}
 
 	}
