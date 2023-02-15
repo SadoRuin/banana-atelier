@@ -67,6 +67,9 @@ import CurationsRoot from "./routes/MyPage/CurationsRoot";
 import CurationsMine from "./routes/MyPage/CurationsMine";
 import CurationsFollowing from "./routes/MyPage/CurationsFollowing";
 import CurationsBookmark from "./routes/MyPage/CurationsBookmark";
+import CurationsRegister from "./routes/MyPage/CurationsRegister";
+import { loader as CurationRegisterLoader } from "./routes/MyPage/CurationsRegister";
+
 // 커미션탭
 // import Commissions from "./routes/MyPage/Commissions"
 // import MyPageCommissionsDetail from "./routes/MyPage/CommissionsDetail"
@@ -174,6 +177,7 @@ const router = createBrowserRouter(
               <Route path="edit_profile" element={ <EditProfile /> }></Route>
               <Route path="upload" element={ <Upload /> } action={UploadAction} ></Route>
               <Route path="set_masterpiece" element={ <SetMasterpiece />} loader={SetMasterpieceLoader} action={SetMasterpieceAction}></Route>
+              <Route path="curation_register" element={ <CurationsRegister /> } loader={CurationRegisterLoader} />
             </Route>
           </Route>
 

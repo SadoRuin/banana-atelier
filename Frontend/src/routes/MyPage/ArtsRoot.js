@@ -38,7 +38,7 @@ export async function loader ({params}) {
 
 function ArtsRoot() {
   const [userArts, userLikes, userMasterpieces] = useLoaderData();
-  const [isMyPage] = useOutletContext();
+  const [isMyPage, isArtist] = useOutletContext();
   const [artsIndex, setArtsIndex] = useState(0);
 
   const noMasterpiece = isMyPage?
@@ -62,24 +62,30 @@ function ArtsRoot() {
     { name: '작품',
       content:
         <div>
-          <div className="art-root__head">
-            <h3>대표작품</h3>
-            { userMasterpieces &&
-              <YellowBtn><Link className="link link-bold" to="set_masterpiece">대표작품 수정</Link></YellowBtn> }
-          </div>
-          { userMasterpieces?
-            <div className="art-root__masterpiece-container">
-              {userMasterpieces.map((masterpiece) =>
-                <ArtItemMyPage
-                  key={`my-page__arts-${masterpiece.artSeq}`}
-                  nickname={masterpiece.nickname}
-                  userSeq={masterpiece.userSeq}
-                  artThumbnail={masterpiece.artThumbnail}
-                  artName={masterpiece.artName}
-                  artSeq={masterpiece.artSeq}
-                />)}
-            </div> : noMasterpiece
+          { isArtist &&
+            (<div>
+              <div className="art-root__head">
+                <h3>대표작품</h3>
+                { userMasterpieces &&
+                  <YellowBtn><Link className="link link-bold" to="set_masterpiece">대표작품 수정</Link></YellowBtn>
+                }
+              </div>
+
+              {userMasterpieces ?
+                <div className="art-root__masterpiece-container">
+                  {userMasterpieces.map((masterpiece) =>
+                    <ArtItemMyPage
+                      key={`my-page__arts-${masterpiece.artSeq}`}
+                      nickname={masterpiece.nickname}
+                      userSeq={masterpiece.userSeq}
+                      artThumbnail={masterpiece.artThumbnail}
+                      artName={masterpiece.artName}
+                      artSeq={masterpiece.artSeq}
+                    />)}
+                </div> : noMasterpiece}
+            </div>)
           }
+
           <h3>전체 작품</h3>
           { userArts?
             <div className="art-root__arts-container">
