@@ -135,7 +135,7 @@ public class ArtController {
 		return ResponseEntity.status(HttpStatus.OK).body(artList);
 	}
 
-	@ApiOperation(value = "인기 작품 리스트", notes = "좋아요를 많이 받은 작품 목록을 반환합니다")
+	@ApiOperation(value = "인기 작품 리스트", notes = "조회수가 높은 작품 목록을 반환합니다")
 	@GetMapping("/popular")
 	public ResponseEntity<List<ArtResponse>> getPopularArtList() {
 
