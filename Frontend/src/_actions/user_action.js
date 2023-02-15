@@ -10,9 +10,24 @@ import {
     LOGOUT_CODE,
     LANDING_RENDERING,
     LANDING_RENDERING_LOGOUT,
-    LANDING_RENDERING_RESET
+    LANDING_RENDERING_RESET,
+    SIGNUP_LOGIN,
+    SIGNUP_LOGIN_RESET
 } from './types'
 
+export function signup_login() {
+    return {
+        type: SIGNUP_LOGIN,
+        payload: ""
+    }
+}
+
+export function signup_login_reset() {
+    return {
+        type: SIGNUP_LOGIN_RESET,
+        payload: ""
+    }
+}
 
 export function loginUser(dataTosubmit) {
     // console.log("dataTosubmit", dataTosubmit)

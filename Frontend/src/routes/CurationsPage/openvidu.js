@@ -275,7 +275,7 @@ class App extends Component {
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              {/* <h1 id="session-title">{mySessionId}</h1> */}
+              <h1 id="session-title">{mySessionId}</h1>
               <button
                 className="btn btn-large btn-danger"
                 type="button"

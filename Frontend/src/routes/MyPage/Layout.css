@@ -22,31 +22,24 @@
     font-size: 14px;
     color: #656565;
 }
-
-
-
-
-
-.my_page__content {
-    width: 100%;
-    padding: 20px 30px;
-}
-
-#introduction {
-    margin-bottom: 20px;
-}
-#profile_buttons button {
+.my-page__profile_buttons button {
     margin-bottom: 10px;
     align-items: center;
 }
 
+
 .my-page__content {
-    grid-column: 2 / span 3;
+    width: 100%;
     padding: 30px 20px;
 }
-@media (max-width: 1024px) {
-    .my-page__content {
-        grid-column: 2 / span 2;
-        padding: 30px 20px;
-    }
+.my-page__nav {
+    margin-bottom: 20px;
 }
+.my-page__link {
+    font-size: 20px;
+    margin-right: 15px;
+}
+.my-page__nav-active {
+    font-weight: bold;
+}
+
