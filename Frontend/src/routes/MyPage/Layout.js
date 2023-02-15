@@ -94,10 +94,13 @@ export default function Layout() {
           <div className="my-page__profile_buttons">
             <Form action={'edit_profile'}><YellowBtn style={{width: "120px"}} type="submit">정보 수정하기</YellowBtn></Form>
             <Form action={'upload'}><YellowBtn style={{width: "120px"}} type="submit">작품 업로드</YellowBtn></Form>
+            { isArtist &&
+              <Form action={'curation_register'}><YellowBtn style={{width: "120px"}} type="submit">큐레이션 등록</YellowBtn></Form>
+            }
             <RedBtn style={{width: "120px"}} onClick={handleLogout}>로그아웃</RedBtn>
           </div>
           :
-          <div id="profile_buttons">
+          <div className="my-page__profile_buttons">
             <form onSubmit={event => {
               event.preventDefault()
               axiosReissue()
