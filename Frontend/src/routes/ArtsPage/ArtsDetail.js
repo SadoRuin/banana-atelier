@@ -29,9 +29,7 @@ export async function loader ({params}) {
       statusText: "작품을 찾을 수 없습니다!",
     });
   }
-  else if (artData === 401) {
-    return redirect('/login');
-  }
+
   return [artData, likeList];
 }
 

@@ -30,10 +30,10 @@ import ArtsDetail, {action as ArtsDetailAction, loader as ArtsDetailLoader} from
 
 // 큐레이션 페이지
 import CurationsMain, {loader as curationListLoader} from "./routes/CurationsPage/CurationsMain";
-import CurationsOnAir, {loader as CurationsOnAirLoader} from "./routes/CurationsPage/CurationsOnAir"
+// import CurationsOnAir, {loader as CurationsOnAirLoader} from "./routes/CurationsPage/CurationsOnAir"
 import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
 import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
-import CurationsDetail, {loader as CurationsDetailLoader} from "./routes/CurationsPage/CurationsDetail";
+import CurationsDetail, {loader as CurationsDetailLoader, action as CurationDetailAction} from "./routes/CurationsPage/CurationsDetail";
 
 import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
 
@@ -99,14 +99,14 @@ const router = createBrowserRouter(
 
           {/* 큐레이션 페이지 */}
           <Route path="curations" element={<CurationsMain/>} loader={curationListLoader}/>
-          <Route path="curations/on_air" element={<CurationsOnAir/>} loader={CurationsOnAirLoader}/>
+          {/*<Route path="curations/on_air" element={<CurationsOnAir/>} loader={CurationsOnAirLoader}/>*/}
+          <Route path="curations/detail/:curation_seq" element={<CurationsDetail/>} loader={CurationsDetailLoader} action={CurationDetailAction}/>
 
           <Route path="curations/on_air/:curation_seq" element={<CurationsOpenVidu/>}/>
 
           <Route path="curations/upcoming" element={<CurationsUpcoming/>}/>
           <Route path="curations/end" element={<CurationsEnd/>}/>
-          <Route path="curations/detail/:curation_seq" element={<CurationsDetail/>} loader={CurationsDetailLoader}/>
-          <Route path=":nickname/curation_register" element={<CurationsRegister/>}/>
+
 
           {/* 커미션 페이지 */}
           {/*<Route path="commissions" element={ <CommissionsMain /> } />*/}
