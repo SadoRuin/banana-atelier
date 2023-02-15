@@ -168,7 +168,9 @@ function SignUpPage(props) {
 
   return (
     <div id="sign_up_container" style={{marginTop: '10%'}}>
-      <img src={logo} alt="/" id="logo_img" />
+      <img src={logo} alt="/" id="logo_img" style={{cursor: 'pointer'}} onClick={()=>
+        navigate("/")
+        } />
       <form onSubmit={handleSubmit(onSubmit)} style={{width: '27%'}}>
         <div style={{
           marginTop: '50px',

@@ -225,8 +225,8 @@ class App extends Component {
 
   render() {
     const mySessionId = this.state.mySessionId;
-    const myUserName = this.state.myUserName;
-    const nickname = localStorage.getItem("nickname")
+    // const myUserName = this.state.myUserName;
+    // const nickname = localStorage.getItem("nickname")
 
     return (
       <div className="container">
