@@ -79,7 +79,9 @@ export default function LoginPage(props) {
         <div className="login-container">
             <div className="login-box">
                 <div>
-                    <img src={logo} alt="/" id="logo-img"/>
+                    <img src={logo} alt="/" id="logo-img" style={{cursor: 'pointer'}} onClick={()=>
+                        navigate("/")
+                    } />
                 </div>
                 <div id="div-on-form">
                     <form onSubmit={onSubmitHandler}>

@@ -1,0 +1,33 @@
+.curation-art__selected {
+    position: absolute;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #36AE7C;
+    font-size: 50px;
+}
+
+.curation-art__sold {
+    position: absolute;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #EB5353;
+    font-size: 50px;
+}

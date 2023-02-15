@@ -27,7 +27,7 @@ function CurationsDetail() {
   let profileImg= curationDetail.profileImg
   let userSeq = curationDetail.userSeq
   let curationThumbnail =curationDetail.curationThumbnail
-  // let curationName =curationDetail.curationName
+  let curationName =curationDetail.curationName
   // let curationSeq = curationDetail.curationSeq
   // let curationHit = curationDetail.curationHit
   let curationBmCount = curationDetail.curationBmCount
@@ -39,7 +39,7 @@ function CurationsDetail() {
   // 큐레이션 날짜 (진행중, 예정, 종료에 따라 다르게 렌더링)
   let curationDate = null
   if (curationStatus === "INIT") {
-      curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}${"  "+(curationStartTime[3]) +":" + (curationStartTime[4]) + " 예정"}`}</div>
+      curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}${"  "+(curationStartTime[3]+'').padStart(2, "0") +":" + (curationStartTime[4]+"").padStart(2, "0") + " 예정"}`}</div>
   } else if (curationStatus === "ON") {
       curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0") + " 진행중"}`}</div>
   } else {
@@ -66,58 +66,72 @@ function CurationsDetail() {
 
   return (
     <div>
+      <div className="art-detail__container grid__detail-page">
 
-      <div className="curation_detail_container">
-        {/* 썸네일 사진 */}
-        <img src={`${getArtThumbnail(curationThumbnail, userSeq)}`} alt="큐레이션 대표 이미지" />
+        <div className="curation_detail_container">
+          {/* 썸네일 사진 */}
+          <img src={`${getArtThumbnail(curationThumbnail, userSeq)}`} alt="큐레이션 대표 이미지" className="art-img" />
 
-        {/* 큐레이션 상세 정보 */}
-        <div className="curation_detail_content">
-          <div>
-            <h1>큐레이션 제목</h1>
+          {/* 큐레이션 상세 정보 */}
+          <div className="curation_detail_content">
+            <div className="art-detail__main-info"> 
+              <div>
+                <h1>{curationName}</h1>
 
-            {/* <span>진행중인지, 아닌지, 끝났는지에 따라 다르게 보이기</span> */}
-            {/* 이건 content로 구현함 */}
-            <div className="artist_profile">
-              <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq} />              
-              <Link to="/mypage/arts">{nickname} <span>작가</span></Link>
-            </div>
-            <div className="curation_date">
-              {curationDate}
-            </div>
-            <div className="curation_description">
-              {curationSummary}
-            </div>
-          </div>
-          <div>
-            <div>
-              <div className="bookmark">
-                <span>북마크 수</span>
-                <img src="ArtsPage" alt="" />
-                {curationBmCount}
+                {/* <span>진행중인지, 아닌지, 끝났는지에 따라 다르게 보이기</span> */} 
+                {/* 이건 content로 구현함 */}
+
+                {/* 원래 코드랑 다시 짠 코드. 수정사항 필요 시 되돌려도 됨 */}
+                {/* <div className="artist_profile">
+                  <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq} />              
+                  <Link to="/mypage/arts">{nickname} <span>작가</span></Link>
+                </div> */}
+                <Link className="art-detail__profile link" to={`/${nickname}@${userSeq}`}>
+                  <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq} /> 
+                  <div>{"    "+nickname} <span className="jakka">작가</span></div>
+                </Link>
+                
+                <div className="curation_date">
+                  {curationDate}
+                </div>
+                <div className="curation_description">
+                  {curationSummary}
+                </div>
               </div>
             </div>
+
+
             <div>
-              
-              {/* 참여하기는 현재 진행중일 때만*/}
-              {isMarked}
-              
-              <button>북마크</button>
+              <div className="art-detail__sub-info">
+                <div>
+                  <div className="bookmark">
+                    <span>북마크 수</span>
+                    <img src="ArtsPage" alt="" />
+                    {curationBmCount}
+                  </div>
+                </div>
+                <div>
+                  
+                  {/* 참여하기는 현재 진행중일 때만*/}
+                  {isMarked}
+                  
+                  <button>북마크</button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="arts_curation_for">
-        <h2>큐레이션 작품</h2>
-        {/* 이 탭은 큐레이션 종료된 경우에만 보이기*/}
-        {afterCurationArts}
-        <div>
-          큐레이션에서 사용된 정보들
+        <div className="arts_curation_for">
+          {/* 이 탭은 큐레이션 종료된 경우에만 보이기*/}
+          {afterCurationArts}
+          <div>
+            큐레이션에서 사용된 정보들
+          </div>
         </div>
+
       </div>
-
-
     </div>
   )
 }
