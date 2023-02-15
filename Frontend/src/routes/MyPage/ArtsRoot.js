@@ -81,7 +81,7 @@ function ArtsRoot() {
                       artThumbnail={masterpiece.artThumbnail}
                       artName={masterpiece.artName}
                       artSeq={masterpiece.artSeq}
-                    />)})
+                    />)}
                 </div> : noMasterpiece}
             </div>)
           }

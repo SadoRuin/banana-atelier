@@ -90,7 +90,6 @@ function SetMasterpiece() {
 
         <div className="all_masterpiece">
             <h4>전체 작품</h4>
-            {/* 여기는 나의 작품목록 map 돌기 */}
               <div className="art-root__arts-container">
                 { userArts.map(art => {
                   const isRepresent = !!selectedPieces?.find((a) => a.artSeq === art.artSeq)
