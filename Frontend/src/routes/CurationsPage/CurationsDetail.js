@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Link, redirect } from "react-router-dom";
 import { useLoaderData } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,8 +9,10 @@ import ProfileImg from "../../components/commons/ProfileImg";
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
 import { getArtThumbnail } from '../../components/commons/imageModule';
 // import { getArtImage } from '../../components/commons/imageModule';
+
 import { BookmarkBtn, RedBtn, YellowBtn } from "../../components/commons/buttons";
 import '../ArtsPage/ArtsDetail.css'
+
 
 export async function loader ({params}) {
   let curationSeq = +params.curation_seq
@@ -56,6 +58,7 @@ export async function action ({request, params}) {
 
 function CurationsDetail() {
   const [curationDetail, curationDetailArts, isBookmarked] = useLoaderData();
+
   let nickname= curationDetail.userNickname
   let profileImg= curationDetail.profileImg
   let userSeq = curationDetail.userSeq
@@ -67,6 +70,28 @@ function CurationsDetail() {
   let curationStartTime = curationDetail.curationStartTime
   let curationStatus = curationDetail.curationStatus
   let curationSummary = curationDetail.curationSummary
+
+  const [bookmarkNum, setBookmarkNum] = useState(curationBmCount)
+  const [likeCurations, setLikeCurations] = useState(isBookMarked)
+  const handleBookMark = event => {
+    event.preventDefault()
+    let body = {
+      curationSeq: curationSeq,
+      userSeq: localStorage.getItem("userSeq")
+    }
+    axiosReissue()
+
+    if (likeCurations) {
+      axiosAuth.delete('curations/bookmark', {data: body})
+      .then(response => console.log(response))
+      setBookmarkNum(prev=>prev-1)
+    } else {
+      axiosAuth.post('curations/bookmark', body)
+        .then(response => console.log(response))
+      setBookmarkNum(prev=>prev+1)
+    }
+    setLikeCurations(prev=>!prev)
+  }
 
   // 큐레이션 날짜 (진행중, 예정, 종료에 따라 다르게 렌더링)
   let curationDate;
@@ -113,12 +138,12 @@ function CurationsDetail() {
 
             <div className="art-detail__sub-info">
               <div className="views">
-                <FontAwesomeIcon icon={faBookmark} /> {curationBmCount}
+                <FontAwesomeIcon icon={faBookmark} /> {bookmarkNum}
               </div>
             </div>
 
             <div className="art-detail__btns">
-              <BookmarkBtn isBookmark={isBookmarked} />
+              <BookmarkBtn onClick={handleBookMark} isBookmark={isBookmarked} />
               {/* 시작한 큐레이션 참여 가능, 이 링크는 어떻게 될지 모르겟음~ */}
               { curationStatus === "ON" &&
                 <Link><YellowBtn style={{width: "120px"}} type="submit">입장하기</YellowBtn></Link> }
