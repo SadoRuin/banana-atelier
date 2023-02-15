@@ -92,7 +92,7 @@ function ArtsDetail() {
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
 
-            <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>
+            <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}`}</div>
             <div className="arts_description" style={{whiteSpace: "pre-line"}}>
               {artData.artDescription}
             </div>

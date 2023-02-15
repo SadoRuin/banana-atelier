@@ -7,7 +7,6 @@ import { logoutCode } from '../../_actions/user_action';
 import { landingRenderingLogout, landingRenderingReset } from '../../_actions/user_action' 
 import ArtComponent from "../../components/commons/ArtComponent";
 import { useDispatch } from 'react-redux';
-// import { useDispatch, useSelector } from 'react-redux';
 
 export async function loader () {
 
@@ -36,10 +35,8 @@ function LandingPage() {
     localStorage.clear()
     dispatch(landingRenderingLogout())
     dispatch(logoutCode())
-    // console.log("로그인 했나요?", loginWonder)
   }
   const {arts} = useLoaderData();
-  // console.log(arts)
 
   return (
     <div>
