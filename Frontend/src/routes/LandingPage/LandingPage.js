@@ -21,15 +21,10 @@ function LandingPage() {
   const landingStatus = useSelector(state => state.user.landing_status);
   if (landingStatus === 2) {
     dispatch(landingRenderingReset())
-      .then(() =>
-        window.location.reload()
-      )
+      .then(window.location.reload())
   } else if (landingStatus === 3) {
     dispatch(landingRenderingReset())
-      .then(
-        () =>
-        window.location.reload()
-      )
+      .then(window.location.reload())
   }
   const handleLogOut = event => {
     event.preventDefault()
