@@ -60,7 +60,7 @@ export async function action ({request, params}) {
 function ArtsDetail() {
   const [artData, likeList] = useLoaderData();
   let likeState = likeList?.find((like) => like.artSeq === artData.artSeq) || false;
-  const [isLiked, setIsLiked] = useState(!!likeState)
+  const [isLiked, setIsLiked] = useState(likeState)
   const [likeCount, setLikeCount] = useState(artData.artLikeCount)
   const [downloadCount, setDownloadCount] = useState(artData.artDownloadCount)
   const navigate = useNavigate()
@@ -131,15 +131,15 @@ function ArtsDetail() {
                 let body = { "seq": artData.artSeq };
                 if (isLiked) {
                   axiosAuth.delete(`arts/like`, {data: body})
-                  .then(response => console.log('싫어요 response', response))
+                  .then(response => response)
                   .catch(error => {
-                    console.log("이게 왜 에러지", error)
+                    console.log(error)
                   })
                   setLikeCount(prev => prev - 1)
                 }
                 else if (!isLiked) {
                   axiosAuth.post(`arts/like`, body)
-                    .then(response => console.log('좋아요 response', response))
+                    .then(response => response)
                   setLikeCount(prev => prev + 1)
                 }
                 setIsLiked(prev=>!prev)

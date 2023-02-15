@@ -6,6 +6,7 @@ import { axiosAuth, axiosReissue } from '../../_actions/axiosAuth';
 // import CurationComponent from '../../components/commons/CurationComponent';
 import { getArtThumbnail } from '../../components/commons/imageModule';
 // import { getArtImage } from '../../components/commons/imageModule';
+import { useState } from 'react';
 
 export async function loader ({params}) {
   let curationSeq = params.curation_seq
@@ -14,32 +15,58 @@ export async function loader ({params}) {
   
   let curationDetail = await axiosAuth.get(`/curations/details/${curationSeq}`)
 
-  console.log(curationDetail)
-  return [curationDetail.data]
+  let isBookMarked = await axiosAuth.get(`/curations/${localStorage.getItem("userSeq")}/${curationDetail.data.curationSeq}`)
+
+  return [curationDetail.data, isBookMarked.data]
 }
 
 
 function CurationsDetail() {
 
-  const [curationDetail] = useLoaderData();
+  const [curationDetail, isBookMarked] = useLoaderData();
 
   let nickname= curationDetail.userNickname
   let profileImg= curationDetail.profileImg
   let userSeq = curationDetail.userSeq
   let curationThumbnail =curationDetail.curationThumbnail
   let curationName =curationDetail.curationName
-  // let curationSeq = curationDetail.curationSeq
+  let curationSeq = curationDetail.curationSeq
   // let curationHit = curationDetail.curationHit
   let curationBmCount = curationDetail.curationBmCount
   let curationStartTime = curationDetail.curationStartTime
   let curationStatus = curationDetail.curationStatus
   let curationSummary = curationDetail.curationSummary
 
+  const [bookmarkNum, setBookmarkNum] = useState(curationBmCount)
+  const [likeCurations, setLikeCurations] = useState(isBookMarked)
+
+  const handleBookMark = event => {
+    event.preventDefault()
+    let body = {
+      curationSeq: curationSeq,
+      userSeq: localStorage.getItem("userSeq")
+    }
+    axiosReissue()
+
+    if (likeCurations) {
+      axiosAuth.delete('curations/bookmark', {data: body})
+      .then(response => console.log(response))
+      setBookmarkNum(prev=>prev-1)
+    } else {
+      axiosAuth.post('curations/bookmark', body)
+        .then(response => console.log(response))
+      setBookmarkNum(prev=>prev+1)
+    }
+    setLikeCurations(prev=>!prev)
+  }
+
 
   // 큐레이션 날짜 (진행중, 예정, 종료에 따라 다르게 렌더링)
   let curationDate = null
   if (curationStatus === "INIT") {
-      curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")}${"  "+(curationStartTime[3]+'').padStart(2, "0") +":" + (curationStartTime[4]+"").padStart(2, "0") + " 예정"}`}</div>
+    curationDate = <div>{`${curationStartTime[0]}.
+    ${(curationStartTime[1]+'').padStart(2, "0")}.
+    ${(curationStartTime[2]+'').padStart(2, "0")}  ${(curationStartTime[3]+'').padStart(2, "0") +":" + (curationStartTime[4]+"").padStart(2, "0") + " 예정"}`}</div>  
   } else if (curationStatus === "ON") {
       curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0") + " 진행중"}`}</div>
   } else {
@@ -107,7 +134,7 @@ function CurationsDetail() {
                   <div className="bookmark">
                     <span>북마크 수</span>
                     <img src="ArtsPage" alt="" />
-                    {curationBmCount}
+                    {bookmarkNum}
                   </div>
                 </div>
                 <div>
@@ -115,7 +142,7 @@ function CurationsDetail() {
                   {/* 참여하기는 현재 진행중일 때만*/}
                   {isMarked}
                   
-                  <button>북마크</button>
+                  <button onClick={handleBookMark}>북마크</button>
                 </div>
               </div>
 
