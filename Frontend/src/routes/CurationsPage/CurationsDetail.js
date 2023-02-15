@@ -27,7 +27,7 @@ function CurationsDetail() {
   let profileImg= curationDetail.profileImg
   let userSeq = curationDetail.userSeq
   let curationThumbnail =curationDetail.curationThumbnail
-  // let curationName =curationDetail.curationName
+  let curationName =curationDetail.curationName
   // let curationSeq = curationDetail.curationSeq
   // let curationHit = curationDetail.curationHit
   let curationBmCount = curationDetail.curationBmCount
@@ -74,7 +74,7 @@ function CurationsDetail() {
         {/* 큐레이션 상세 정보 */}
         <div className="curation_detail_content">
           <div>
-            <h1>큐레이션 제목</h1>
+            <h1>{curationName}</h1>
 
             {/* <span>진행중인지, 아닌지, 끝났는지에 따라 다르게 보이기</span> */}
             {/* 이건 content로 구현함 */}
