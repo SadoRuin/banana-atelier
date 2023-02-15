@@ -65,10 +65,10 @@ function SetMasterpiece() {
   return (
     <div>
       <div>
-        <h2>대표작품 설정하기</h2>
-        <div>
-          <p>최대 6개까지 지정할 수 있습니다.</p>
-          <p>다른 사람들에게 나의 대표작품을 보여줍시다~</p>
+        <h3>대표작품 설정하기</h3>
+        <div style={{color: '#656565'}}>
+          최대 6개까지 지정할 수 있습니다.<br/>
+          다른 사람들에게 나의 대표작품을 소개해보아요
         </div>
       </div>
 
@@ -76,7 +76,7 @@ function SetMasterpiece() {
         <div className="selected_masterpiece">
           <h4>현재 대표작품</h4>
           { selectedPieces.length?
-            <div className="art-root__arts-container">
+            <div className="art-root__masterpiece-container">
               {selectedPieces.map(art =>
                 <MasterpieceItem
                   key={`my-page__masterpiece-selected-${art.artSeq}`}
@@ -98,8 +98,8 @@ function SetMasterpiece() {
                   return (
                     <label key={`my-page__masterpiece-all-${art.artSeq}`}>
                       {isRepresent ?
-                        <input type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected} checked/> :
-                        <input type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected}/>
+                        <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected} checked/> :
+                        <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected}/>
                       }
                       <MasterpieceItem
                         artName={art.artName}

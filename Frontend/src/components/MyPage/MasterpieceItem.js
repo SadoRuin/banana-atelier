@@ -7,7 +7,6 @@ import '../commons/ArtComponent.css'
 import './MasterPieceItem.css'
 
 function MasterpieceItem({isRepresent = false, artThumbnail, artName, userSeq}) {
-  console.log(artThumbnail);
   if (isRepresent) {
     return (
       <div className="art-img__container"

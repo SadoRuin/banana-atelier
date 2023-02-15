@@ -61,10 +61,13 @@ function ArtsRoot() {
     { name: '작품',
       content:
         <div>
-          <h3>대표작품</h3>
+          <div className="art-root__head">
+            <h3>대표작품</h3>
+            { userMasterpieces &&
+              <YellowBtn><Link className="link link-bold" to="set_masterpiece">대표작품 수정</Link></YellowBtn> }
+          </div>
           { userMasterpieces?
-            <div className="art-root__arts-container">
-              <YellowBtn style={{gridColumn: "1 / end", width: "150px"}}><Link className="link" to="set_masterpiece">대표작품 수정</Link></YellowBtn>
+            <div className="art-root__masterpiece-container">
               {userMasterpieces.map((masterpiece) =>
                 <ArtItemMyPage
                   key={`my-page__arts-${masterpiece.artSeq}`}
