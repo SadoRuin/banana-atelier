@@ -8,7 +8,7 @@ import { getArtThumbnail } from "./imageModule";
 import ProfileImg from "./ProfileImg";
 import './ArtComponent.css'
 
-function CurationComponent({nickname, profileImg, userSeq, curationThumbnail, curationName, curationSeq, curationHit, curationBmCount, curationStartTime, curationStatus}) {
+function CurationComponent({ nickname, profileImg, userSeq, curationThumbnail, curationName, curationSeq, curationBmCount, curationStartTime, curationStatus }) {
     let content = null
 
     if (curationStatus === "INIT") {
