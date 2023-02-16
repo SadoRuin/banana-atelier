@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Form, Link, useLoaderData, useOutletContext} from "react-router-dom";
+import {Form, Link, redirect, useLoaderData, useOutletContext} from "react-router-dom";
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
 import {TabContent, TabMenu} from "../../components/commons/TabMenuComponent";
-import {WhiteBtn, YellowBtn} from "../../components/commons/buttons";
+import {GreenBtn, WhiteBtn, YellowBtn} from "../../components/commons/buttons";
 import NoticesDetail from "./NoticesDetail";
 import styles from "./Notice.module.css";
 
@@ -14,26 +14,40 @@ export async function loader({params}) {
   const userNotices = await axiosAuth(`notices`)
     .then(response => response.data)
     .catch(() => null)
+
   // 팔로잉 한 작가들의 공지, 없으면 null
   const followingNotices = await axiosAuth(`notices/following`)
     .then(response => response.data)
     .catch(() => null)
 
-  console.log(userNotices);
-  console.log(followingNotices);
   return [nickname, userSeq, userNotices, followingNotices]
 }
 
 export async function action({request}) {
+  
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
-  console.log(body)
-  await axiosAuth.post('notices', body)
-    .then(response => console.log(response))
-    .catch(error => error)
-  return null
-}
 
+  if (request.method === "POST") {
+
+    await axiosAuth.post('notices', body)
+      .then(response => console.log(response))
+      .catch(error => error)
+
+  } else if (request.method === "PUT") {
+
+    await axiosAuth.put('notices', body)
+      .then(response => console.log(response))
+      .catch(error => error)
+
+  } else if (request.method === "DELETE") {
+    alert("공지사항을 삭제하시겠습니까?")
+    await axiosAuth.delete(`notices/${body.noticeSeq}`)
+      .then(response => console.log(response))
+      .catch(error => console.log(error))
+  }
+  return redirect('../notices')
+}
 
 function NoticesRoot() {
   const [isMyPage, isArtist] = useOutletContext();
@@ -66,31 +80,42 @@ function NoticesRoot() {
         <div className={styles["notice-list"]}>
           {isMyPage ?
             (isFormOpen ?
-                <Form method="post">
-                  <div>
-                    <label className={styles["form-label"]}> 공지 제목 </label>
-                    <input type="text" name="noticeTitle" placeholder="제목을 입력하세요"/>
+                <Form method="post" className={styles["form"]}>
+                  <div className={styles["label-input"]}>
+                    <label className={styles["label-of-form"]}> TITLE </label>
+                    <input className={styles["input-of-form"]} type="text" name="noticeTitle" placeholder="제목을 입력하세요"/>
                   </div>
-                  <div>
-                    <label> 내용</label>
+                  <div className={styles["label-input"]}>
+                    <label className={styles["label-of-form"]}> CONTENT </label>
                     <textarea name="noticeContent" id="notice_content" cols="30" rows="10"
-                              placeholder="내용을 입력하센"></textarea>
+                              placeholder="내용을 입력하세요"/>
                   </div>
-                  <div>
-                    <YellowBtn type="submit" onSubmit={() => {
-                      setIsFormOpen(prev => !prev)
-                    }}>제출하기</YellowBtn>
-                    <WhiteBtn onClick={() => {
-                      setIsFormOpen(prev => !prev)
-                    }}>취소</WhiteBtn>
+                  <div className={styles["buttons"]}>
+                    <YellowBtn className={styles["button"]} type="submit"
+                               onSubmit={() => {
+                                 setIsFormOpen(prev => !prev)
+                               }}
+                               onClick={() => {
+                                 setIsFormOpen(prev => !prev)
+                               }}
+                    >
+                      제출하기
+                    </YellowBtn>
+                    <WhiteBtn className={styles["button"]}
+                              onClick={() => {
+                                setIsFormOpen(prev => !prev)
+                              }}>
+                      취소
+                    </WhiteBtn>
                   </div>
                 </Form>
                 :
-                <YellowBtn className={styles["regist-button"]} onClick={() => {
-                  setIsFormOpen(prev => !prev)
-                }}>
-                  공지 작성하기
-                </YellowBtn>
+                <GreenBtn className={styles["regist-button"]}
+                          onClick={() => {
+                            setIsFormOpen(prev => !prev)
+                          }}>
+                  공 지 작 성
+                </GreenBtn>
             ) :
             null
           }
@@ -106,12 +131,13 @@ function NoticesRoot() {
                       .{notice.noticeTime[2] < 10 ? '0' + notice.noticeTime[2] : notice.noticeTime[2]}
                       &nbsp; &nbsp; {notice.noticeTitle}
                     </div>
-                    <div userSeq={userSeq}>{nickname}</div>
+                    <div userSeq={userSeq}> {nickname} </div>
                   </div>
                   <div>
                     {userNoticesOpen[notice.noticeSeq] ?
                       <NoticesDetail noticeSeq={notice.noticeSeq}
-                                     noticeContent={notice.noticeContent}/>
+                                     notice_title={notice.noticeTitle}
+                                     notice_content={notice.noticeContent}/>
                       :
                       null
                     }
@@ -147,6 +173,7 @@ function NoticesRoot() {
                 <div>
                   {followingNoticesOpen[notice.noticeSeq] ?
                     <NoticesDetail noticeSeq={notice.noticeSeq}
+                                   noticeTitle={notice.noticeTitle}
                                    noticeContent={notice.noticeContent}/>
                     :
                     null
