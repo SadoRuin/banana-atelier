@@ -38,9 +38,6 @@ import CurationsDetail, {loader as CurationsDetailLoader, action as CurationDeta
 import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
 
 
-// 커미션 페이지
-// import CommissionsMain from "./routes/CommissionsPage/CommissionsMain";
-// import CommissionsDetail from "./routes/CommissionsPage/CommissionsDetail";
 // 마이페이지
 import MyPageLayout, {loader as MyPageLoader} from "./routes/MyPage/Layout";
 
@@ -53,23 +50,15 @@ import NoticesDetail, {loader as noticeLoader} from "./routes/MyPage/NoticesDeta
 
 // 큐레이션탭
 import CurationsRoot from "./routes/MyPage/CurationsRoot";
-import CurationsMine from "./routes/MyPage/CurationsMine";
-import CurationsFollowing from "./routes/MyPage/CurationsFollowing";
-import CurationsBookmark from "./routes/MyPage/CurationsBookmark";
+import { loader as CurationsRootLoader } from  "./routes/MyPage/CurationsRoot";
 import CurationsRegister, {loader as CurationRegisterLoader} from "./routes/MyPage/CurationsRegister";
 
-// 커미션탭
-// import Commissions from "./routes/MyPage/Commissions"
-// import MyPageCommissionsDetail from "./routes/MyPage/CommissionsDetail"
 // 모달(프로필 수정, 작품 업로드, 대표작품 설정)
 import EditProfile from "./routes/MyPage/EditProfile";
 // 작품 업로드
 import Upload, {action as UploadAction} from "./routes/MyPage/Upload"
 // 대표작품 설정
-import SetMasterpiece, {
-  action as SetMasterpieceAction,
-  loader as SetMasterpieceLoader
-} from "./routes/MyPage/SetMasterpiece"
+import SetMasterpiece, { action as SetMasterpieceAction, loader as SetMasterpieceLoader } from "./routes/MyPage/SetMasterpiece"
 // import CommissionsRegister from "./routes/CommissionsPage/CommissionsRegister";
 
 
@@ -153,11 +142,8 @@ const router = createBrowserRouter(
               <Route
                 path="curations"
                 element={<CurationsRoot/>}
-              >
-                <Route path="mine" element={<CurationsMine/>}/>
-                <Route path="following" element={<CurationsFollowing/>}/>
-                <Route path="bookmark" element={<CurationsBookmark/>}/>
-              </Route>
+                loader={CurationsRootLoader}
+              />
 
               {/*<Route path="commissions" element={ <Commissions /> } />*/}
               {/*<Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />*/}

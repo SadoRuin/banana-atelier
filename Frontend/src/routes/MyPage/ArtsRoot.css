@@ -21,7 +21,7 @@
     align-items: center;
     justify-content: space-between;
 }
-.art-root__no-masterpiece, .art-root__no-arts, .art-root__no-likes {
+.art-root__nothing {
     grid-column: 1 / end;
     text-align: center;
     padding-top: 30px;
