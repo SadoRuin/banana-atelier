@@ -141,7 +141,7 @@ function ArtsMain() {
 
   return (
     <div>
-      <div className="art-main__category" style={{display: 'flex', justifyContent: 'space-between', marginTop: '30px'}}>
+      <div className="art-main__category" style={{display: 'flex', width: '75%', justifyContent: 'space-between', marginTop: '30px'}}>
         <Category onClick={() => {navigate('/arts')}}>전체</Category>
         <Category onClick={() => {navigate({search: '?category=1' })}}>일러스트레이션</Category>
         <Category onClick={() => {navigate({search: '?category=2' })}}>캐릭터디자인</Category>
