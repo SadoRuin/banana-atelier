@@ -4,7 +4,7 @@ import { useParams, useLoaderData } from "react-router-dom";
 import axios from "axios";
 
 // import './App.css';
-import { axiosAuth } from "../../_actions/axiosAuth";
+import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import UserVideoComponent from "./UserVideoComponent";
 import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
@@ -157,6 +157,10 @@ class Openvidu extends Component {
           console.warn(exception);
         });
 
+        axiosReissue()
+
+        axiosAuth.put(`/curations/${this.state.curationSeq}/on`)
+
         // --- 4) Connect to the session with a valid user token ---
 
         // Get a token from the OpenVidu deployment
@@ -218,6 +222,10 @@ class Openvidu extends Component {
   leaveSession() {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
 
+    axiosReissue()
+
+    axiosAuth.put(`/curations/${this.state.curationSeq}/end`)
+
     const mySession = this.state.session;
 
     if (mySession) {
@@ -243,7 +251,7 @@ class Openvidu extends Component {
   }
 
   render() {
-    const mySessionId = this.state.mySessionId;
+    // const mySessionId = this.state.mySessionId;
     const nickname = localStorage.getItem("nickname")
     console.log(this.state.curationSeq);
     console.log(this.state.curationArtList);
@@ -266,7 +274,7 @@ class Openvidu extends Component {
                       className="form-control"
                       type="text"
                       id="sessionId"
-                      value={mySessionId}
+                      value={this.state.artistSeq}
                       onChange={this.handleChangeSessionId}
                       required
                       style={{width: "30px"}}
