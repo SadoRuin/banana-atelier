@@ -62,12 +62,11 @@ public class CurationDataResponse {
 			this.curationStartTime = cb.getCuration().getCurationStartTime();
 			this.curationStatus = cb.getCuration().getCurationStatus();
 			this.curationSeq = cb.getId().getCurationSeq();
-			this.profileImg = cb.getUser().getProfileImg();
+			this.profileImg = cb.getCuration().getArtist().getUser().getProfileImg();
 		}
 	}
 
 	//큐레이션 하나만 조회
-
 	public static class Curation extends CurationSimple {
 		@JsonProperty
 		private String curationSummary;

@@ -148,6 +148,18 @@ public class CurationService {
 
 	}
 
+	//큐레이션 상태 수정
+	@Transactional
+	public void updateCurationStatus(long userSeq, CurationRequest curationRequest, long curationSeq) {
+		if (userSeq != curationRequest.getArtistSeq()) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+
+		Curation curation = curationRepository.findById(curationSeq).orElse(null);
+		curation.setCurationStatus(CurationStatus.ON);
+		curationRepository.save(curation);
+	}
+
 	@Transactional
 	//큐레이션 삭제
 	public void deleteCuration(long userSeq, long curation_seq) {
