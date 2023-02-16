@@ -243,7 +243,7 @@ class Openvidu extends Component {
   }
 
   render() {
-    const mySessionId = this.state.mySessionId;
+    // const mySessionId = this.state.mySessionId;
     const nickname = localStorage.getItem("nickname")
     console.log(this.state.curationSeq);
     console.log(this.state.curationArtList);
@@ -266,7 +266,7 @@ class Openvidu extends Component {
                       className="form-control"
                       type="text"
                       id="sessionId"
-                      value={mySessionId}
+                      value={this.state.artistSeq}
                       onChange={this.handleChangeSessionId}
                       required
                       style={{width: "30px"}}
