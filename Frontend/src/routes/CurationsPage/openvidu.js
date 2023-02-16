@@ -52,10 +52,10 @@ class Openvidu extends Component {
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     let curationSeq = props.params.curation_seq;
-    let [curationArtList, artistSeq] = props.loader;
+    let [curationArtsList, artistSeq] = props.loader;
     this.state = {
       curationSeq: curationSeq,
-      curationArtList: curationArtList,
+      curationArtList: curationArtsList,
       artistSeq: artistSeq,
       mySessionId: userSeq,
       myUserName: localStorage.getItem("nickname"),
@@ -290,14 +290,14 @@ class Openvidu extends Component {
           <div id="session">
             <div id="session-header">
               <h1 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h1>
-              <RedBtn
-                type="button"
-                id="buttonLeaveSession"
-                onClick={this.leaveSession}
-                value="나가기"
-              >
-                나가기
-              </RedBtn>
+              {/*<RedBtn*/}
+              {/*  type="button"*/}
+              {/*  id="buttonLeaveSession"*/}
+              {/*  onClick={this.leaveSession}*/}
+              {/*  value="나가기"*/}
+              {/*>*/}
+              {/*  나가기*/}
+              {/*</RedBtn>*/}
             </div>
 
             
@@ -313,7 +313,16 @@ class Openvidu extends Component {
 
               <RightSide>
 
-                <CurationInfo/>
+                <CurationInfo
+                  curationArtsList={this.state.curationArtList}
+                  outBtn={<RedBtn
+                    type="button"
+                    id="buttonLeaveSession"
+                    onClick={this.leaveSession}
+                    value="나가기"
+                    >
+                      나가기
+                    </RedBtn>} />
 
                 <div id="video-container" >
                   {/* {this.state.publisher !== undefined ? (
@@ -322,11 +331,10 @@ class Openvidu extends Component {
                       streamManager={this.state.publisher} />
                     </div>
                   ) : null} */}
-
                   {this.state.subscribers.map((sub, i) => (
                     <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
                       <UserVideoComponent2 streamManager={sub} />
-                      </div>
+                    </div>
                   ))}
 
                   {/* {this.state.publisher !== undefined ? (
