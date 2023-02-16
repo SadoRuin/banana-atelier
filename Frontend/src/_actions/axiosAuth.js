@@ -17,12 +17,13 @@ export const axiosReissue = () => {
         })
         .catch(error => {
             console.log(error)
-            localStorage.removeItem("token")
-            localStorage.removeItem("expiration")
-            localStorage.removeItem("nickname")
-            localStorage.removeItem("profileImg")
-            localStorage.removeItem("role")
-            localStorage.removeItem("userSeq")
+            // localStorage.removeItem("token")
+            // localStorage.removeItem("expiration")
+            // localStorage.removeItem("nickname")
+            // localStorage.removeItem("profileImg")
+            // localStorage.removeItem("role")
+            // localStorage.removeItem("userSeq")
+            localStorage.clear();
             return window.location.pathname='/login';
         })
     }
