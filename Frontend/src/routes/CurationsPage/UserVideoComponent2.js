@@ -6,9 +6,15 @@ export const Streamcomponent = styled.div`
     display: inline-block;
     overflow: hidden;
     border-radius: 15px;
-    height: 80px;
-    width: 180px;
-  `;
+    height: 100%;
+    width: 100%;
+
+    & video {
+        width: 100%;
+        height: 100%;
+        border-radius: 15px;
+    }
+`;
 
 
 
@@ -21,13 +27,13 @@ export default class UserVideoComponent extends Component {
 
     render() {
         return (
-            <div>
+            <div style={{width: "100px", height: "100px"}}>
                 {this.props.streamManager !== undefined ? (
                     <Streamcomponent>
-                        <OpenViduVideoComponent streamManager={this.props.streamManager} />
+                        <OpenViduVideoComponent style={{width: "100%"}} streamManager={this.props.streamManager} />
                     </Streamcomponent>
                 ) : null}
-                <div><p> 호스트 : {this.getNicknameTag()}</p></div>
+                {/* <div><p> 호스트 : {this.getNicknameTag()}</p></div> */}
             </div>
         );
     }
