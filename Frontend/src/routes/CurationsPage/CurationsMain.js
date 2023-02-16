@@ -274,7 +274,7 @@ function CurationsMain() {
               }
             }}
             navigation
-            // pagination={{ clickable: true }}
+            pagination={{ clickable: true }}
             loop={true}
             scrollbar={{ draggable: true }}
           >
@@ -311,7 +311,7 @@ function CurationsMain() {
             }
           }}
           navigation
-          // pagination={{ clickable: true }}
+          pagination={{ clickable: true }}
           loop={true}
           scrollbar={{ draggable: true }}
         >
