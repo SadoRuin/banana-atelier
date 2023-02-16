@@ -103,12 +103,11 @@ public class CurationController {
 	@PutMapping("/{curation_seq}/on")
 	@ApiOperation(value = "큐레이션 시작")
 	public ResponseEntity updateCurationStatus(@PathVariable long curation_seq,
-		@RequestBody CurationRequest curationRequest,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		long userSeq = tokenProvider.getSubject(token);
 
-		curationService.updateCurationStatus(userSeq, curationRequest, curation_seq);
+		curationService.updateCurationStatus(userSeq, curation_seq);
 		return ResponseEntity.status(HttpStatus.OK).body("update completed");
 	}
 
