@@ -72,7 +72,7 @@ function CurationsDetail() {
   let curationSummary = curationDetail.curationSummary
 
   const [bookmarkNum, setBookmarkNum] = useState(curationBmCount)
-  const [likeCurations, setLikeCurations] = useState(isBookMarked)
+  const [likeCurations, setLikeCurations] = useState(isBookmarked)
   const handleBookMark = event => {
     event.preventDefault()
     let body = {
