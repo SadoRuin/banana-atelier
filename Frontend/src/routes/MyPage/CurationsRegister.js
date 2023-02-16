@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { useNavigate, useLoaderData, redirect } from "react-router-dom";
 import { axiosAuth, axiosReissue } from '../../_actions/axiosAuth';
+import './CurationsRegister.css';
 
 import CurationPieceItem from "../../components/MyPage/CurationPieceItem";
 
@@ -114,6 +115,8 @@ function CurationsRegister() {
         </div>
       </div>
 
+      <div id="curationBorder"/>
+
       <form method="post" onSubmit={e => handleSubmit(e)}>
         <label>큐레이션 이름
           <input type="text" id="curationName" name="curationName" placeholder="큐레이션 이름"/>
@@ -123,8 +126,8 @@ function CurationsRegister() {
           <input type="datetime-local" id="curationStartTime" name="curationStartTime" min={minDay} max={maxDay}/>
         </label>
 
-`        <label>큐레이션 설명
-`          <textarea id="curationSummary" name="curationSummary" cols="30" rows="10" placeholder="큐레이션에 대한 설명을 적어주세요"></textarea>
+        <label>큐레이션 설명
+          <textarea id="curationSummary" name="curationSummary" cols="80" rows="6" placeholder="큐레이션에 대한 설명을 적어주세요"></textarea>
         </label>
 
         <button type="submit">등록하기</button>

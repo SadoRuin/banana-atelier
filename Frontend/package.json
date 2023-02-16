@@ -27,7 +27,7 @@
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.6",
-    "swiper": "^8.4.5",
+    "swiper": "^8.4.7",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
