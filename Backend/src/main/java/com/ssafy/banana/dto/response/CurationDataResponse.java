@@ -74,9 +74,13 @@ public class CurationDataResponse {
 		// @JsonProperty
 		// private long artistSeq;
 
+		@JsonProperty
+		private String curationImg;
+
 		public Curation(com.ssafy.banana.db.entity.Curation c) {
 			super(c);
 			this.curationSummary = c.getCurationSummary();
+			this.curationImg = c.getCurationImg();
 		}
 
 	}

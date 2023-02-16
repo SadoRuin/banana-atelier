@@ -24,6 +24,8 @@ public class CurationArtDataResponse {
 	private String artistNickName;
 	private int artLikes;
 	private int artHit;
+	private String artName;
+	private long artSeq;
 
 	public CurationArtDataResponse(CurationArt ca) {
 		this.id = ca.getId();
@@ -34,6 +36,8 @@ public class CurationArtDataResponse {
 		this.artistNickName = ca.getArt().getArtist().getUser().getNickname();
 		this.artLikes = ca.getArt().getArtLikeCount();
 		this.artHit = ca.getArt().getArtHit();
+		this.artName = ca.getArt().getArtName();
+		this.artSeq = ca.getArt().getId();
 	}
 }
 
