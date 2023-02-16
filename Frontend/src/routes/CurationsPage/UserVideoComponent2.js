@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
 
-export const Streamcomponent = styled.div`
+export const StreamComponent = styled.div`
     display: inline-block;
     overflow: hidden;
     border-radius: 15px;
@@ -29,9 +29,9 @@ export default class UserVideoComponent extends Component {
         return (
             <div style={{width: "100px", height: "100px"}}>
                 {this.props.streamManager !== undefined ? (
-                    <Streamcomponent>
+                    <StreamComponent>
                         <OpenViduVideoComponent style={{width: "100%"}} streamManager={this.props.streamManager} />
-                    </Streamcomponent>
+                    </StreamComponent>
                 ) : null}
                 {/* <div><p> 호스트 : {this.getNicknameTag()}</p></div> */}
             </div>
