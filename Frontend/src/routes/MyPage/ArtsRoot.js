@@ -66,7 +66,7 @@ function ArtsRoot() {
             (<div>
               <div className="art-root__head">
                 <h3>대표작품</h3>
-                { userMasterpieces &&
+                { (userMasterpieces && isMyPage) &&
                   <YellowBtn><Link className="link link-bold" to="set_masterpiece">대표작품 수정</Link></YellowBtn>
                 }
               </div>
