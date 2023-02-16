@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { OpenVidu } from "openvidu-browser";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 // import './App.css';
+// import { axiosAuth } from "../../_actions/axiosAuth";
 import UserVideoComponent from "./UserVideoComponent";
 import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
@@ -17,7 +19,6 @@ import { RedBtn } from "../../components/commons/buttons";
 const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447";
 const OPENVIDU_SERVER_SECRET = "dnjftlr";
 
-
 const Frame = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -30,15 +31,26 @@ const RightSide = styled.div`
   grid-column: 2/span 2;
 `
 
+// 클래스형 컴포넌트에서 params 가져오기
+function withParams(Component) {
+  return props => <Component {...props} params={useParams()} />;
+}
 
-
-class App extends Component {
+class Openvidu extends Component {
   constructor(props) {
     super(props);
     let userSeq = localStorage.getItem("userSeq")
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
+    let curationSeq = props.params.curation_seq;
+
+
+    // axiosAuth.get(`curation-art/list/${curationSeq}`)
+
+
     this.state = {
+      curationSeq: curationSeq,
+      // curationArtList: curationArtList,
       mySessionId: userSeq,
       myUserName: localStorage.getItem("nickname"),
       // myUserName: "Participant" + Math.floor(Math.random() * 100),
@@ -224,12 +236,11 @@ class App extends Component {
     return await this.createToken(sessionId);
   }
 
-  
-
-
   render() {
     const mySessionId = this.state.mySessionId;
     const nickname = localStorage.getItem("nickname")
+    console.log(this.state.curationSeq);
+    console.log(this.state.curationArtList);
     // const myUserName = this.state.myUserName;
     return (
       <div>
@@ -405,4 +416,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withParams(Openvidu);
