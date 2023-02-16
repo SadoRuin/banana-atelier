@@ -1,8 +1,25 @@
-#curation__art-img {
-    flex: 0.4;
-    margin-right: 20px; 
+.curation-art-container {
+    display: flex;
+}
+.curation__art-img {
+    width: 40%;
+    margin-right: 20px;
+}
+.curation__art-info-container {
+    width: 60%;
+}
+.curation__art-description {
+    margin-bottom: 20px;
+}
+.curation__art-now-price {
+    margin-bottom: 15px;
 }
 
-#curation__art-info-container {
-    flex: 0.6
+.curation__btns {
+    display: flex;
+    width: 100%;
+
+}
+.curation__participate-auction {
+    margin-right: 10px;
 }

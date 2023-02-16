@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { OpenVidu } from "openvidu-browser";
-import { useParams } from "react-router-dom";
+import { useParams, useLoaderData } from "react-router-dom";
 import axios from "axios";
 
 // import './App.css';
-// import { axiosAuth } from "../../_actions/axiosAuth";
+import { axiosAuth } from "../../_actions/axiosAuth";
 import UserVideoComponent from "./UserVideoComponent";
 import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
@@ -31,9 +31,18 @@ const RightSide = styled.div`
   grid-column: 2/span 2;
 `
 
+export async function loader ({params}) {
+  const curationSeq = params.curation_seq;
+  const curationArtsList = await axiosAuth(`curation-art/list/${curationSeq}`)
+    .then(response => response.data);
+  const artistSeq = await curationArtsList[0].artistSeq
+
+  return [curationArtsList, artistSeq]
+}
+
 // 클래스형 컴포넌트에서 params 가져오기
 function withParams(Component) {
-  return props => <Component {...props} params={useParams()} />;
+  return props => <Component {...props} params={useParams()} loader={useLoaderData()} />;
 }
 
 class Openvidu extends Component {
@@ -43,14 +52,11 @@ class Openvidu extends Component {
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     let curationSeq = props.params.curation_seq;
-
-
-    // axiosAuth.get(`curation-art/list/${curationSeq}`)
-
-
+    let [curationArtsList, artistSeq] = props.loader;
     this.state = {
       curationSeq: curationSeq,
-      // curationArtList: curationArtList,
+      curationArtList: curationArtsList,
+      artistSeq: artistSeq,
       mySessionId: userSeq,
       myUserName: localStorage.getItem("nickname"),
       // myUserName: "Participant" + Math.floor(Math.random() * 100),
@@ -241,6 +247,7 @@ class Openvidu extends Component {
     const nickname = localStorage.getItem("nickname")
     console.log(this.state.curationSeq);
     console.log(this.state.curationArtList);
+    console.log(this.state.artistSeq)
     // const myUserName = this.state.myUserName;
     return (
       <div>
@@ -283,14 +290,14 @@ class Openvidu extends Component {
           <div id="session">
             <div id="session-header">
               <h1 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h1>
-              <RedBtn
-                type="button"
-                id="buttonLeaveSession"
-                onClick={this.leaveSession}
-                value="나가기"
-              >
-                나가기
-              </RedBtn>
+              {/*<RedBtn*/}
+              {/*  type="button"*/}
+              {/*  id="buttonLeaveSession"*/}
+              {/*  onClick={this.leaveSession}*/}
+              {/*  value="나가기"*/}
+              {/*>*/}
+              {/*  나가기*/}
+              {/*</RedBtn>*/}
             </div>
 
             
@@ -306,7 +313,16 @@ class Openvidu extends Component {
 
               <RightSide>
 
-                <CurationInfo/>
+                <CurationInfo
+                  curationArtsList={this.state.curationArtList}
+                  outBtn={<RedBtn
+                    type="button"
+                    id="buttonLeaveSession"
+                    onClick={this.leaveSession}
+                    value="나가기"
+                    >
+                      나가기
+                    </RedBtn>} />
 
                 <div id="video-container" >
                   {/* {this.state.publisher !== undefined ? (
@@ -315,11 +331,10 @@ class Openvidu extends Component {
                       streamManager={this.state.publisher} />
                     </div>
                   ) : null} */}
-
                   {this.state.subscribers.map((sub, i) => (
                     <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
                       <UserVideoComponent2 streamManager={sub} />
-                      </div>
+                    </div>
                   ))}
 
                   {/* {this.state.publisher !== undefined ? (

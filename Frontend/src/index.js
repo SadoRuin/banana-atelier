@@ -37,6 +37,7 @@ import CurationsDetail, {loader as CurationsDetailLoader, action as CurationDeta
 
 // import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
 import Openvidu from "./routes/CurationsPage/openvidu";
+import { loader as OpenviduLoader } from "./routes/CurationsPage/openvidu";
 
 // 마이페이지
 import MyPageLayout, {loader as MyPageLoader} from "./routes/MyPage/Layout";
@@ -89,7 +90,7 @@ const router = createBrowserRouter(
           {/* 큐레이션 페이지 */}
           <Route path="curations" element={<CurationsMain/>} loader={curationListLoader}/>
           <Route path="curations/detail/:curation_seq" element={<CurationsDetail/>} loader={CurationsDetailLoader} action={CurationDetailAction}/>
-          <Route path="curations/on_air/:curation_seq" element={<Openvidu />} />
+          <Route path="curations/on_air/:curation_seq" element={<Openvidu />} loader={OpenviduLoader} />
 
 
           {/*<Route path="curations/on_air" element={<CurationsOnAir/>} loader={CurationsOnAirLoader}/>*/}
