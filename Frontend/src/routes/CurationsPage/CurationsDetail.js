@@ -73,20 +73,19 @@ function CurationsDetail() {
 
   const [bookmarkNum, setBookmarkNum] = useState(curationBmCount)
   const [likeCurations, setLikeCurations] = useState(isBookmarked)
-  const handleBookMark = event => {
-    event.preventDefault()
+  const handleBookMark = async () => {
+    console.log('북마크눌리나요?')
     let body = {
       curationSeq: curationSeq,
       userSeq: localStorage.getItem("userSeq")
     }
-    axiosReissue()
+    axiosReissue();
 
     if (likeCurations) {
-      axiosAuth.delete('curations/bookmark', {data: body})
-      .then(response => console.log(response))
+      await axiosAuth.delete('curations/bookmark', {data: body})
       setBookmarkNum(prev=>prev-1)
     } else {
-      axiosAuth.post('curations/bookmark', body)
+      await axiosAuth.post('curations/bookmark', body)
         .then(response => console.log(response))
       setBookmarkNum(prev=>prev+1)
     }
@@ -143,7 +142,9 @@ function CurationsDetail() {
             </div>
 
             <div className="art-detail__btns">
-              <BookmarkBtn onClick={handleBookMark} isBookmark={isBookmarked} />
+              <div onClick={handleBookMark}>
+                <BookmarkBtn  isBookmark={likeCurations} />
+              </div>
               {/* 시작한 큐레이션 참여 가능, 이 링크는 어떻게 될지 모르겟음~ */}
               { curationStatus === "ON" &&
                 <Link><YellowBtn style={{width: "120px"}} type="submit">입장하기</YellowBtn></Link> }
