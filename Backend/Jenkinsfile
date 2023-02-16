@@ -22,7 +22,7 @@ pipeline {
         stage('Deploy') {
             steps{
                 sh 'docker rm -f back'
-                sh 'docker run -d --name back -p 8099:8099 -u root -v /back:/back banana-back:latest'
+                sh 'docker run -d --name back -p 8099:8099 -u root banana-back:latest'
             }
         }
 

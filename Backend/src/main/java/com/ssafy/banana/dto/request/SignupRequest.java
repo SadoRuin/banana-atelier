@@ -34,7 +34,7 @@ public class SignupRequest implements Serializable {
 	private String password;
 	@ApiModelProperty(name = "유저 nickname")
 	@NotNull(message = "nickname may not be empty")
-	@Pattern(regexp = "^[0-9a-zA-Z가-힣]*$",
+	@Pattern(regexp = "^[0-9a-zA-Z가-힣][0-9a-zA-Z가-힣\\s]*$",
 		message = "닉네임은 숫자, 영어, 한글만 가능합니다.")
 	@Size(min = 1, max = 12)
 	private String nickname;
