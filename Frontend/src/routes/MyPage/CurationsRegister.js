@@ -92,6 +92,8 @@ function CurationsRegister() {
     await axiosAuth.post('curations', body)
       .then(() => redirect('/curations'))
       .catch(error => console.log(error))
+
+    navigate(`/${localStorage.getItem("nickname")}@${localStorage.getItem("userSeq")}`)
   }
 
   const todayDay = new Date();
@@ -162,7 +164,7 @@ function CurationsRegister() {
               return (
                 <label key={`curation-register__arts-${art.artSeq}`}>
                   { art.isSold? null :
-                     ( isChecked ? <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected} checked />
+                      ( isChecked ? <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected} checked />
                         : <input style={{display: "none"}} type="checkbox" name="artSeq" value={art.artSeq} onChange={handleSelected}/>)
                   }
                   <CurationPieceItem

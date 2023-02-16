@@ -4,6 +4,7 @@ import { useLoaderData } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { axiosAuth, axiosReissue } from '../../_actions/axiosAuth';
+import { useNavigate } from 'react-router-dom';
 import ProfileImg from "../../components/commons/ProfileImg";
 // import CurationComponent from '../../components/commons/CurationComponent';
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
@@ -59,6 +60,7 @@ export async function action ({request, params}) {
 
 function CurationsDetail() {
   const [curationDetail, curationDetailArts, isBookmarked] = useLoaderData();
+  const navigate = useNavigate()
 
   let nickname= curationDetail.userNickname
   let profileImg= curationDetail.profileImg
@@ -103,6 +105,23 @@ function CurationsDetail() {
   } else {
       curationDate = <div>{`${curationStartTime[0]}.${(curationStartTime[1]+'').padStart(2, "0")}.${(curationStartTime[2]+'').padStart(2, "0")} 종료`}</div>
   }
+
+
+  const handleStartCuration = () => {
+    let userSeq = localStorage.getItem("userSeq")
+    localStorage.setItem("artistSeq", userSeq)
+    axiosReissue()
+  
+    axiosAuth.put(`curations/${curationSeq}/on`)
+
+    navigate(`/curations/on_air/${curationSeq}`)
+  }
+
+  const handleEnterCuration = () => {
+    navigate(`/curation/on_air/${curationSeq}`)
+  }
+
+
 
   return (
     <div>
@@ -149,10 +168,10 @@ function CurationsDetail() {
               </div>
               {/* 시작한 큐레이션 참여 가능, 이 링크는 어떻게 될지 모르겟음~ */}
               { curationStatus === "ON" &&
-                <Link to={`../curations/on_air/${curationSeq}`}><YellowBtn style={{width: "120px"}} type="submit">입장하기</YellowBtn></Link> }
+                <Link to={`../curations/on_air/${curationSeq}`}><YellowBtn style={{width: "120px"}} onClick={handleEnterCuration}>입장하기</YellowBtn></Link> }
               {/* 시작 전 큐레이션이고 자신의 글이면 시작버튼 활성화 */}
               { (curationStatus === "INIT" && userSeq === +localStorage.getItem('userSeq')) &&
-                <Link to={`../curations/on_air/${curationSeq}`} ><YellowBtn style={{width: "120px"}} type="submit">시작하기</YellowBtn></Link> }
+                <Link to={`../curations/on_air/${curationSeq}`} ><YellowBtn style={{width: "120px"}} onClick={handleStartCuration}>시작하기</YellowBtn></Link> }
             </div>
 
           </div>
