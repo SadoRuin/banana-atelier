@@ -69,13 +69,13 @@ public class CurationDataResponse {
 	public static class CurationBookmark extends CurationSimple {
 		@JsonProperty
 		private String artistNickName;
-		// @JsonProperty
-		// private String artistProfileImg;
+		@JsonProperty
+		private String artistProfileImg;
 
 		public CurationBookmark(com.ssafy.banana.db.entity.CurationBookmark cb) {
 			super(cb);
 			this.artistNickName = cb.getCuration().getArtist().getUser().getNickname();
-			// this.artistProfileImg = cb.getCuration().getArtist().getUser().getProfileImg();
+			this.artistProfileImg = cb.getCuration().getArtist().getUser().getProfileImg();
 		}
 
 	}
