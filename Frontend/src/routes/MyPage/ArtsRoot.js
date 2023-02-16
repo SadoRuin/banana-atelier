@@ -46,7 +46,7 @@ function ArtsRoot() {
       <p>대표 작품을 설정해보세요!</p>
       <Link to="set_masterpiece"><GreenBtn>대표작품 설정하기</GreenBtn></Link>
     </div> :
-    <div className="art-root__no-masterpiece">
+    <div className="art-root__nothing">
       대표작품이 존재하지 않습니다
     </div>
 
@@ -56,7 +56,7 @@ function ArtsRoot() {
       <p>작품을 올리고 작가가 되어보세요!</p>
       <Link to="upload"><GreenBtn>작품 업로드</GreenBtn></Link>
     </div> :
-    <div className="art-root__no-arts">작품이 존재하지 않습니다</div>
+    <div className="art-root__nothing">작품이 존재하지 않습니다</div>
 
   const artMenuData = [
     { name: '작품',
@@ -117,7 +117,7 @@ function ArtsRoot() {
                 artSeq={like.artSeq}
               />) }
           </div>
-          : <div className="art-root__no-likes" >좋아요한 작품이 없습니다.</div>
+          : <div className="art-root__nothing" >좋아요한 작품이 없습니다.</div>
     }
   ]
 

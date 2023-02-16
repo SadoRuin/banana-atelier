@@ -50,6 +50,7 @@ import NoticesDetail, {loader as noticeLoader} from "./routes/MyPage/NoticesDeta
 
 // 큐레이션탭
 import CurationsRoot from "./routes/MyPage/CurationsRoot";
+import { loader as CurationsRootLoader } from  "./routes/MyPage/CurationsRoot";
 import CurationsRegister, {loader as CurationRegisterLoader} from "./routes/MyPage/CurationsRegister";
 
 // 모달(프로필 수정, 작품 업로드, 대표작품 설정)
@@ -141,6 +142,7 @@ const router = createBrowserRouter(
               <Route
                 path="curations"
                 element={<CurationsRoot/>}
+                loader={CurationsRootLoader}
               />
 
               {/*<Route path="commissions" element={ <Commissions /> } />*/}

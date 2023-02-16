@@ -7,8 +7,8 @@ import { axiosAuth, axiosReissue } from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 // import CurationComponent from '../../components/commons/CurationComponent';
 import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
-import { getArtThumbnail } from '../../components/commons/imageModule';
-// import { getArtImage } from '../../components/commons/imageModule';
+// import { getArtThumbnail } from '../../components/commons/imageModule';
+import { getArtImage } from '../../components/commons/imageModule';
 
 import { BookmarkBtn, RedBtn, YellowBtn } from "../../components/commons/buttons";
 import '../ArtsPage/ArtsDetail.css'
@@ -62,7 +62,8 @@ function CurationsDetail() {
   let nickname= curationDetail.userNickname
   let profileImg= curationDetail.profileImg
   let userSeq = curationDetail.userSeq
-  let curationThumbnail =curationDetail.curationThumbnail
+  // let curationThumbnail =curationDetail.curationThumbnail
+  let curationImg = curationDetail.curationImg
   let curationName =curationDetail.curationName
   let curationSeq = curationDetail.curationSeq
   // let curationHit = curationDetail.curationHit
@@ -107,8 +108,8 @@ function CurationsDetail() {
       <div className="art-detail__container grid__detail-page">
 
         {/* 유진님 curation detail에서 썸네일 말고 arts이미지로 주세요 */}
-        <img src={`${getArtThumbnail(curationThumbnail, userSeq)}`} alt="큐레이션 대표 이미지" className="art-img" />
-        {/*<img src={`${getArtImage(curationThumbnail, userSeq)}`} alt="큐레이션 대표 이미지" className="art-img" />*/}
+        {/*<img src={`${getArtThumbnail(curationThumbnail, userSeq)}`} alt="큐레이션 대표 이미지" className="art-img" />*/}
+        <img src={`${getArtImage(curationImg, userSeq)}`} alt="큐레이션 대표 이미지" className="art-img" />
         {/* --------------------------------------------------- */}
 
         {/* 큐레이션 상세 정보 */}
@@ -156,8 +157,6 @@ function CurationsDetail() {
           </div>
         </div>
 
-
-        {/* 이거 주실 때 작품 seqNum 주세요~ */}
         <div className="arts_curation_for grid__detail-page">
           <h3 style={{gridColumn: '1 / end'}}>큐레이션 진행 작품</h3>
           { curationDetailArts.map((art) =>
@@ -165,7 +164,8 @@ function CurationsDetail() {
               <ArtItemMyPage
                 artThumbnail={art.curationThumbnail}
                 userSeq={userSeq}
-                // artSeq={art.id}
+                artSeq={art.artSeq}
+                artName={art.artName}
                 nickname={art.artistNickName}
               />
               <div>경매 시작가 : {art.auctionStartPrice}</div>
