@@ -9,6 +9,8 @@ import CurationInfo from "../../components/Curations/curationInfo";
 // import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
 
+
+
 // 어플리케이션 서버의 url
 // const APPLICATION_SERVER_URL = "http://localhost:4443/";
 const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447";
@@ -248,6 +250,7 @@ class App extends Component {
                       value={mySessionId}
                       onChange={this.handleChangeSessionId}
                       required
+                      
                       style={{width: "30px"}}
                     />
                 </p>
@@ -281,12 +284,13 @@ class App extends Component {
             <Frame>
               <LeftCam>
                 {this.state.mainStreamManager !== undefined ? (
+                // {this.state.mainStreamManager !== undefined ? (
                   <div id="main-video" >
-                    <UserVideoComponent streamManager={this.state.mainStreamManager} />
+                    <UserVideoComponent streamManager={this.state.publisher} />
                   </div>
                 ) : null}
-                <div id="video-container" >
-                  {/* {this.state.publisher !== undefined ? (
+                {/* <div id="video-container" >
+                  {this.state.publisher !== undefined ? (
                                     <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
                                     <UserVideoComponent
                                     streamManager={this.state.publisher} />
@@ -307,7 +311,7 @@ class App extends Component {
                   {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
 
                                 
-                </div>
+                {/* </div> */}
 
               </LeftCam>
               <RightInfo>
