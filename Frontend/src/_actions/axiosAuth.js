@@ -1,6 +1,4 @@
 import axios from "axios";
-import { redirect } from "react-router-dom";
-
 
 export const axiosReissue = () => {
     let expiration = +localStorage.getItem("expiration")
@@ -25,7 +23,7 @@ export const axiosReissue = () => {
             localStorage.removeItem("profileImg")
             localStorage.removeItem("role")
             localStorage.removeItem("userSeq")
-            return redirect("/login")
+            return window.location.pathname='/login';
         })
     }
 }
