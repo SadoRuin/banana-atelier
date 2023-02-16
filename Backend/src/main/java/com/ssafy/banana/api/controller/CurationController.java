@@ -102,12 +102,24 @@ public class CurationController {
 	@PreAuthorize("hasRole('ARTIST')")
 	@PutMapping("/{curation_seq}/on")
 	@ApiOperation(value = "큐레이션 시작")
-	public ResponseEntity updateCurationStatus(@PathVariable long curation_seq,
+	public ResponseEntity updateCurationStatusOn(@PathVariable long curation_seq,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		long userSeq = tokenProvider.getSubject(token);
 
-		curationService.updateCurationStatus(userSeq, curation_seq);
+		curationService.updateCurationStatus(userSeq, curation_seq, CurationStatus.ON);
+		return ResponseEntity.status(HttpStatus.OK).body("update completed");
+	}
+
+	@PreAuthorize("hasRole('ARTIST')")
+	@PutMapping("/{curation_seq}/end")
+	@ApiOperation(value = "큐레이션 종료")
+	public ResponseEntity updateCurationStatusEnd(@PathVariable long curation_seq,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		long userSeq = tokenProvider.getSubject(token);
+
+		curationService.updateCurationStatus(userSeq, curation_seq, CurationStatus.END);
 		return ResponseEntity.status(HttpStatus.OK).body("update completed");
 	}
 
