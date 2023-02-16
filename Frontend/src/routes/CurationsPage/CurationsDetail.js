@@ -108,8 +108,6 @@ function CurationsDetail() {
 
 
   const handleStartCuration = () => {
-    let userSeq = localStorage.getItem("userSeq")
-    localStorage.setItem("artistSeq", userSeq)
     axiosReissue()
   
     axiosAuth.put(`curations/${curationSeq}/on`)
