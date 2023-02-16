@@ -70,12 +70,12 @@ public class CurationDataResponse {
 		@JsonProperty
 		private String artistNickName;
 		@JsonProperty
-		private long artistProfile;
+		private String artistProfileImg;
 
 		public CurationBookmark(com.ssafy.banana.db.entity.CurationBookmark cb) {
 			super(cb);
 			this.artistNickName = cb.getCuration().getArtist().getUser().getNickname();
-			this.artistProfile = cb.getCuration().getArtist().getUser().getId();
+			this.artistProfileImg = cb.getCuration().getArtist().getUser().getProfileImg();
 		}
 
 	}
