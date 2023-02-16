@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, useNavigate, redirect } from 'react-router-dom'
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
-
+import { YellowBtn, RedBtn } from "../../components/commons/buttons";
 import './Upload.css'
 
 export async function action({request, params}) {
@@ -90,7 +90,9 @@ function Upload() {
 
           <div className="upload__info" >
             <div className="upload__info-container">
-              <label htmlFor="title" className="upload__bold-label">작품 제목</label>
+              <div>
+                <label htmlFor="title" className="upload__bold-label">작품 제목</label>
+              </div>
               <input type="text" name="artName" id="title" placeholder="작품 제목" required/>
             </div>
 
@@ -105,17 +107,21 @@ function Upload() {
               <label><input type="radio" name="artCategorySeq" value="6" />파인 아트</label>
               <label><input type="radio" name="artCategorySeq" value="7" />공예</label>
             </div>
+            <div className="upload__description">
+              <div className="upload__bold-label">
+                <label htmlFor="description" className="upload__bold-label">작품 설명</label>
+              </div>
+              <textarea name="artDescription" id="description" cols="60" rows="9" required></textarea>
+            </div>
           </div>
 
-          <div className="upload__description">
-            <label htmlFor="description" className="upload__bold-label">작품 설명</label>
-            <textarea name="artDescription" id="description" cols="30" rows="10" required></textarea>
-          </div>
         </div>
 
         <div className="upload__btns">
-          <button type="submit">제출하기</button>
-          <button type="button" onClick={()=>{ navigate(-1) }}>취소</button>
+          <YellowBtn style={{width: "80px", marginLeft:"10px", marginRight:"20px"}} type="submit"> 제출하기</YellowBtn>
+          <RedBtn style={{width: "80px"}} onClick={()=>{ navigate(-1) }}>취소</RedBtn>
+          {/* <button type="submit">제출하기</button> */}
+          {/* <button type="button" onClick={()=>{ navigate(-1) }}>취소</button> */}
         </div>
       </Form>
     </div>

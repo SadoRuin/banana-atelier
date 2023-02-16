@@ -31,12 +31,12 @@ import ArtsDetail, {action as ArtsDetailAction, loader as ArtsDetailLoader} from
 // 큐레이션 페이지
 import CurationsMain, {loader as curationListLoader} from "./routes/CurationsPage/CurationsMain";
 // import CurationsOnAir, {loader as CurationsOnAirLoader} from "./routes/CurationsPage/CurationsOnAir"
-import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
+// import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
 import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
 import CurationsDetail, {loader as CurationsDetailLoader, action as CurationDetailAction} from "./routes/CurationsPage/CurationsDetail";
 
-import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
-
+// import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
+import Openvidu from "./routes/CurationsPage/openvidu";
 
 // 마이페이지
 import MyPageLayout, {loader as MyPageLoader} from "./routes/MyPage/Layout";
@@ -59,7 +59,7 @@ import EditProfile from "./routes/MyPage/EditProfile";
 import Upload, {action as UploadAction} from "./routes/MyPage/Upload"
 // 대표작품 설정
 import SetMasterpiece, { action as SetMasterpieceAction, loader as SetMasterpieceLoader } from "./routes/MyPage/SetMasterpiece"
-// import CommissionsRegister from "./routes/CommissionsPage/CommissionsRegister";
+
 
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
@@ -88,12 +88,12 @@ const router = createBrowserRouter(
 
           {/* 큐레이션 페이지 */}
           <Route path="curations" element={<CurationsMain/>} loader={curationListLoader}/>
-          {/*<Route path="curations/on_air" element={<CurationsOnAir/>} loader={CurationsOnAirLoader}/>*/}
           <Route path="curations/detail/:curation_seq" element={<CurationsDetail/>} loader={CurationsDetailLoader} action={CurationDetailAction}/>
+          <Route path="curations/on_air/:curation_seq" element={<Openvidu />} />
 
-          <Route path="curations/on_air/:curation_seq" element={<CurationsOpenVidu/>}/>
 
-          <Route path="curations/upcoming" element={<CurationsUpcoming/>}/>
+          {/*<Route path="curations/on_air" element={<CurationsOnAir/>} loader={CurationsOnAirLoader}/>*/}
+          {/*<Route path="curations/upcoming" element={<CurationsUpcoming/>}/>*/}
           <Route path="curations/end" element={<CurationsEnd/>}/>
 
 

@@ -149,7 +149,7 @@ function CurationsDetail() {
               </div>
               {/* 시작한 큐레이션 참여 가능, 이 링크는 어떻게 될지 모르겟음~ */}
               { curationStatus === "ON" &&
-                <Link><YellowBtn style={{width: "120px"}} type="submit">입장하기</YellowBtn></Link> }
+                <Link to={`../curations/on_air/${curationSeq}`}><YellowBtn style={{width: "120px"}} type="submit">입장하기</YellowBtn></Link> }
               {/* 시작 전 큐레이션이고 자신의 글이면 시작버튼 활성화 */}
               { (curationStatus === "INIT" && userSeq === +localStorage.getItem('userSeq')) &&
                 <Link to={`../curations/on_air/${curationSeq}`} ><YellowBtn style={{width: "120px"}} type="submit">시작하기</YellowBtn></Link> }
