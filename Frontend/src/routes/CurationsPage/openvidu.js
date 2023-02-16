@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { Component } from "react";
 // import './App.css';
 import UserVideoComponent from "./UserVideoComponent";
-import UserVideoComponent2 from "./UserVideoComponent2";
+// import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
 // import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
@@ -31,12 +31,13 @@ const RightInfo = styled.div`
 class App extends Component {
   constructor(props) {
     super(props);
-
+    let userSeq = localStorage.getItem("userSeq")
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     this.state = {
-      mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      mySessionId: userSeq,
+      myUserName: localStorage.getItem("nickname"),
+      // myUserName: "Participant" + Math.floor(Math.random() * 100),
       session: undefined,
       mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
       publisher: undefined,
@@ -208,8 +209,9 @@ class App extends Component {
     this.setState({
       session: undefined,
       subscribers: [],
-      mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      mySessionId: this.state.userSeq,
+      myUserName: localStorage.getItem("nickname"),
+      // myUserName: "Participant" + Math.floor(Math.random() * 100),
       mainStreamManager: undefined,
       publisher: undefined,
     });
@@ -226,8 +228,7 @@ class App extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     // const myUserName = this.state.myUserName;
-    // const nickname = localStorage.getItem("nickname")
-
+    const nickname = localStorage.getItem("nickname")
     return (
       <div className="container">
         {this.state.session === undefined ? (
@@ -238,34 +239,25 @@ class App extends Component {
             <div id="join-dialog" className="jumbotron vertical-center">
               <h1> 큐레이션 시작하기 </h1>
               <form className="form-group" onSubmit={this.joinSession}>
-                {/* <p>
-                  <label>사용자명: </label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="userName"
-                    value={nickname}
-                    onChange={this.handleChangeUserName}
-                    required
-                  />
-                </p> */}
                 <p>
-                  <label> 세션명（이건 랜덤으로 생성하는게 맞을듯?）: </label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="sessionId"
-                    value={mySessionId}
-                    onChange={this.handleChangeSessionId}
-                    required
-                  />
+                  <label> Session : </label>
+                    <input
+                      className="form-control"
+                      type="text"
+                      id="sessionId"
+                      value={mySessionId}
+                      onChange={this.handleChangeSessionId}
+                      required
+                      disabled
+                      style={{width: "30px"}}
+                    />
                 </p>
                 <p className="text-center">
                   <input
                     className="btn btn-lg btn-success"
                     name="commit"
                     type="submit"
-                    value="입장"
+                    value="시작"
                   />
                 </p>
               </form>
@@ -276,7 +268,7 @@ class App extends Component {
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              <h1 id="session-title">{mySessionId}</h1>
+              <h2 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h2>
               <button
                 className="btn btn-large btn-danger"
                 type="button"
@@ -301,11 +293,15 @@ class App extends Component {
                                     streamManager={this.state.publisher} />
                                     </div>
                                 ) : null} */}
+
+                  {/* 원래 이 아래가 주석이 아니었음. 아래쪽에 조그만 화면으로 참가자 화면 띄우는 것인듯?  */}
+                  {/*}
                   {this.state.subscribers.map((sub, i) => (
                     <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
                       <UserVideoComponent2 streamManager={sub} />
                       </div>
                   ))}
+                  */}
                   {/* {this.state.publisher !== undefined ? (
                     <div> {this.state.publisher} </div>
                     ) : null}
