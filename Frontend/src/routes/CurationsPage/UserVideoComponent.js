@@ -4,10 +4,7 @@ import styled from 'styled-components';
 
 export const Streamcomponent = styled.div`
     display: flex;
-    overflow: hidden;
-    border-radius: 15px;
-    width: 600px; 
-    height: 700px;
+    border-radius: 10px;
   `;
 
 
@@ -27,7 +24,7 @@ export default class UserVideoComponent extends Component {
                         <OpenViduVideoComponent streamManager={this.props.streamManager} />
                     </Streamcomponent>
                 ) : null}
-                <div><p> 호스트 : {this.getNicknameTag()}</p></div>
+                <div><p> 🍌{this.getNicknameTag()} 님🍌 </p></div>
             </div>
         );
     }

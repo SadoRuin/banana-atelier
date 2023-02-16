@@ -1,14 +1,15 @@
-import { OpenVidu } from "openvidu-browser";
-
-import axios from "axios";
 import React, { Component } from "react";
+import { OpenVidu } from "openvidu-browser";
+import axios from "axios";
+
 // import './App.css';
 import UserVideoComponent from "./UserVideoComponent";
-// import UserVideoComponent2 from "./UserVideoComponent2";
+import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
 // import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
-
+import './openvidu.css'
+import { RedBtn } from "../../components/commons/buttons";
 
 
 // 어플리케이션 서버의 url
@@ -19,13 +20,14 @@ const OPENVIDU_SERVER_SECRET = "dnjftlr";
 
 const Frame = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
 `
-const LeftCam = styled.div`
+const LeftSide = styled.div`
   grid-column: 1/span 1;
 `
-const RightInfo = styled.div`
-  grid-column: 2/span 1;
+const RightSide = styled.div`
+  grid-column: 2/span 2;
 `
 
 
@@ -100,11 +102,9 @@ class App extends Component {
 
   joinSession() {
     // --- 1) Get an OpenVidu object ---
-
     this.OV = new OpenVidu();
 
     // --- 2) Init a session ---
-
     this.setState(
       {
         session: this.OV.initSession(),
@@ -229,10 +229,11 @@ class App extends Component {
 
   render() {
     const mySessionId = this.state.mySessionId;
-    // const myUserName = this.state.myUserName;
     const nickname = localStorage.getItem("nickname")
+    // const myUserName = this.state.myUserName;
     return (
-      <div className="container">
+      <div>
+        {/* 처음에 생성할 때 html */}
         {this.state.session === undefined ? (
           <div id="join">
             <div id="img-div">
@@ -250,7 +251,6 @@ class App extends Component {
                       value={mySessionId}
                       onChange={this.handleChangeSessionId}
                       required
-                      
                       style={{width: "30px"}}
                     />
                 </p>
@@ -267,57 +267,57 @@ class App extends Component {
           </div>
         ) : null}
 
+        {/* 큐레이션 화면 */}
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              <h2 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h2>
-              <button
-                className="btn btn-large btn-danger"
+              <h1 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h1>
+              <RedBtn
                 type="button"
                 id="buttonLeaveSession"
                 onClick={this.leaveSession}
                 value="나가기"
               >
                 나가기
-              </button>
+              </RedBtn>
             </div>
+
+            
             <Frame>
-              <LeftCam>
+
+              <LeftSide>
                 {this.state.mainStreamManager !== undefined ? (
-                // {this.state.mainStreamManager !== undefined ? (
                   <div id="main-video" >
-                    <UserVideoComponent streamManager={this.state.publisher} />
+                    <UserVideoComponent streamManager={this.state.mainStreamManager} />
                   </div>
                 ) : null}
-                {/* <div id="video-container" >
-                  {this.state.publisher !== undefined ? (
-                                    <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
-                                    <UserVideoComponent
-                                    streamManager={this.state.publisher} />
-                                    </div>
-                                ) : null} */}
+              </LeftSide>
 
-                  {/* 원래 이 아래가 주석이 아니었음. 아래쪽에 조그만 화면으로 참가자 화면 띄우는 것인듯?  */}
-                  {/*}
+              <RightSide>
+
+                <CurationInfo/>
+
+                <div id="video-container" >
+                  {/* {this.state.publisher !== undefined ? (
+                    <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
+                      <UserVideoComponent
+                      streamManager={this.state.publisher} />
+                    </div>
+                  ) : null} */}
+
                   {this.state.subscribers.map((sub, i) => (
                     <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
                       <UserVideoComponent2 streamManager={sub} />
                       </div>
                   ))}
-                  */}
+
                   {/* {this.state.publisher !== undefined ? (
                     <div> {this.state.publisher} </div>
                     ) : null}
-                  {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
-
-                                
-                {/* </div> */}
-
-              </LeftCam>
-              <RightInfo>
-                <CurationInfo/>
-
-              </RightInfo>
+                  {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}       
+                </div>
+              
+              </RightSide>
             </Frame>
           </div>
         ) : null}
