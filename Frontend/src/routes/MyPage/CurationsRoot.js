@@ -70,11 +70,11 @@ function CurationsRoot() {
               <CurationComponent
                 key={`curation-root__bookmarked-list-${curation.curationSeq}`}
                 nickname={curation.artistNickName}
-                userSeq={curation.artistProfile}
+                userSeq={curation.artistSeq}
                 curationThumbnail={curation.curationThumbnail}
                 curationName={curation.curationName}
                 curationSeq={curation.curationSeq}
-                profileImg={curation.profileImg}
+                profileImg={curation.artistProfileImg}
               />)}
           </div> : <div className="art-root__nothing">북마크한 큐레이션이 없습니다</div>
     }
