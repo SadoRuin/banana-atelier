@@ -109,7 +109,10 @@ body {
   font-size: 20px;
 }
 
-
+/* swiper 색상 */
+div.swiper-button-next, div.swiper-button-prev {
+  color: #f9d923 !important;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

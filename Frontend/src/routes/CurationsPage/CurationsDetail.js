@@ -12,6 +12,7 @@ import { getArtImage } from '../../components/commons/imageModule';
 
 import { BookmarkBtn, RedBtn, YellowBtn } from "../../components/commons/buttons";
 import '../ArtsPage/ArtsDetail.css'
+import '../MyPage/ArtsRoot.css'
 
 
 export async function loader ({params}) {
@@ -156,25 +157,26 @@ function CurationsDetail() {
 
           </div>
         </div>
-
-        <div className="arts_curation_for grid__detail-page">
-          <h3 style={{gridColumn: '1 / end'}}>큐레이션 진행 작품</h3>
-          { curationDetailArts.map((art) =>
-            <div key={`curation-detail__art-${art.artSeq}`}>
-              <ArtItemMyPage
-                artThumbnail={art.curationThumbnail}
-                userSeq={userSeq}
-                artSeq={art.artSeq}
-                artName={art.artName}
-                nickname={art.artistNickName}
-              />
-              <div>경매 시작가 : {art.auctionStartPrice}</div>
-              <div>호가 단위 : {art.auctionGap}</div>
-            </div>
-          )}
-        </div>
-
       </div>
+
+
+      <div className="arts_curation_for art-root__masterpiece-container">
+        <h3 style={{gridColumn: '1 / end'}}>큐레이션 진행 작품</h3>
+        { curationDetailArts.map((art) =>
+          <div key={`curation-detail__art-${art.artSeq}`}>
+            <ArtItemMyPage
+              artThumbnail={art.curationThumbnail}
+              userSeq={userSeq}
+              artSeq={art.artSeq}
+              artName={art.artName}
+              nickname={art.artistNickName}
+            />
+            <div>경매 시작가 : {art.auctionStartPrice}</div>
+            <div>호가 단위 : {art.auctionGap}</div>
+          </div>
+        )}
+      </div>
+
     </div>
   )
 }

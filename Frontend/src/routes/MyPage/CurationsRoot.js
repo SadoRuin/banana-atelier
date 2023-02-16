@@ -37,6 +37,8 @@ function CurationsRoot() {
   const [curationsList, bookmarkedList, followingCurationsList] = useLoaderData();
   const [curationsIndex, setCurationsIndex] = useState(0)
 
+  console.log(curationsList);
+
   const ArtMenuData = [];
   if (isArtist && curationsList.length) {
     ArtMenuData.push(
@@ -50,8 +52,9 @@ function CurationsRoot() {
                 userNickname={curation.userNickname}
                 userSeq={curation.userSeq}
                 curationThumbnail={curation.curationThumbnail}
-                curationName={curation.curationName}
                 curationSeq={curation.curationSeq}
+                profileImg={curation.profileImg}
+                curationName={curation.curationName}
               />)}
           </div>
       }
@@ -66,11 +69,12 @@ function CurationsRoot() {
             {bookmarkedList.map((curation) =>
               <CurationComponent
                 key={`curation-root__bookmarked-list-${curation.curationSeq}`}
-                userNickname={curation.userNickname}
-                userSeq={curation.userSeq}
+                nickname={curation.artistNickName}
+                userSeq={curation.artistProfile}
                 curationThumbnail={curation.curationThumbnail}
                 curationName={curation.curationName}
                 curationSeq={curation.curationSeq}
+                profileImg={curation.profileImg}
               />)}
           </div> : <div className="art-root__nothing">북마크한 큐레이션이 없습니다</div>
     }
@@ -85,11 +89,11 @@ function CurationsRoot() {
               <CurationComponent
                 key={`curation-root__following-curation-list-${curation.curationSeq}`}
                 nickname={curation.userNickname}
-                profileImg={curation.profileImg}
                 userSeq={curation.userSeq}
                 curationThumbnail={curation.curationThumbnail}
                 curationName={curation.curationName}
                 curationSeq={curation.curationSeq}
+                profileImg={curation.profileImg}
               />)}
           </div> : <div className="art-root__nothing">작가의 큐레이션이 없습니다</div>
     }
