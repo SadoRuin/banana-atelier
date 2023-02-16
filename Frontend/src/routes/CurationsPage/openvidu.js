@@ -36,7 +36,8 @@ class App extends Component {
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     this.state = {
       mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      myUserName: localStorage.getItem("nickname"),
+      // myUserName: "Participant" + Math.floor(Math.random() * 100),
       session: undefined,
       mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
       publisher: undefined,
@@ -209,7 +210,8 @@ class App extends Component {
       session: undefined,
       subscribers: [],
       mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      myUserName: localStorage.getItem("nickname"),
+      // myUserName: "Participant" + Math.floor(Math.random() * 100),
       mainStreamManager: undefined,
       publisher: undefined,
     });
