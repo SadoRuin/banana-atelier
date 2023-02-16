@@ -13,22 +13,16 @@ import './ArtsDetail.css'
 export async function loader ({params}) {
   axiosReissue();
   let artSeq = params.art_seq;
-  
-  const artData = await axiosAuth.get(`arts/detail/${artSeq}`)
-    .then(response => response.data)
-    .catch(error => error.response.status)
 
-  const likeList = await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
-    .then(response=> response.data)
-    .catch(() => null)
+  let artData = null
+  await axiosAuth.get(`arts/detail/${artSeq}`)
+    .then(response => artData = response.data)
+    .catch(error => console.log(error))
 
-  console.log(artData);
-  if (artData === 404) {
-    throw new Response("", {
-      status: 404,
-      statusText: "작품을 찾을 수 없습니다!",
-    });
-  }
+  let likeList = null;
+  await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
+    .then(response=> likeList = response.data)
+    .catch(error => console.log(error))
 
   return [artData, likeList];
 }

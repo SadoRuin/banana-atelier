@@ -26,8 +26,7 @@ function NavBar() {
       <div className="right-menu-bar">
         <Link className="link link-bold" to={`${nickname}@${userSeq}`}><YellowBtn>나의 아뜰리에</YellowBtn></Link>
         <div style={{ color: '#F9D923', fontSize: '20px', cursor: 'pointer' }}><FontAwesomeIcon icon={ faBell }/></div>
-        <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq} style={{cursor: 'pointer'}} onClick={event => {
-          navigate(`${nickname}@${userSeq}`)
+        <ProfileImg height="30px" width="30px" url={profileImg} userSeq={userSeq} style={{cursor: 'pointer'}} onClick={() => {navigate(`${nickname}@${userSeq}`)
         }} />
       </div>
   } else if (!loginWonder) {
@@ -44,7 +43,7 @@ function NavBar() {
         <img src={logo} alt="logo" style={{cursor: 'pointer'}} onClick={ () => { navigate('/')} } height='50px' className="logo"/>
         <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/arts">작품</NavLink>
         <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/curations">큐레이션</NavLink>
-        <NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/commissions">커미션</NavLink>
+        {/*<NavLink className={({isActive}) => isActive? 'link nav-active' : 'link' } to="/commissions">커미션</NavLink>*/}
       </div>
 
       <div id="search-bar" className="search_bar">

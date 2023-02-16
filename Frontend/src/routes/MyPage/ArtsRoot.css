@@ -10,6 +10,20 @@
     gap: 20px;
     padding-bottom: 20px;
 }
+@media (max-width: 1024px) {
+    .art-root__arts-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding-bottom: 20px;
+    }
+    .art-root__masterpiece-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding-bottom: 20px;
+    }
+}
 
 .art-root__arts-container > h3 {
     grid-column: 1 / end;
