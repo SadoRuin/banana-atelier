@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ssafy.banana.db.entity.Notice;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Accessors(chain = true)
 public class NoticeResponse {
 
@@ -29,11 +31,14 @@ public class NoticeResponse {
 
 	private Long userSeq;
 
+	private String nickname;
+
 	public NoticeResponse(Notice notice) {
 		this.id = notice.getId();
 		this.noticeTitle = notice.getNoticeTitle();
 		this.noticeContent = notice.getNoticeContent();
 		this.noticeTime = notice.getNoticeTime();
 		this.userSeq = notice.getArtist().getUser().getId();
+		this.nickname = notice.getArtist().getUser().getNickname();
 	}
 }
