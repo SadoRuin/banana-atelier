@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faHand, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHand } from '@fortawesome/free-solid-svg-icons';
 
 import { GreenBtn } from '../commons/buttons';
 import './curationInfo.css'

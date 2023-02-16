@@ -9,7 +9,7 @@ import CurationInfo from "../../components/Curations/curationInfo";
 // import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
 import './openvidu.css'
-import { RedBtn, GreenBtn } from "../../components/commons/buttons";
+import { RedBtn } from "../../components/commons/buttons";
 
 
 // 어플리케이션 서버의 url
@@ -296,7 +296,7 @@ class App extends Component {
               <RightSide>
 
                 <CurationInfo/>
-                
+
                 <div id="video-container" >
                   {/* {this.state.publisher !== undefined ? (
                     <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
