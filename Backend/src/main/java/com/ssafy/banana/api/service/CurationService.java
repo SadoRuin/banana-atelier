@@ -90,6 +90,9 @@ public class CurationService {
 				artRepository.findById(curationRequest.getCurationArtList().get(0).getArtSeq())
 					.orElse(null)
 					.getArtThumbnail())
+			.curationImg(artRepository.findById(curationRequest.getCurationArtList().get(0).getArtSeq())
+				.orElse(null)
+				.getArtImg())
 			.artist(artist)
 			.build();
 		curationRepository.save(curation);
@@ -135,8 +138,14 @@ public class CurationService {
 				.curation(curationRepository.findById(curation.getId())
 					.orElse(null))
 				.build();
+			if (i == 0) {
+				curation.setCurationThumbnail(curationArt.getArt().getArtThumbnail());
+				curation.setCurationImg(curationArt.getArt().getArtImg());
+				curationRepository.save(curation);
+			}
 			curationArtRepository.save(curationArt);
 		}
+
 	}
 
 	@Transactional
