@@ -127,7 +127,7 @@ export default function Layout() {
           <NavLink to='.' className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' } end>작품</NavLink>
           {/* 공지사항은 내 페이지도 아니고 작가도 아니면 아예 링크를 띄우지 말자 */}
           { (!isMyPage && !isArtist)? null : <NavLink to={ 'notices' } className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' }>공지사항</NavLink>}
-          <NavLink to={ ( isMyPage && !isArtist) ? 'curations/following' : 'curations/mine' } className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' } >큐레이션</NavLink>
+          <NavLink to={ 'curations' } className={({isActive}) => isActive? 'link my-page__link my-page__nav-active' : 'link my-page__link' } >큐레이션</NavLink>
         </nav>
 
         {/* 자식에게 props 전달 가능함! context를 이용한다. */}
