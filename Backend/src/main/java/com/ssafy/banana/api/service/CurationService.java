@@ -148,6 +148,18 @@ public class CurationService {
 
 	}
 
+	//큐레이션 상태 수정
+	@Transactional
+	public void updateCurationStatus(long userSeq, CurationRequest curationRequest, long curationSeq) {
+		if (userSeq != curationRequest.getArtistSeq()) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+
+		Curation curation = curationRepository.findById(curationSeq).orElse(null);
+		curation.setCurationStatus(CurationStatus.ON);
+		curationRepository.save(curation);
+	}
+
 	@Transactional
 	//큐레이션 삭제
 	public void deleteCuration(long userSeq, long curation_seq) {
@@ -238,14 +250,14 @@ public class CurationService {
 	}
 
 	//큐레이션 북마크 리스트
-	public List<CurationDataResponse.CurationSimple> getCurationBookmarkList(long userSeq, long tokenUserSeq) {
+	public List<CurationDataResponse.CurationBookmark> getCurationBookmarkList(long userSeq, long tokenUserSeq) {
 		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		List<CurationDataResponse.CurationSimple> bookMarkedCurations = curationBookmarkRepository.findAllByUser_Id(
+		List<CurationDataResponse.CurationBookmark> bookMarkedCurations = curationBookmarkRepository.findAllByUser_Id(
 				userSeq)
 			.stream()
-			.map(CurationDataResponse.CurationSimple::new)
+			.map(CurationDataResponse.CurationBookmark::new)
 			.collect(Collectors.toList());
 
 		if (bookMarkedCurations.size() > 0) {

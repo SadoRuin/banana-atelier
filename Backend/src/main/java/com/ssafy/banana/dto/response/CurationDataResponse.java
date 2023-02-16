@@ -66,8 +66,21 @@ public class CurationDataResponse {
 		}
 	}
 
-	//큐레이션 하나만 조회
+	public static class CurationBookmark extends CurationSimple {
+		@JsonProperty
+		private String artistNickName;
+		@JsonProperty
+		private long artistProfile;
 
+		public CurationBookmark(com.ssafy.banana.db.entity.CurationBookmark cb) {
+			super(cb);
+			this.artistNickName = cb.getCuration().getArtist().getUser().getNickname();
+			this.artistProfile = cb.getCuration().getArtist().getUser().getId();
+		}
+
+	}
+
+	//큐레이션 하나만 조회
 	public static class Curation extends CurationSimple {
 		@JsonProperty
 		private String curationSummary;
