@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styles from "./SignUpPage.module.css";
 import logo from "../../assets/글씨_250.png";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import {useNavigate} from "react-router-dom";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import "../../components/commons/commons.css";
 import {
@@ -59,7 +59,7 @@ function SignUpPage(props) {
         register,
         handleSubmit,
         // watch,
-        formState: { errors },
+        formState: {errors},
     } = useForm({
         mode: "onChange",
         resolver: yupResolver(formSchema),
@@ -159,7 +159,7 @@ function SignUpPage(props) {
                             src={logo}
                             alt="/"
                             id={styles["logo-img"]}
-                            style={{ cursor: "pointer" }}
+                            style={{cursor: "pointer"}}
                             onClick={() => navigate("/")}
                         />
                     </div>

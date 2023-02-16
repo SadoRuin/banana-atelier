@@ -1,23 +1,24 @@
 import React from 'react';
-import {useLoaderData, useNavigate} from "react-router-dom";
-import {getNotice} from "../../notices";
+import {RedBtn, YellowBtn} from "../../components/commons/buttons";
+import styles from "./Notice.module.css";
 
 export function loader({params}) {
-  const notice = getNotice(+params.notice_id)
-  return notice;
+    // const notice = getNotice(+params.notice_id)
+    // return notice;
 }
 
-function NoticesDetail(props) {
-  const noticeData = useLoaderData();
-  const navigate = useNavigate();
-  console.log('noticeData', noticeData);
-  return (
-    <div>
-      <button onClick={()=>navigate(-1)}>앞으로가기</button>
-      <h3>{noticeData.notice_title}</h3>
-      <div>{noticeData.notice_content}</div>
-    </div>
-  );
+function NoticesDetail({noticeContent}) {
+    // const noticeData = useLoaderData();
+    // const navigate = useNavigate();
+    return (
+        <div>
+            <div className={styles["notice-content"]}>{noticeContent}</div>
+            <div className={styles["buttons"]}>
+                <YellowBtn className={styles["button"]}>수정하기</YellowBtn>
+                <RedBtn className={styles["button"]}>삭제하기</RedBtn>
+            </div>
+        </div>
+    );
 }
 
 export default NoticesDetail;

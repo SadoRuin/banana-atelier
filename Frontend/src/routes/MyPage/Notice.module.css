@@ -1,0 +1,44 @@
+.notice {
+    margin: 5px;
+}
+
+.notice-list {
+    padding-bottom: 10px;
+}
+
+.each-notice {
+    padding: 10px;
+}
+
+.notice-title {
+    font-size: 17px;
+    font-family: Pretendard-Regular;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.notice-title-nickname {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+}
+
+.notice-content {
+    font-size: 17px;
+    font-family: Pretendard-Regular;
+    padding-block: 5px 10px;
+}
+
+.regist-button {
+    margin-block: 30px 20px;
+}
+
+.buttons {
+    display: flex;
+    padding-block: 10px;
+}
+
+.button {
+    font-family: Pretendard-Regular;
+    margin-right: 5px;
+}
