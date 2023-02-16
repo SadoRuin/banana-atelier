@@ -248,7 +248,6 @@ class App extends Component {
                       value={mySessionId}
                       onChange={this.handleChangeSessionId}
                       required
-                      disabled
                       style={{width: "30px"}}
                     />
                 </p>
