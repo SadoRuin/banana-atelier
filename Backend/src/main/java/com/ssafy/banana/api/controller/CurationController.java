@@ -157,11 +157,12 @@ public class CurationController {
 	//북마크한 큐레이션 리스트
 	@GetMapping("/{userSeq}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 큐레이션 리스트")
-	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationBookmarkList(@PathVariable long userSeq,
+	public ResponseEntity<List<CurationDataResponse.CurationBookmark>> getCurationBookmarkList(
+		@PathVariable long userSeq,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		long tokenUserSeq = tokenProvider.getSubject(token);
-		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationBookmarkList(userSeq,
+		List<CurationDataResponse.CurationBookmark> curationList = curationService.getCurationBookmarkList(userSeq,
 			tokenUserSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
