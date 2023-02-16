@@ -7,7 +7,7 @@
 }
 
 .each-notice {
-    padding: 10px;
+    padding: 5px 10px;
 }
 
 .notice-title {
@@ -26,7 +26,7 @@
 .notice-content {
     font-size: 17px;
     font-family: Pretendard-Regular;
-    padding-block: 5px 10px;
+    padding-block: 10px 20px;
 }
 
 .regist-button {
@@ -41,4 +41,9 @@
 .button {
     font-family: Pretendard-Regular;
     margin-right: 5px;
+}
+
+.link {
+    color: inherit;
+    text-decoration: none;
 }
