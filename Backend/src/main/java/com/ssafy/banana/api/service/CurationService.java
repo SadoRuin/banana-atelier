@@ -150,13 +150,12 @@ public class CurationService {
 
 	//큐레이션 상태 수정
 	@Transactional
-	public void updateCurationStatus(long userSeq, long curationSeq) {
+	public void updateCurationStatus(long userSeq, long curationSeq, CurationStatus curationStatus) {
 		Curation curation = curationRepository.findById(curationSeq).orElse(null);
 		if (userSeq != curation.getArtist().getUser().getId()) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		
-		curation.setCurationStatus(CurationStatus.ON);
+		curation.setCurationStatus(curationStatus);
 		curationRepository.save(curation);
 	}
 
