@@ -279,11 +279,11 @@ class Openvidu extends Component {
                       className="form-control"
                       type="text"
                       id="sessionId"
-                      value={this.state.mySessionId}
+                      value="session"
                       // value={this.state.artistSeq}
                       onChange={this.handleChangeSessionId}
                       required
-                      style={{width: "30px"}}
+                      style={{width: "50px"}}
                     />
                 </p>
                 <p className="text-center">
