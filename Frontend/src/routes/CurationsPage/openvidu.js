@@ -339,7 +339,7 @@ class Openvidu extends Component {
                       나가기
                     </RedBtn>} />
 
-                <div id="video-container">
+                <div id="video-container" style={{display: 'flex'}}>
                   {/* {this.state.publisher !== undefined ? (
                     <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
                       <UserVideoComponent
