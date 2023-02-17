@@ -279,7 +279,8 @@ class Openvidu extends Component {
                       className="form-control"
                       type="text"
                       id="sessionId"
-                      value={this.state.artistSeq}
+                      value={this.state.mySessionId}
+                      // value={this.state.artistSeq}
                       onChange={this.handleChangeSessionId}
                       required
                       style={{width: "30px"}}
