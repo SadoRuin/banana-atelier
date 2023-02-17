@@ -339,7 +339,7 @@ class Openvidu extends Component {
                       나가기
                     </RedBtn>} />
 
-                <div id="video-container">
+                <div id="video-container" style={{display: 'flex'}}>
                   {/* {this.state.publisher !== undefined ? (
                     <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
                       <UserVideoComponent
@@ -347,9 +347,9 @@ class Openvidu extends Component {
                     </div>
                   ) : null} */}
                   {this.state.subscribers.map((sub, i) => (
-                    <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
+                    <inline key={i}  onClick={() => this.handleMainVideoStream(sub)} style={{marginRight: "20px", borderRadius: "5px"}}>
                       <UserVideoComponent2 streamManager={sub} />
-                    </div>
+                    </inline>
                   ))}
 
                   {/* {this.state.publisher !== undefined ? (
