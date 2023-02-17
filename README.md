@@ -1,8 +1,8 @@
-# ✨ 바나나공방 ✨
+# 🍌 바나나공방 🍌
 
 
-## 🎨 프로젝트 소개
-<img src="https://user-images.githubusercontent.com/47595515/219480374-ea76abd7-2a0e-4ca3-9755-84eaee0034d7.png" width="500"/>
+## ✨ 프로젝트 소개
+<img src="https://user-images.githubusercontent.com/47595515/219480374-ea76abd7-2a0e-4ca3-9755-84eaee0034d7.png" width="500" alt="바나나공방 로고"/>
 
 * 프로젝트명: 바나나공방
 * 서비스 특징: 누구나 작가가 되어 자신의 작품을 공유할 수 있는 서비스
@@ -17,21 +17,17 @@
     - REST API
 * 프로젝트 진행 기간 : 2023.01.03일(화) ~ 2023.02.17(금)
 
-<!-- 자유 양식 -->
 
 ## 💛 팀 소개
-* 신선호: 팀장, 프론트엔드 개발
-* 박시현: 부팀장, 프론트엔드 개발
-* 김규리: 와이어프레임 설계, 프론트엔드 개발
-* 박윤환: 백엔드 개발, DevOps 담당
-* 박주희: 풀스택 개발
-* 손유진: 백엔드 개발
+- **신선호**: 팀장, 프론트엔드 개발
+- **박시현**: 부팀장, 프론트엔드 개발
+- **김규리**: 와이어프레임 설계, 프론트엔드 개발
+- **박윤환**: 백엔드 개발, DevOps 담당
+- **박주희**: 풀스택 개발
+- **손유진**: 백엔드 개발
 
-<!-- 자유 양식 -->
 
-## 📃 프로젝트 상세 설명
-
-### ⚙ 개발 환경
+## ⚙ 개발 환경
 🔧 **Backend**
 - IntelliJ : 2022.3.1 (Ultimate Edition)
 - Java 11
@@ -62,7 +58,7 @@
 - Nginx 1.23.3
 - Jenkins 2.375.2
 
-### ⚙ 프로젝트 폴더 구조
+## 🗂 프로젝트 폴더 구조
 
 - Frontend
   ```text
@@ -110,22 +106,21 @@
   └── util
   ```
 
-### ⚙ 시스템 구성도
-- 아키텍쳐
+## 🗺 서비스 아키텍처
 ![프로젝트 아키텍쳐](https://user-images.githubusercontent.com/47595515/219516496-9b0b9e9b-ff5c-49db-9b80-1f4903164a35.png)
 
-### ⚙ 기능 명세서
+## 📜 기능 명세서
   <details>
     <summary>API</summary>
-    <img src="https://user-images.githubusercontent.com/47595515/219517058-239bd9f2-12c0-4936-9e43-792ee83070f5.jpeg"/>
+    <img src="https://user-images.githubusercontent.com/47595515/219517058-239bd9f2-12c0-4936-9e43-792ee83070f5.jpeg" alt="Swagger 기능 명세서"/>
     
   </details>
 
-### ⚙ ERD
+## 📊 ERD
 ![ERD](https://user-images.githubusercontent.com/47595515/219516499-b6bb9e37-c694-4314-8975-9e9d712fa063.png)
 
 
-### ⚙ 컨벤션
+### 🤝 컨벤션
 - **git 컨벤션**
   ```text
   ### 제목
@@ -195,7 +190,29 @@
   - 코딩 스타일 자동적용 설정
     - IntelliJ에 NAVER [캠퍼스 핵데이 Java 코딩 컨벤션](https://naver.github.io/hackday-conventions-java/) 적용
     - 저장시 액션 설정
-      ![sdfasdf](https://user-images.githubusercontent.com/47595515/219520513-12db4f55-b814-4395-9c01-6207abab589f.png)
 
-### ⚙ 기능 상세 설명
+      <img src="https://user-images.githubusercontent.com/47595515/219520513-12db4f55-b814-4395-9c01-6207abab589f.png" width="400" alt="저장시 액션 설정"/>
 
+## 🎨 기능 상세 설명
+### 회원가입
+- 닉네임 중복 체크
+- 이메일 중복 체크 및 인증메일 발송
+- 인증번호 확인
+- 위의 과정을 모두 수행해야 회원가입 가능
+  ![1 인증번호 받기](https://user-images.githubusercontent.com/47595515/219526245-a7d4ba9f-c6fa-48bb-a4bb-dcd99f2d783d.gif)
+
+### 비밀번호 재발급
+  - 이메일 입력 후 비밀번호 재발급 버튼 클릭
+  - 가입된 이메일일 경우 임시비밀번호 발송
+  ![2 비밀번호 재발급](https://user-images.githubusercontent.com/47595515/219526237-f8299d04-c482-4817-a7f8-81d83e7a79f3.gif)
+### 이미지 업로드
+  - 제목, 간단한 설명과 함께 작품 이미지를 업로드
+  - 첫번째 작품을 업로드함으로서 작가권한 획득
+  ![3 이미지 업로드](https://user-images.githubusercontent.com/47595515/219526244-47dda627-4de4-443e-9cf6-1302263f527f.gif)
+### 큐레이션 등록
+  - 큐레이션 일정 등록
+  - 등록된 작품들 중 큐레이션하고 싶은 작품 선택
+  ![4 큐레이션 등록](https://user-images.githubusercontent.com/47595515/219526246-2446b7c9-e211-4ad9-921c-014b60279a44.gif)
+### 큐레이션 접속
+  - 참가하고 싶은 큐레이션에 입장
+  ![5 큐레이션 접속](https://user-images.githubusercontent.com/47595515/219526249-d2621cfe-05f3-4f24-bc2e-1fdd06e01524.gif)
