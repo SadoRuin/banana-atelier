@@ -90,6 +90,9 @@ public class CurationService {
 				artRepository.findById(curationRequest.getCurationArtList().get(0).getArtSeq())
 					.orElse(null)
 					.getArtThumbnail())
+			.curationImg(artRepository.findById(curationRequest.getCurationArtList().get(0).getArtSeq())
+				.orElse(null)
+				.getArtImg())
 			.artist(artist)
 			.build();
 		curationRepository.save(curation);
@@ -135,8 +138,25 @@ public class CurationService {
 				.curation(curationRepository.findById(curation.getId())
 					.orElse(null))
 				.build();
+			if (i == 0) {
+				curation.setCurationThumbnail(curationArt.getArt().getArtThumbnail());
+				curation.setCurationImg(curationArt.getArt().getArtImg());
+				curationRepository.save(curation);
+			}
 			curationArtRepository.save(curationArt);
 		}
+
+	}
+
+	//큐레이션 상태 수정
+	@Transactional
+	public void updateCurationStatus(long userSeq, long curationSeq, CurationStatus curationStatus) {
+		Curation curation = curationRepository.findById(curationSeq).orElse(null);
+		if (userSeq != curation.getArtist().getUser().getId()) {
+			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
+		}
+		curation.setCurationStatus(curationStatus);
+		curationRepository.save(curation);
 	}
 
 	@Transactional
@@ -229,14 +249,14 @@ public class CurationService {
 	}
 
 	//큐레이션 북마크 리스트
-	public List<CurationDataResponse.CurationSimple> getCurationBookmarkList(long userSeq, long tokenUserSeq) {
+	public List<CurationDataResponse.CurationBookmark> getCurationBookmarkList(long userSeq, long tokenUserSeq) {
 		if (userSeq != tokenUserSeq) {
 			throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 		}
-		List<CurationDataResponse.CurationSimple> bookMarkedCurations = curationBookmarkRepository.findAllByUser_Id(
+		List<CurationDataResponse.CurationBookmark> bookMarkedCurations = curationBookmarkRepository.findAllByUser_Id(
 				userSeq)
 			.stream()
-			.map(CurationDataResponse.CurationSimple::new)
+			.map(CurationDataResponse.CurationBookmark::new)
 			.collect(Collectors.toList());
 
 		if (bookMarkedCurations.size() > 0) {

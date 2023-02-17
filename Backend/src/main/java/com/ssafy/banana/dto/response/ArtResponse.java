@@ -87,10 +87,10 @@ public class ArtResponse {
 			.id(artCategorySeq)
 			.artCategoryName(artCategoryName)
 			.build();
-
-		this.artistSeq = user.getId();
-		this.profileImg = user.getProfileImg();
-		this.artistNickname = user.getNickname();
-		this.artistLikeCount = user.getArtistLikeCount();
+		
+		this.artistSeq = art.getArtist().getId();
+		this.profileImg = art.getArtist().getUser().getProfileImg();
+		this.artistNickname = art.getArtist().getUser().getNickname();
+		this.artistLikeCount = art.getArtist().getUser().getArtistLikeCount();
 	}
 }

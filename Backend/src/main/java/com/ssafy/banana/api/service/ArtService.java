@@ -20,7 +20,6 @@ import com.ssafy.banana.db.repository.MyArtRepository;
 import com.ssafy.banana.db.repository.UserRepository;
 import com.ssafy.banana.dto.DownloladFileDto;
 import com.ssafy.banana.dto.request.ArtRequest;
-import com.ssafy.banana.dto.request.MasterpieceRequest;
 import com.ssafy.banana.dto.request.SeqRequest;
 import com.ssafy.banana.dto.response.ArtDetailResponse;
 import com.ssafy.banana.dto.response.ArtResponse;
@@ -121,18 +120,36 @@ public class ArtService {
 	}
 
 	@Transactional
-	public void setMasterpieceList(List<MasterpieceRequest> masterpieceRequestList, long userSeq) {
+	public void setMasterpieceList(List<SeqRequest> artSeqRequestList, long userSeq) {
 
-		Art art;
-		for (MasterpieceRequest masterpieceRequest : masterpieceRequestList) {
-			art = artRepository.findById(masterpieceRequest.getArtSeq())
+		for (int i = 0; i < artSeqRequestList.size(); i++) {
+			// 요청 작품 확인
+			Art art = artRepository.findById(artSeqRequestList.get(i).getSeq())
 				.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
-
+			// 요청 작가 확인
 			if (art.getArtist().getId() != userSeq) {
 				throw new CustomException(CustomExceptionType.AUTHORITY_ERROR);
 			}
-			art.setRepresent(masterpieceRequest.isRepresent());
-			artRepository.save(art);
+		}
+		// 작가의 모든 작품
+		List<Art> artList = artRepository.findAllByArtist_Id(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+		for (int i = 0; i < artList.size(); i++) {
+			Art art = artList.get(i);
+			if (art.isRepresent() == true) {
+				art.setRepresent(false);
+			}
+		}
+		Art art = null;
+		for (int i = 0; i < artSeqRequestList.size(); i++) {
+			for (int j = 0; j < artList.size(); j++) {
+				// 설정 요청 들어온 작품만 true로 바꿔줌
+				art = artList.get(j);
+				if (artSeqRequestList.get(i).getSeq() == art.getId()) {
+					art.setRepresent(true);
+					artRepository.save(art);
+				}
+			}
 		}
 	}
 
@@ -159,7 +176,7 @@ public class ArtService {
 
 	public List<ArtResponse> getPopularArtList() {
 
-		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtLikeCount();
+		List<ArtResponse> popularArtList = artRepository.findAllOrderByArtHit();
 		if (!CollectionUtils.isEmpty(popularArtList)) {
 			return popularArtList;
 		} else {

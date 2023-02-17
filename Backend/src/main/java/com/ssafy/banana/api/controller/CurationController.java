@@ -98,6 +98,31 @@ public class CurationController {
 		return ResponseEntity.status(HttpStatus.OK).body("update completed");
 	}
 
+	//큐레이션 상태 수정
+	@PreAuthorize("hasRole('ARTIST')")
+	@PutMapping("/{curation_seq}/on")
+	@ApiOperation(value = "큐레이션 시작")
+	public ResponseEntity updateCurationStatusOn(@PathVariable long curation_seq,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		long userSeq = tokenProvider.getSubject(token);
+
+		curationService.updateCurationStatus(userSeq, curation_seq, CurationStatus.ON);
+		return ResponseEntity.status(HttpStatus.OK).body("update completed");
+	}
+
+	@PreAuthorize("hasRole('ARTIST')")
+	@PutMapping("/{curation_seq}/end")
+	@ApiOperation(value = "큐레이션 종료")
+	public ResponseEntity updateCurationStatusEnd(@PathVariable long curation_seq,
+		@RequestHeader String Authorization) {
+		String token = Authorization.split(" ")[1];
+		long userSeq = tokenProvider.getSubject(token);
+
+		curationService.updateCurationStatus(userSeq, curation_seq, CurationStatus.END);
+		return ResponseEntity.status(HttpStatus.OK).body("update completed");
+	}
+
 	@PreAuthorize("hasRole('ARTIST')")
 	@DeleteMapping("/{curation_seq}")
 	@ApiOperation(value = "큐레이션 삭제")
@@ -143,11 +168,12 @@ public class CurationController {
 	//북마크한 큐레이션 리스트
 	@GetMapping("/{userSeq}/bookmark")
 	@ApiOperation(value = "유저가 북마크한 큐레이션 리스트")
-	public ResponseEntity<List<CurationDataResponse.CurationSimple>> getCurationBookmarkList(@PathVariable long userSeq,
+	public ResponseEntity<List<CurationDataResponse.CurationBookmark>> getCurationBookmarkList(
+		@PathVariable long userSeq,
 		@RequestHeader String Authorization) {
 		String token = Authorization.split(" ")[1];
 		long tokenUserSeq = tokenProvider.getSubject(token);
-		List<CurationDataResponse.CurationSimple> curationList = curationService.getCurationBookmarkList(userSeq,
+		List<CurationDataResponse.CurationBookmark> curationList = curationService.getCurationBookmarkList(userSeq,
 			tokenUserSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(curationList);
 	}
@@ -178,4 +204,5 @@ public class CurationController {
 			tokenUserSeq, curationSeq);
 		return ResponseEntity.status(HttpStatus.OK).body(flag);
 	}
+
 }

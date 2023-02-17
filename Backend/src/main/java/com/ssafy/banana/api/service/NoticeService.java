@@ -1,6 +1,7 @@
 package com.ssafy.banana.api.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -53,12 +54,24 @@ public class NoticeService {
 	 */
 	public List<NoticeResponse> getMyNoticeList(long userSeq) {
 
-		List<NoticeResponse> myNoticeList = noticeRepository.findByUserSeq(userSeq);
-		if (!CollectionUtils.isEmpty(myNoticeList)) {
-			return myNoticeList;
-		} else {
-			throw new CustomException(CustomExceptionType.NO_CONTENT);
+		// List<NoticeResponse> myNoticeList = noticeRepository.findByUserSeq(userSeq);
+		List<NoticeResponse> myNoticeList = new ArrayList<>();
+		List<Notice> noticeList = noticeRepository.findAllByArtist_IdOrderByIdDesc(userSeq)
+			.orElseThrow(() -> new CustomException(CustomExceptionType.NO_CONTENT));
+
+		for (int i = 0; i < noticeList.size(); i++) {
+			Notice notice = noticeList.get(i);
+			NoticeResponse noticeResponse = NoticeResponse.builder()
+				.id(notice.getId())
+				.noticeTitle(notice.getNoticeTitle())
+				.noticeContent(notice.getNoticeContent())
+				.noticeTime(notice.getNoticeTime())
+				.userSeq(notice.getArtist().getId())
+				.nickname(notice.getArtist().getUser().getNickname())
+				.build();
+			myNoticeList.add(noticeResponse);
 		}
+		return myNoticeList;
 	}
 
 	/**
