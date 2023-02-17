@@ -49,7 +49,7 @@ function withParams(Component) {
 class Openvidu extends Component {
   constructor(props) {
     super(props);
-    let userSeq = localStorage.getItem("userSeq")
+    // let userSeq = localStorage.getItem("userSeq")
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     let curationSeq = props.params.curation_seq;
