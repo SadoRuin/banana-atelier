@@ -77,7 +77,7 @@ function NoticesDetail({ artistSeq, noticeSeq, notice_title, notice_content }) {
       ) : (
         <div>
           <div className={styles["notice-content"]}>{noticeContent}</div>
-          {artistSeq == +localStorage.getItem("userSeq") && (
+          {artistSeq === +localStorage.getItem("userSeq") && (
             <div className={styles["buttons"]}>
               <YellowBtn
                 className={styles["button"]}
