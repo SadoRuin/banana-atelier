@@ -4,7 +4,7 @@ import { useParams, useLoaderData } from "react-router-dom";
 import axios from "axios";
 
 // import './App.css';
-import { axiosAuth } from "../../_actions/axiosAuth";
+import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import UserVideoComponent from "./UserVideoComponent";
 import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
@@ -36,8 +36,9 @@ export async function loader ({params}) {
   const curationArtsList = await axiosAuth(`curation-art/list/${curationSeq}`)
     .then(response => response.data);
   const artistSeq = await curationArtsList[0].artistSeq
+  const curationArtistNickname = await curationArtsList[0].artistNickName
 
-  return [curationArtsList, artistSeq]
+  return [curationArtsList, artistSeq, curationArtistNickname]
 }
 
 // 클래스형 컴포넌트에서 params 가져오기
@@ -52,10 +53,11 @@ class Openvidu extends Component {
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     let curationSeq = props.params.curation_seq;
-    let [curationArtsList, artistSeq] = props.loader;
+    let [curationArtsList, artistSeq, curationArtistNickname] = props.loader;
     this.state = {
       curationSeq: curationSeq,
       curationArtList: curationArtsList,
+      curationArtistNickname: curationArtistNickname,
       artistSeq: artistSeq,
       mySessionId: userSeq,
       myUserName: localStorage.getItem("nickname"),
@@ -157,6 +159,10 @@ class Openvidu extends Component {
           console.warn(exception);
         });
 
+        axiosReissue()
+
+        axiosAuth.put(`/curations/${this.state.curationSeq}/on`)
+
         // --- 4) Connect to the session with a valid user token ---
 
         // Get a token from the OpenVidu deployment
@@ -218,6 +224,12 @@ class Openvidu extends Component {
   leaveSession() {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
 
+    axiosReissue()
+
+    axiosAuth.put(`/curations/${this.state.curationSeq}/end`)
+      .then(console.log('종료 성공'))
+      .catch(console.log("종료 실패"))
+
     const mySession = this.state.session;
 
     if (mySession) {
@@ -243,8 +255,8 @@ class Openvidu extends Component {
   }
 
   render() {
-    const mySessionId = this.state.mySessionId;
-    const nickname = localStorage.getItem("nickname")
+    // const mySessionId = this.state.mySessionId;
+    // const nickname = localStorage.getItem("nickname")
     console.log(this.state.curationSeq);
     console.log(this.state.curationArtList);
     console.log(this.state.artistSeq)
@@ -266,7 +278,7 @@ class Openvidu extends Component {
                       className="form-control"
                       type="text"
                       id="sessionId"
-                      value={mySessionId}
+                      value={this.state.artistSeq}
                       onChange={this.handleChangeSessionId}
                       required
                       style={{width: "30px"}}
@@ -289,7 +301,7 @@ class Openvidu extends Component {
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              <h1 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h1>
+              <h1 id="session-title">🍌{this.state.curationArtistNickname}🍌 작가님의 큐레이션</h1>
               {/*<RedBtn*/}
               {/*  type="button"*/}
               {/*  id="buttonLeaveSession"*/}
