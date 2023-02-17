@@ -21,20 +21,21 @@ function CurationInfo ({curationArtsList, outBtn}) {
     return {...art, auctionNowPrice:art.auctionStartPrice}})
 
   const [artIndex, setArtIndex] = useState(0);
-  // const [artList, setArtList] = useState([...newCurationArtsList]);
-  // const handleAuctionPrice = (e, idx) => {
-  //   console.log(idx);
-  //   setArtList(prev => {
-  //     console.log(prev);
-  //     prev.map((art, index) => {
-  //       console.log(art, index);
-  //       return {...art}
-  //     })
-  //   })
-  // }
+  const [artList, setArtList] = useState([...newCurationArtsList]);
+  const handleAuctionPrice = (e, idx) => {
+    setArtList(prev => {
+      console.log(prev);
+      return prev.map((art, index) => {
+        if (index === idx) {
+          return {...art, auctionNowPrice: art.auctionNowPrice + art.auctionGap}
+        }
+        return {...art}
+      })
+    })
+  }
 
 
-  const artTabMenu = newCurationArtsList.map((art, idx) => {
+  const artTabMenu = artList.map((art, idx) => {
     return {
       name: idx+1,
       content:
@@ -54,7 +55,7 @@ function CurationInfo ({curationArtsList, outBtn}) {
             <div className='curation__art-start-price'>시작 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionStartPrice}</span></div>
             <div className='curation__art-now-price'>현재 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionNowPrice}</span></div>
             <div className='curation__btns'>
-              <div style={{width: '60%'}} ><GreenBtn className='curation__participate-auction' style={{width: "100%"}} ><FontAwesomeIcon icon={faHand}/> {art.auctionGap}원 추가하기</GreenBtn></div>
+              <div style={{width: '60%'}} onClick={(e)=>handleAuctionPrice(e, artIndex)} ><GreenBtn className='curation__participate-auction' style={{width: "100%"}} ><FontAwesomeIcon icon={faHand}/> {art.auctionNowPrice + art.auctionGap}원에 입찰하기</GreenBtn></div>
               <div style={{width: '40%', marginLeft: "10px"}}>{outBtn}</div>
             </div>
           </div>
