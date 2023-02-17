@@ -1,24 +1,39 @@
 import React from 'react';
-import styled from 'styled-components'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCircleCheck} from "@fortawesome/free-regular-svg-icons";
+
 import { getArtThumbnail } from "../commons/imageModule";
-import './MasterPieceItem.css'
+import '../commons/ArtComponent.css'
+import './MasterpieceItem.css'
 
-const MasterpieceItemShape = styled.div`
-  background-image: url(${props => getArtThumbnail(props.url, props.userSeq)});
-  object-fit: cover;
-  border-radius: 5px;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-`
-
-function MasterpieceItem({isChecked=true, artThumbnail, artName, userSeq}) {
-  return (
-    <div>
-      <MasterpieceItemShape url={artThumbnail} userSeq={userSeq} />
-      <div className={isChecked ? 'masterpiece-item__checked is-checked' : 'masterpiece-item__checked'}>
-        {artName}
+function MasterpieceItem({isRepresent = false, artThumbnail, artName, userSeq}) {
+  if (isRepresent) {
+    return (
+      <div className="art-img__container"
+           style={{backgroundImage : `url("${getArtThumbnail(artThumbnail, userSeq)}")`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    cursor: "pointer"}}
+      >
+        <div className="masterpiece__selected">
+          <FontAwesomeIcon icon={faCircleCheck} />
+        </div>
       </div>
-    </div>
+    );
+  }
+  return (
+      <div className="art-img__container"
+           style={{backgroundImage : `url("${getArtThumbnail(artThumbnail, userSeq)}")`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    cursor: "pointer"}}
+      >
+        <div className="hidden__gradient">
+          <div>{artName}</div>
+        </div>
+      </div>
   );
 }
 

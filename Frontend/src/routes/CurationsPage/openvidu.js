@@ -1,42 +1,68 @@
-import { OpenVidu } from "openvidu-browser";
-
-import axios from "axios";
 import React, { Component } from "react";
+import { OpenVidu } from "openvidu-browser";
+import { useParams, useLoaderData } from "react-router-dom";
+import axios from "axios";
+
 // import './App.css';
+import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import UserVideoComponent from "./UserVideoComponent";
 import UserVideoComponent2 from "./UserVideoComponent2";
 import CurationInfo from "../../components/Curations/curationInfo";
 // import OpenViduVideoComponent from './OvVideo';
 import styled from 'styled-components';
+import './openvidu.css'
+import { RedBtn } from "../../components/commons/buttons";
+
 
 // 어플리케이션 서버의 url
 // const APPLICATION_SERVER_URL = "http://localhost:4443/";
 const APPLICATION_SERVER_URL = "https://i8a108.p.ssafy.io:8447";
 const OPENVIDU_SERVER_SECRET = "dnjftlr";
 
-
 const Frame = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
 `
-const LeftCam = styled.div`
+const LeftSide = styled.div`
   grid-column: 1/span 1;
 `
-const RightInfo = styled.div`
-  grid-column: 2/span 1;
+const RightSide = styled.div`
+  grid-column: 2/span 2;
 `
 
+export async function loader ({params}) {
+  const curationSeq = params.curation_seq;
+  const curationArtsList = await axiosAuth(`curation-art/list/${curationSeq}`)
+    .then(response => response.data);
+  const artistSeq = await curationArtsList[0].artistSeq
+  const curationArtistNickname = await curationArtsList[0].artistNickName
 
+  return [curationArtsList, artistSeq, curationArtistNickname]
+}
 
-class App extends Component {
+// 클래스형 컴포넌트에서 params 가져오기
+function withParams(Component) {
+  return props => <Component {...props} params={useParams()} loader={useLoaderData()} />;
+}
+
+class Openvidu extends Component {
   constructor(props) {
     super(props);
-
+    // let userSeq = localStorage.getItem("userSeq")
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
+    let curationSeq = props.params.curation_seq;
+    let [curationArtsList, artistSeq, curationArtistNickname] = props.loader;
     this.state = {
-      mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      curationSeq: curationSeq,
+      curationArtList: curationArtsList,
+      curationArtistNickname: curationArtistNickname,
+      artistSeq: artistSeq,
+      mySessionId: "session",
+      // mySessionId: userSeq,
+      myUserName: localStorage.getItem("nickname"),
+      // myUserName: "Participant" + Math.floor(Math.random() * 100),
       session: undefined,
       mainStreamManager: undefined, // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
       publisher: undefined,
@@ -97,11 +123,9 @@ class App extends Component {
 
   joinSession() {
     // --- 1) Get an OpenVidu object ---
-
     this.OV = new OpenVidu();
 
     // --- 2) Init a session ---
-
     this.setState(
       {
         session: this.OV.initSession(),
@@ -135,6 +159,10 @@ class App extends Component {
         mySession.on("exception", (exception) => {
           console.warn(exception);
         });
+
+        axiosReissue()
+
+        axiosAuth.put(`/curations/${this.state.curationSeq}/on`)
 
         // --- 4) Connect to the session with a valid user token ---
 
@@ -197,6 +225,12 @@ class App extends Component {
   leaveSession() {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
 
+    axiosReissue()
+
+    axiosAuth.put(`/curations/${this.state.curationSeq}/end`)
+      .then(console.log('종료 성공'))
+      .catch(console.log("종료 실패"))
+
     const mySession = this.state.session;
 
     if (mySession) {
@@ -208,8 +242,9 @@ class App extends Component {
     this.setState({
       session: undefined,
       subscribers: [],
-      mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
+      mySessionId: this.state.userSeq,
+      myUserName: localStorage.getItem("nickname"),
+      // myUserName: "Participant" + Math.floor(Math.random() * 100),
       mainStreamManager: undefined,
       publisher: undefined,
     });
@@ -220,51 +255,43 @@ class App extends Component {
     return await this.createToken(sessionId);
   }
 
-  
-
-
   render() {
-    const mySessionId = this.state.mySessionId;
-    const myUserName = this.state.myUserName;
-
+    // const mySessionId = this.state.mySessionId;
+    // const nickname = localStorage.getItem("nickname")
+    console.log(this.state.curationSeq);
+    console.log(this.state.curationArtList);
+    console.log(this.state.artistSeq)
+    // const myUserName = this.state.myUserName;
     return (
-      <div className="container">
+      <div>
+        {/* 처음에 생성할 때 html */}
         {this.state.session === undefined ? (
           <div id="join">
             <div id="img-div">
               {/* <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="OpenVidu logo" /> */}
             </div>
             <div id="join-dialog" className="jumbotron vertical-center">
-              <h1> 큐레이션 개최 </h1>
+              <h1> 큐레이션 시작하기 </h1>
               <form className="form-group" onSubmit={this.joinSession}>
                 <p>
-                  <label>사용자명: </label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="userName"
-                    value={myUserName}
-                    onChange={this.handleChangeUserName}
-                    required
-                  />
-                </p>
-                <p>
-                  <label> 세션명（이건 랜덤으로 생성하는게 맞을듯?）: </label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="sessionId"
-                    value={mySessionId}
-                    onChange={this.handleChangeSessionId}
-                    required
-                  />
+                  <label> Session : </label>
+                    <input
+                      className="form-control"
+                      type="text"
+                      id="sessionId"
+                      value="session"
+                      // value={this.state.artistSeq}
+                      onChange={this.handleChangeSessionId}
+                      required
+                      style={{width: "50px"}}
+                    />
                 </p>
                 <p className="text-center">
                   <input
                     className="btn btn-lg btn-success"
                     name="commit"
                     type="submit"
-                    value="입장"
+                    value="시작"
                   />
                 </p>
               </form>
@@ -272,52 +299,66 @@ class App extends Component {
           </div>
         ) : null}
 
+        {/* 큐레이션 화면 */}
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              {/* <h1 id="session-title">{mySessionId}</h1> */}
-              <button
-                className="btn btn-large btn-danger"
-                type="button"
-                id="buttonLeaveSession"
-                onClick={this.leaveSession}
-                value="나가기"
-              >
-                나가기
-              </button>
+              <h1 id="session-title">🍌{this.state.curationArtistNickname}🍌 작가님의 큐레이션</h1>
+              {/*<RedBtn*/}
+              {/*  type="button"*/}
+              {/*  id="buttonLeaveSession"*/}
+              {/*  onClick={this.leaveSession}*/}
+              {/*  value="나가기"*/}
+              {/*>*/}
+              {/*  나가기*/}
+              {/*</RedBtn>*/}
             </div>
+
+            
             <Frame>
-              <LeftCam>
+
+              <LeftSide>
                 {this.state.mainStreamManager !== undefined ? (
                   <div id="main-video" >
                     <UserVideoComponent streamManager={this.state.mainStreamManager} />
                   </div>
                 ) : null}
-                <div id="video-container" >
+              </LeftSide>
+
+              <RightSide>
+
+                <CurationInfo
+                  curationArtsList={this.state.curationArtList}
+                  outBtn={<RedBtn
+                    type="button"
+                    id="buttonLeaveSession"
+                    onClick={this.leaveSession}
+                    value="나가기"
+                    style={{width: "100%"}}
+                    >
+                      나가기
+                    </RedBtn>} />
+
+                <div id="video-container" style={{display: 'flex'}}>
                   {/* {this.state.publisher !== undefined ? (
-                                    <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
-                                    <UserVideoComponent
-                                    streamManager={this.state.publisher} />
-                                    </div>
-                                ) : null} */}
+                    <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
+                      <UserVideoComponent
+                      streamManager={this.state.publisher} />
+                    </div>
+                  ) : null} */}
                   {this.state.subscribers.map((sub, i) => (
-                    <div key={i}  onClick={() => this.handleMainVideoStream(sub)}>
+                    <inline key={i}  onClick={() => this.handleMainVideoStream(sub)} style={{marginRight: "20px", borderRadius: "5px"}}>
                       <UserVideoComponent2 streamManager={sub} />
-                      </div>
+                    </inline>
                   ))}
+
                   {/* {this.state.publisher !== undefined ? (
                     <div> {this.state.publisher} </div>
                     ) : null}
-                  {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}
-
-                                
+                  {this.state.subscribers !== undefined ? (this.state.subscribers) : null} */}       
                 </div>
-
-              </LeftCam>
-              <RightInfo>
-                <CurationInfo/>
-
-              </RightInfo>
+              
+              </RightSide>
             </Frame>
           </div>
         ) : null}
@@ -405,4 +446,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withParams(Openvidu);

@@ -66,7 +66,7 @@ public class AuthService {
 		String value = redisUtil.getData(key);
 		if (value == null) {
 			throw new CustomException(CustomExceptionType.EXPIRED_AUTH_INFO);
-		} else if (value.equals(verifyRequest.getCode())) {
+		} else if (value.equals(verifyRequest.getCode().trim())) {
 			redisUtil.deleteData(key);
 		} else {
 			throw new CustomException(CustomExceptionType.EMAIL_CODE_ERROR);

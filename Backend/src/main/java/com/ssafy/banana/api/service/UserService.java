@@ -63,7 +63,7 @@ public class UserService {
 		User user = User.builder()
 			.email(signupRequest.getEmail())
 			.password(passwordEncoder.encode(signupRequest.getPassword()))
-			.nickname(signupRequest.getNickname())
+			.nickname(signupRequest.getNickname().trim())
 			.profileImg(profileImg)
 			.artistLikeCount(0)
 			.role(Role.ROLE_USER)

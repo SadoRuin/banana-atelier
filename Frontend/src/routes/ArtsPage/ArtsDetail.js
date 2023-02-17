@@ -1,34 +1,29 @@
 import React, { useState } from 'react'
 import { Link, useLoaderData, redirect, Form, useNavigate } from 'react-router-dom'
 import { axiosReissue, axiosAuth } from '../../_actions/axiosAuth';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faHeart, faEye, faDownload } from '@fortawesome/free-solid-svg-icons'
 
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import { YellowBtn, RedBtn, LikeBtn } from "../../components/commons/buttons";
-import {Category} from "../../components/commons/category";
+import {Category} from "../../components/commons/Category";
 import './ArtsDetail.css'
 
 export async function loader ({params}) {
+  axiosReissue();
   let artSeq = params.art_seq;
-  
-  const artData = await axiosAuth.get(`arts/detail/${artSeq}`)
-    .then(response => response.data)
-    .catch(error => error.response.status)
 
-  const likeList = await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
-    .then(response=> response.data)
-    .catch(() => null)
+  let artData = null
+  await axiosAuth.get(`arts/detail/${artSeq}`)
+    .then(response => artData = response.data)
+    .catch(error => console.log(error))
 
-  console.log(artData);
-  if (artData === 404) {
-    throw new Response("", {
-      status: 404,
-      statusText: "작품을 찾을 수 없습니다!",
-    });
-  }
-  else if (artData === 401) {
-    return redirect('/login');
-  }
+  let likeList = null;
+  await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
+    .then(response=> likeList = response.data)
+    .catch(error => console.log(error))
+
   return [artData, likeList];
 }
 
@@ -60,12 +55,13 @@ export async function action ({request, params}) {
 function ArtsDetail() {
   const [artData, likeList] = useLoaderData();
   let likeState = likeList?.find((like) => like.artSeq === artData.artSeq) || false;
-  const [isLiked, setIsLiked] = useState(!!likeState)
+  const [isLiked, setIsLiked] = useState(likeState)
   const [likeCount, setLikeCount] = useState(artData.artLikeCount)
   const [downloadCount, setDownloadCount] = useState(artData.artDownloadCount)
   const navigate = useNavigate()
   console.log(likeList)
   console.log(likeState);
+
   return (
     <div>
       <div className="art-detail__container grid__detail-page">
@@ -91,8 +87,8 @@ function ArtsDetail() {
               <div>{artData.nickname} <span className="jakka">작가</span></div>
             </Link>
 
-            <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}.`}</div>
-            <div className="arts_description">
+            <div className="upload_date">{`${artData.artRegDate[0]}.${(artData.artRegDate[1]+'').padStart(2, "0")}.${(artData.artRegDate[2]+'').padStart(2, "0")}`}</div>
+            <div className="arts_description" style={{whiteSpace: "pre-line"}}>
               {artData.artDescription}
             </div>
 
@@ -104,25 +100,21 @@ function ArtsDetail() {
           </div>
 
           <div>
+
             <div className="art-detail__sub-info">
               <div className="views">
-                <img src="ArtsMain" alt="" />
-                조회수 : {artData.artHit}
+                <FontAwesomeIcon icon={faEye} /> {artData.artHit}
               </div>
               <div className="downloaded">
-                <img src="ArtsMain" alt="" />
-                다운로드 : {downloadCount}
+                <FontAwesomeIcon icon={faDownload} /> {downloadCount}
               </div>
               <div className="likes">
-                <img src="ArtsMain" alt="" />
-                좋아요 : {likeCount}
+                <FontAwesomeIcon icon={faHeart} /> {likeCount}
               </div>
             </div>
+
             <div className="art-detail__btns">
               {/* 좋아요 누른 버튼이랑 안누른 버튼 */}
-              
-
-
               <form onSubmit={(event) => {
                 event.preventDefault()
                 axiosReissue();
@@ -130,15 +122,15 @@ function ArtsDetail() {
                 let body = { "seq": artData.artSeq };
                 if (isLiked) {
                   axiosAuth.delete(`arts/like`, {data: body})
-                  .then(response => console.log('싫어요 response', response))
+                  .then(response => response)
                   .catch(error => {
-                    console.log("이게 왜 에러지", error)
+                    console.log(error)
                   })
                   setLikeCount(prev => prev - 1)
                 }
                 else if (!isLiked) {
                   axiosAuth.post(`arts/like`, body)
-                    .then(response => console.log('좋아요 response', response))
+                    .then(response => response)
                   setLikeCount(prev => prev + 1)
                 }
                 setIsLiked(prev=>!prev)
@@ -146,20 +138,23 @@ function ArtsDetail() {
                 <LikeBtn isLike={isLiked} />
               </form>
 
-              <form action={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`} method="get" onSubmit={() => setDownloadCount(prev => prev + 1)}>
-                <YellowBtn type="submit">다운로드</YellowBtn>
+              <form action={`https://i8a108.p.ssafy.io/api/arts/download/${artData.artSeq}`}
+                    method="get"
+                    onSubmit={() => setDownloadCount(prev => prev + 1)}
+              >
+                <YellowBtn style={{width: "120px"}} type="submit">다운로드</YellowBtn>
               </form>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="familiar_arts">
-        <h2>비슷한 작품</h2>
-        <div>
-          비슷한 작품 컴포넌트들이 올 곳
-        </div>
-      </div>
+      {/*<div className="familiar_arts">*/}
+      {/*  <h2>비슷한 작품</h2>*/}
+      {/*  <div>*/}
+      {/*    비슷한 작품 컴포넌트들이 올 곳*/}
+      {/*  </div>*/}
+      {/*</div>*/}
 
 
     </div>

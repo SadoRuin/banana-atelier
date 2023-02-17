@@ -76,6 +76,11 @@ public class Curation {
 	@Column(name = "curation_thumbnail", nullable = false, length = 100)
 	private String curationThumbnail;
 
+	@Size(max = 100)
+	@NotNull
+	@Column(name = "curation_img", nullable = false, length = 100)
+	private String curationImg;
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)

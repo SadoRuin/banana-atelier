@@ -1,12 +1,12 @@
 import React from 'react'
-import App from './openvidu'
+// import Openvidu from './openvidu'
 
 
 
 function CurationsOpenVidu() {
   return (
     <div>
-      <App/>
+      {/*<Openvidu/>*/}
     </div>
   )
 }

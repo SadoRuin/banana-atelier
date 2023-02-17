@@ -2,6 +2,7 @@ package com.ssafy.banana.db.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -63,12 +64,13 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 	@Query("select new com.ssafy.banana.dto.response.ArtResponse(a, u) "
 		+ "from Art a join User u "
 		+ "on a.artist.id = u.id "
-		+ "order by a.artLikeCount desc")
-	List<ArtResponse> findAllOrderByArtLikeCount();
+		+ "order by a.artHit desc, a.id asc ")
+	List<ArtResponse> findAllOrderByArtHit();
 
 	@Query("select count(a.id) "
 		+ "from Art a "
 		+ "where a.artist.id = :userSeq")
 	int countArtByArtistSeq(@Param("userSeq") Long userSeq);
 
+	Optional<List<Art>> findAllByArtist_Id(long userSeq);
 }
