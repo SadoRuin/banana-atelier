@@ -41,7 +41,7 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
-(83,'pyh1993@naver.com','$2a$10$DcageRHGxw9Iw4UKsJuvRuj.MRDHTgUQpUQnWGOmlUGJM2iFesjC6','테스트용','default_profile_4.png',0,'ROLE_USER'),
+(83,'ssafy@ruu.kr','$2a$10$DcageRHGxw9Iw4UKsJuvRuj.MRDHTgUQpUQnWGOmlUGJM2iFesjC6','테스트용','default_profile_4.png',0,'ROLE_USER'),
 (100,'dam2.dev@gmail.com','$2a$10$5UNn40tS119pCjg9PWQIRetzGEv9RzUx5ooVrZ7ikYuDz68pjmAq2','발빠짐주희','default_profile_4.png',2,'ROLE_ARTIST'),
 (102,'sin10071@naver.com','$2a$10$GWMUVUM8.IfHIunbCAW3YuRwqIdUww0Sf5sdCy7mLvC76xZuQdy..','seonho','default_profile_3.png',3,'ROLE_ARTIST'),
 (104,'ggg@gmail.com','$2a$10$ON9/tnS6jiMbjG.87dg1BeJc75vC9u/EfdYrqzdM/XTbGS283r4yC','ggg','default_profile_2.png',2,'ROLE_ARTIST'),
@@ -89,4 +89,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-16  8:57:01
+-- Dump completed on 2023-02-16 13:40:40
