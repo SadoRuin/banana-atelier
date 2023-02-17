@@ -36,8 +36,9 @@ export async function loader ({params}) {
   const curationArtsList = await axiosAuth(`curation-art/list/${curationSeq}`)
     .then(response => response.data);
   const artistSeq = await curationArtsList[0].artistSeq
+  const curationArtistNickname = await curationArtsList[0].artistNickName
 
-  return [curationArtsList, artistSeq]
+  return [curationArtsList, artistSeq, curationArtistNickname]
 }
 
 // 클래스형 컴포넌트에서 params 가져오기
@@ -52,10 +53,11 @@ class Openvidu extends Component {
     // 세션 ID, 유저 이름, 메인 스트리밍 화면, publisher(방장), subscribers(시청자) 세팅
     // These properties are in the state's component in order to re-render the HTML whenever their values change
     let curationSeq = props.params.curation_seq;
-    let [curationArtsList, artistSeq] = props.loader;
+    let [curationArtsList, artistSeq, curationArtistNickname] = props.loader;
     this.state = {
       curationSeq: curationSeq,
       curationArtList: curationArtsList,
+      curationArtistNickname: curationArtistNickname,
       artistSeq: artistSeq,
       mySessionId: userSeq,
       myUserName: localStorage.getItem("nickname"),
@@ -299,7 +301,7 @@ class Openvidu extends Component {
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              <h1 id="session-title">🍌{this.state.curationArtList[0].artistNickName}🍌 작가님의 큐레이션</h1>
+              <h1 id="session-title">🍌{this.state.curationArtistNickname}🍌 작가님의 큐레이션</h1>
               {/*<RedBtn*/}
               {/*  type="button"*/}
               {/*  id="buttonLeaveSession"*/}
