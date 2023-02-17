@@ -13,7 +13,7 @@ const Frame = styled.div`
   border-radius: 5px;
   border: 1px solid #EBEBEB;
   padding: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 `;
 
 function CurationInfo ({curationArtsList, outBtn}) {
@@ -45,7 +45,8 @@ function CurationInfo ({curationArtsList, outBtn}) {
               backgroundImage : `url(${getArtThumbnail(art.curationThumbnail, art.artistSeq)})`,
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center'
+              backgroundPosition: 'center',
+              borderRadius: '5px'
             }}
           >
           </div>
@@ -55,7 +56,7 @@ function CurationInfo ({curationArtsList, outBtn}) {
             <div className='curation__art-start-price'>시작 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionStartPrice}</span></div>
             <div className='curation__art-now-price'>현재 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionNowPrice}</span></div>
             <div className='curation__btns'>
-              <div style={{width: '60%'}} onClick={(e)=>handleAuctionPrice(e, artIndex)} ><GreenBtn className='curation__participate-auction' style={{width: "100%"}} ><FontAwesomeIcon icon={faHand}/> {art.auctionNowPrice + art.auctionGap}원에 입찰하기</GreenBtn></div>
+              <div style={{width: '60%'}} onClick={(e)=>handleAuctionPrice(e, artIndex)} ><GreenBtn className='curation__participate-auction' style={{width: "100%"}} ><FontAwesomeIcon icon={faHand}/>  {art.auctionNowPrice + art.auctionGap}원에 입찰하기</GreenBtn></div>
               <div style={{width: '40%', marginLeft: "10px"}}>{outBtn}</div>
             </div>
           </div>
