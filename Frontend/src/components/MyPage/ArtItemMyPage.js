@@ -5,7 +5,7 @@ import { getArtThumbnail } from "../commons/imageModule";
 import '../commons/ArtComponent.css'
 
 function ArtItemMyPage({nickname, userSeq, artThumbnail, artName, artSeq}) {
-
+  console.log(nickname)
   return (
     <div className="art-item__container">
 

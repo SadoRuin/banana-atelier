@@ -1,0 +1,52 @@
+#upload__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dotted #656565;
+    width: 300px;
+    height: 300px;
+    /* text-align: center; */
+    border-radius: 15px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.upload__container {
+    display: flex;
+    flex-direction: column;
+}
+.upload__form {
+    flex: 1;
+    display: flex;
+    margin-bottom: 20px;
+}
+.upload__bold-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.upload_info-container {
+    flex: 1;
+}
+.upload__info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+#title {
+    width: 180px;
+    height: 20px;
+    border-radius: 5px;
+    margin: 10px 0px 10px 0px;
+}
+
+.upload__btns{
+    margin-top: 20px;
+    display: flex;
+    left: -20px;
+}
+
+.upload__description{
+    margin-top: 10px;
+}

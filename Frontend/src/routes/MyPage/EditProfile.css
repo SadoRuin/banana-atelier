@@ -1,0 +1,19 @@
+.input-of-form {
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+    padding-left: 10px;
+    background-color: #fff8e3;
+    color: #575757;
+    line-height: 3em;
+    box-shadow: 1px 1px rgba(166, 175, 195, 0.2) inset;
+}
+
+.SNS-form{
+    /* display: flex; */
+    /* flex-direction: column; */
+    padding: 30px 0px 0px 10px;
+    /* align-items: center; */
+    border-top: 1px solid #EBEBEB;
+    font-weight: bold;
+}

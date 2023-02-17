@@ -1,7 +1,8 @@
 import React from 'react';
 import { Form, useNavigate, redirect } from 'react-router-dom'
 import {axiosAuth, axiosReissue} from "../../_actions/axiosAuth";
-
+import { YellowBtn, RedBtn } from "../../components/commons/buttons";
+import './Upload.css'
 
 export async function action({request, params}) {
 
@@ -11,12 +12,9 @@ export async function action({request, params}) {
   delete artData.artFile;
   artData.artCategorySeq = +artData.artCategorySeq
 
-  // 혹시 JSON으로 만들어야 하나 싶어서 만들어봣음??? 나도모름
-  // const artJSON = JSON.stringify(artData);
-  // console.log(typeof artJSON)
 
   // 이건 내가 업로드 한 파일 정보
-  const artFile= document.querySelector('#artFile').files[0];
+  const artFile= document.querySelector('#upload__img').files[0];
 
   // 이건 body에 들어가는 값
   // const body = {
@@ -47,40 +45,83 @@ export async function action({request, params}) {
 
 function Upload() {
   const navigate = useNavigate();
+
+  const handleReadURL = (input) => {
+    if (input.target.files && input.target.files[0]) {
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('upload__preview')
+        preview.style.backgroundImage = `url(${e.target.result})`;
+        preview.style.backgroundSize = 'contain';
+        preview.style.backgroundRepeat = 'no-repeat'
+        preview.style.border= '0';
+        preview.innerHTML = "";
+      };
+      reader.readAsDataURL(input.target.files[0]);
+    }
+    else {
+      const preview = document.getElementById('upload__preview')
+      preview.style.backgroundImage = `url(")`;
+      preview.style.backgroundSize = 'contain';
+      preview.style.backgroundRepeat = 'no-repeat'
+      preview.style.border= '2px dotted #656565';
+      preview.innerHTML = "작품 미리보기";
+
+    }
+  }
+
   return (
     <div>
       <h3>작품 업로드</h3>
-      <Form method="POST">
+      <Form method="POST" className="upload__container">
         {/* 작품 업로드하는 무언가 */}
+        <div className="upload__form">
+          <label htmlFor="upload__img" className="upload__img">
+            <div id="upload__preview">작품 미리보기</div>
+            <input
+              type="file"
+              accept="images/*"
+              name="artFile"
+              id="upload__img"
+              onChange={(e) => {handleReadURL(e)}}
+              required
+            />
+          </label>
 
-        <label htmlFor="title">작품 사진 올리기</label>
-        <input type="file" accept="image/*" name="artFile" id="artFile" required/>
+          <div className="upload__info" >
+            <div className="upload__info-container">
+              <div>
+                <label htmlFor="title" className="upload__bold-label">작품 제목</label>
+              </div>
+              <input type="text" name="artName" id="title" placeholder="작품 제목" required/>
+            </div>
 
-        <label htmlFor="title">작품 제목</label>
-        <input type="text" name="artName" id="title" placeholder="작품 제목" required/>
+            {/* 하나만 입력받는다면 나중에 radio로 바꿔야함~ */}
+            <div className="upload__info-container" >
+              <div className="upload__bold-label">카테고리</div>
+              <label><input type="radio" name="artCategorySeq" value="1" />일러스트레이션</label>
+              <label><input type="radio" name="artCategorySeq" value="3" />디지털 아트</label>
+              <label><input type="radio" name="artCategorySeq" value="2" />캐릭터디자인</label>
+              <label><input type="radio" name="artCategorySeq" value="4" />타이포그래피</label>
+              <label><input type="radio" name="artCategorySeq" value="5" />포토그래피</label>
+              <label><input type="radio" name="artCategorySeq" value="6" />파인 아트</label>
+              <label><input type="radio" name="artCategorySeq" value="7" />공예</label>
+            </div>
+            <div className="upload__description">
+              <div className="upload__bold-label">
+                <label htmlFor="description" className="upload__bold-label">작품 설명</label>
+              </div>
+              <textarea name="artDescription" id="description" cols="60" rows="9" required></textarea>
+            </div>
+          </div>
 
-        {/* 하나만 입력받는다면 나중에 radio로 바꿔야함~ */}
-        <div className="category">
-          <div>카테고리</div>
-          <label><input type="checkbox" name="artCategorySeq" value="1" />일러스트레이션</label>
-          <label><input type="checkbox" name="artCategorySeq" value="3" />디지털 아트</label>
-          <label><input type="checkbox" name="artCategorySeq" value="2" />캐릭터디자인</label>
-          <label><input type="checkbox" name="artCategorySeq" value="4" />타이포그래피</label>
-          <label><input type="checkbox" name="artCategorySeq" value="5" />포토그래피</label>
-          <label><input type="checkbox" name="artCategorySeq" value="6" />파인 아트</label>
-          <label><input type="checkbox" name="artCategorySeq" value="7" />공예</label>
         </div>
 
-        <label htmlFor="description">작품 설명</label>
-        <textarea name="artDescription" id="description" cols="30" rows="10" required></textarea>
-
-        {/* 아직 백에서 안만들었으니 pass */}
-        {/*<label htmlFor="price">작품 가격</label>*/}
-        {/*<input type="number" id="price" name="price" placeholder="작품 경매에 쓰일 가격입니다."/>*/}
-
-        <div>
-          <button type="submit">제출하기</button>
-          <button type="button" onClick={()=>{ navigate(-1) }}>취소</button>
+        <div className="upload__btns">
+          <YellowBtn style={{width: "80px", marginLeft:"10px", marginRight:"20px"}} type="submit"> 제출하기</YellowBtn>
+          <RedBtn style={{width: "80px"}} onClick={()=>{ navigate(-1) }}>취소</RedBtn>
+          {/* <button type="submit">제출하기</button> */}
+          {/* <button type="button" onClick={()=>{ navigate(-1) }}>취소</button> */}
         </div>
       </Form>
     </div>

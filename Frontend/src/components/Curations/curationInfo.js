@@ -1,134 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faHand, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faHand } from '@fortawesome/free-solid-svg-icons';
 
-
+import { GreenBtn } from '../commons/buttons';
+import { getArtThumbnail } from "../commons/imageModule";
+import TabMenuComponent from "../commons/TabMenuComponent";
+import './curationInfo.css'
 
 const Frame = styled.div`
-  display: grid;
-  grid-template-columns: 180px 2fr 1fr;
-  border-radius: 15px;
+  width: 100%;
+  border-radius: 5px;
   border: 1px solid #EBEBEB;
-  width: 600px;
-  height: 300px;
-`
+  padding: 20px;
+  margin-bottom: 20px;
+`;
 
-const Thumbnail = styled.div`
-    display: flex;
-    overflow: hidden;
-    width: 160px;
-    height: 220px;
-    border-radius: 15px;
-    background-color: gray;
-    margin: 10px 5px 10px 10px;
-    justify-content: center;
-    align-items: center;
-  `;
+function CurationInfo ({curationArtsList, outBtn}) {
+  const newCurationArtsList = curationArtsList.map((art) => {
+    return {...art, auctionNowPrice:art.auctionStartPrice}})
 
-// 이름, 설명 전체 틀
-const Info = styled.div`
-  grid-column: 2/span 2;
-  grid-row: 1/span 2;
-  margin-left: 10px;
-`
-// 이름
-const Name = styled.div`
-  display: flex;
-  margin: 10px 0px 10px 0px;
-  font-size: 20px;
-  font-weight: bold;
-`
-// 설명
-const Explain = styled.div`
-  display: flex;
-  border: 1px solid #EBEBEB;
-  border-radius: 15px;
-  width: 360px;
-  height: 160px;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  top: 10px;
-`
-
-const PriceInfo = styled.div`
-  display: flex;
-  grid-column: 1/span 2;
-  grid-row: 2/span 2;
-  align-items: center;
-  padding-left: 10px;
-  font-size: 15px;
-`
-
-const Price = styled.div`
-  display: flex;
-  background-color: #EBEBEB;
-  border-radius: 15px;
-  width: 150px;
-  height: 30px;
-  justify-content: center;
-  align-items: center;
-  margin-left: 10px;
-`
-
-const Bidder = styled.div`
-  margin-left:100px;
-`
+  const [artIndex, setArtIndex] = useState(0);
+  const [artList, setArtList] = useState([...newCurationArtsList]);
+  const handleAuctionPrice = (e, idx) => {
+    setArtList(prev => {
+      console.log(prev);
+      return prev.map((art, index) => {
+        if (index === idx) {
+          return {...art, auctionNowPrice: art.auctionNowPrice + art.auctionGap}
+        }
+        return {...art}
+      })
+    })
+  }
 
 
-const Participate = styled.div`
-  display: flex;
-  background-color: #36AE7C;
-  border-radius: 15px;
-  width: 170px;
-  height: 53px;
-  justify-content: center;
-  align-items: center;
-  grid-column: 3/span 1;
-  grid-row: 2/span 1;
-  margin-right: 5px;
-`
-const WhiteCharacter = styled.div`
-  color: #FFFFFF;
-  font-size: 20px;
-  padding: 10px;
-`
+  const artTabMenu = artList.map((art, idx) => {
+    return {
+      name: idx+1,
+      content:
+        <div className="curation-art-container" key={`curation__art-detail-${art.artSeq}`}>
+          <div className='curation__art-img'
+            style={{
+              backgroundImage : `url(${getArtThumbnail(art.curationThumbnail, art.artistSeq)})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              borderRadius: '5px'
+            }}
+          >
+          </div>
+          <div className='curation__art-info-container'>
+            <h2 className='curation__art-name'>{art.artName}</h2>
+            <div className='curation__art-description' style={{whiteSpace: "pre-line"}}>{art.artDescription}</div>
+            <div className='curation__art-start-price'>시작 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionStartPrice}</span></div>
+            <div className='curation__art-now-price'>현재 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionNowPrice}</span></div>
+            <div className='curation__btns'>
+              <div style={{width: '60%'}} onClick={(e)=>handleAuctionPrice(e, artIndex)} ><GreenBtn className='curation__participate-auction' style={{width: "100%"}} ><FontAwesomeIcon icon={faHand}/>  {art.auctionNowPrice + art.auctionGap}원에 입찰하기</GreenBtn></div>
+              <div style={{width: '40%', marginLeft: "10px"}}>{outBtn}</div>
+            </div>
+          </div>
+        </div>
+    }
+  })
 
-
-function CurationInfo () {
   return (
     <Frame>
-      <Thumbnail>
-        섬네일
-      </Thumbnail>
-      <Info>
-        <Name>
-          작품명
-        </Name>
-        설명
-        <Explain>
-          내용
-        </Explain>
-        
-      </Info>
-      <PriceInfo>
-        경매 시작가
-        <Price>
-        26,000  
-        </Price>
-        <Bidder>
-          <FontAwesomeIcon icon={ faUser } />
-          명
-        </Bidder>
-      </PriceInfo>
-
-      <Participate>
-        <WhiteCharacter>
-          <FontAwesomeIcon icon={ faHand } />
-          참여하기
-        </WhiteCharacter>
-      </Participate>
+      <TabMenuComponent style={{width: '100%'}} menuData={artTabMenu} index={artIndex} setIndex={setArtIndex}/>
     </Frame>
   );
 }

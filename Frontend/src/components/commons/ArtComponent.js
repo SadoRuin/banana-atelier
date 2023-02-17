@@ -7,7 +7,7 @@ import { getArtThumbnail } from "./imageModule";
 import ProfileImg from "./ProfileImg";
 import './ArtComponent.css'
 
-function ArtComponent({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, artHit, artLikeCount}) {
+function ArtComponent({nickname, profileImg, userSeq, artThumbnail, artName, artSeq, artHit=undefined, artLikeCount=undefined}) {
 
   return (
     <div className="art-item__container">
@@ -24,9 +24,10 @@ function ArtComponent({nickname, profileImg, userSeq, artThumbnail, artName, art
             <ProfileImg width="25px" height="25px" url={ profileImg } userSeq={userSeq} />
             <span>{nickname}</span><span className="jakka">작가</span>
           </Link>
+        { (artHit !== undefined && artLikeCount !== undefined) &&
           <div className="art-info__sub">
             <div><FontAwesomeIcon icon={ faEye } /> {artHit}<FontAwesomeIcon icon={ faThumbsUp } /> {artLikeCount}</div>
-          </div>
+          </div> }
       </div>
 
     </div>

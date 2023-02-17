@@ -1,0 +1,114 @@
+.sign-up-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff2ce;
+}
+
+.sign-up-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 50px;
+    border: none;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.1) 0px 50px 100px 1px, rgba(0, 0, 0, 0.2) 0px 30px 60px -30px, rgba(10, 37, 64, 0.25) 0px -1px 6px 0px inset;
+}
+
+
+#logo-img {
+    position: relative;
+    width: 190px;
+    height: 120.37px;
+    margin: 25px 0 15px 0;
+}
+
+#div-on-form {
+    position: relative;
+    text-align: left;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.input-button {
+    display: grid;
+    column-gap: 20px;
+    grid-template-columns: 300px 1fr;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+.label-input {
+    display: flex;
+    flex-direction: column;
+    margin-block: 0.1em;
+}
+
+.label-of-form {
+    padding-left: 5px;
+    font-family: Pretendard-Regular;
+    margin-block: 3px;
+}
+
+.input-of-form {
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+    padding-left: 10px;
+    background-color: #fff8e3;
+    color: #575757;
+    height: 2.5em;
+    box-shadow: 1px 1px rgba(166, 175, 195, 0.2) inset;
+}
+
+.form-btn {
+    width: 160px;
+    background-color: #ffd657;
+    border: 0 none #e2e8f0;
+    border-radius: 10px;
+    color: #363636;
+    line-height: 4px;
+    text-align: center;
+    box-shadow: 1px 1px 2px rgba(166, 175, 195, 0.2);
+    margin: 0;
+    cursor: pointer;
+    padding: 1rem 2rem;
+    font-family: Pretendard-Regular;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 20px -50px, rgba(10, 37, 64, 0.1) 0px -1px 1px 0px inset;
+}
+
+.form-btn:hover {
+    background-color: #fff2ce;
+    color: #232323;
+}
+
+.full-btn {
+    display: flex;
+    justify-content: right;
+}
+
+.all-buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.buttons {
+    text-align: center;
+    margin-block: 3px;
+}
+
+.hidden-msg {
+    height: 20px;
+    margin: 0;
+    padding-left: 5px;
+    color: #ff4949;
+    font-size: 12px;
+}
+

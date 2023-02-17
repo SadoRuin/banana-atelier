@@ -12,6 +12,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.5",
+    "classnames": "^2.3.2",
     "file-saver": "^2.0.5",
     "http-proxy-middleware": "^2.0.6",
     "openvidu-browser": "^2.25.0",
@@ -26,6 +27,7 @@
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.6",
+    "swiper": "^8.4.7",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
@@ -51,7 +53,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ],
-    "proxy": "https://i8a108.p.ssafy.io:8447"
+    ]
   }
 }

@@ -1,0 +1,18 @@
+#curationBorder{
+    padding: 30px 0px 0px 10px;
+    border-top: 1px solid #EBEBEB;
+}
+
+#curationName{
+    display: flex;
+    margin-bottom: 10px;
+}
+
+#curationStartTime{
+    display: flex;
+    margin-bottom: 10px;
+}
+
+#curationSummary{
+    display: flex;
+}

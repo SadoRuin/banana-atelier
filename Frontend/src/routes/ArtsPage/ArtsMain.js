@@ -1,14 +1,13 @@
 import React , {useState} from 'react'
-import axiosCustom from '../../_actions/axiosCustom';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLoaderData } from 'react-router-dom';
 
-import ArtComponent from "../../components/commons/ArtComponent";
 import { landingRenderingReset } from '../../_actions/user_action'
-import { TabMenu, TabContent } from "../../components/commons/TabMenuComponent";
+import axiosCustom from '../../_actions/axiosCustom';
+import ArtComponent from "../../components/commons/ArtComponent";
+import TabMenuComponent from "../../components/commons/TabMenuComponent";
+import {Category} from "../../components/commons/Category";
 
-// import {Category} from "../../components/commons/category";
 
 export async function loader ({request}) {
   const url = new URL(request.url);
@@ -42,22 +41,18 @@ export async function loader ({request}) {
 }
 
 function ArtsMain() {
+  const [artsTrend, artsPopular, artsNew, artsAll] = useLoaderData();
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
   const landingStatus = useSelector(state => state.user.landing_status);
   if (landingStatus === 2) {
     dispatch(landingRenderingReset())
-      .then(
-        window.location.reload()
-      )
+      .then(()=>window.location.reload())
   } else if (landingStatus === 3) {
     dispatch(landingRenderingReset())
-      .then(
-        window.location.reload()
-      )
+      .then(()=>window.location.reload())
   }
-
-  const [artsTrend, artsPopular, artsNew, artsAll] = useLoaderData();
 
   const artsSortMenuData = [
     {
@@ -144,37 +139,21 @@ function ArtsMain() {
 
   const [sortIndex, setSortIndex] = useState(0);
 
-
-
   return (
     <div>
+      <div className="art-main__category" style={{display: 'flex', width: '75%', justifyContent: 'space-between', marginTop: '30px'}}>
+        <Category onClick={() => {navigate('/arts')}}>전체</Category>
+        <Category onClick={() => {navigate({search: '?category=1' })}}>일러스트레이션</Category>
+        <Category onClick={() => {navigate({search: '?category=2' })}}>캐릭터디자인</Category>
+        <Category onClick={() => {navigate({search: '?category=3' })}}>디지털 아트</Category>
+        <Category onClick={() => {navigate({search: '?category=4' })}}>타이포그래피</Category>
+        <Category onClick={() => {navigate({search: '?category=5' })}}>포토그래피</Category>
+        <Category onClick={() => {navigate({search: '?category=6' })}}>파인아트</Category>
+        <Category onClick={() => {navigate({search: '?category=7' })}}>공예</Category>
+      </div>
 
-      <button onClick={() => {navigate('/arts')}}>전체</button>
-      <button onClick={() => {navigate({search: '?category=1' })}}>일러스트레이션</button>
-      <button onClick={() => {navigate({search: '?category=2' })}}>캐릭터디자인</button>
-      <button onClick={() => {navigate({search: '?category=3' })}}>디지털 아트</button>
-      <button onClick={() => {navigate({search: '?category=4' })}}>타이포그래피</button>
-      <button onClick={() => {navigate({search: '?category=5' })}}>포토그래피</button>
-      <button onClick={() => {navigate({search: '?category=6' })}}>파인아트</button>
-      <button onClick={() => {navigate({search: '?category=7' })}}>공예</button>
+      <TabMenuComponent menuData={artsSortMenuData} index={sortIndex} setIndex={setSortIndex} />
 
-      <TabMenu>
-        {
-          artsSortMenuData.map((tab, idx) =>
-            <li
-              className={idx === sortIndex ? "submenu focused" : "submenu" }
-              onClick={ () => setSortIndex(idx) } key={`my-page__art-${idx}`}
-            >
-              {tab.name}
-            </li>
-          )
-        }
-      </TabMenu>
-      <TabContent>
-        {
-          artsSortMenuData[sortIndex].content
-        }
-      </TabContent>
     </div>
   )
 }
