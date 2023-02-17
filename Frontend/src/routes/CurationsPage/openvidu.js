@@ -320,6 +320,7 @@ class Openvidu extends Component {
                     id="buttonLeaveSession"
                     onClick={this.leaveSession}
                     value="나가기"
+                    style={{width: "100%"}}
                     >
                       나가기
                     </RedBtn>} />
