@@ -1,12 +1,13 @@
 .curation-art-container {
     display: flex;
+    width: 100%
 }
 .curation__art-img {
     width: 40%;
     margin-right: 20px;
 }
 .curation__art-info-container {
-    width: 60%;
+    width: 60%
 }
 .curation__art-description {
     margin-bottom: 20px;
@@ -17,9 +18,7 @@
 
 .curation__btns {
     display: flex;
-    width: 100%;
-
 }
-.curation__participate-auction {
-    margin-right: 10px;
-}
+/*.curation__participate-auction {*/
+/*    margin-right: 10px;*/
+/*}*/

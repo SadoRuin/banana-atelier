@@ -332,11 +332,12 @@ class Openvidu extends Component {
                     id="buttonLeaveSession"
                     onClick={this.leaveSession}
                     value="나가기"
+                    style={{width: "100%"}}
                     >
                       나가기
                     </RedBtn>} />
 
-                <div id="video-container" >
+                <div id="video-container">
                   {/* {this.state.publisher !== undefined ? (
                     <div className="stream-container col-md-6 col-xs-6" onClick={() => this.handleMainVideoStream(this.state.publisher)}>
                       <UserVideoComponent

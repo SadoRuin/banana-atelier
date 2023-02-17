@@ -1,63 +1,102 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faHand } from '@fortawesome/free-solid-svg-icons';
 
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import "swiper/css"; //basic
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
 import { GreenBtn } from '../commons/buttons';
 import { getArtThumbnail } from "../commons/imageModule";
+import TabMenuComponent from "../commons/TabMenuComponent";
 import './curationInfo.css'
 
 const Frame = styled.div`
-  display: flex;
+  width: 100%;
   border-radius: 5px;
   border: 1px solid #EBEBEB;
   padding: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 `;
 
 function CurationInfo ({curationArtsList, outBtn}) {
   const newCurationArtsList = curationArtsList.map((art) => {
     return {...art, auctionNowPrice:art.auctionStartPrice}})
-  console.log(newCurationArtsList);
+
+  const [artIndex, setArtIndex] = useState(0);
+  const [artList, setArtList] = useState([...newCurationArtsList]);
+  const handleAuctionPrice = (e, idx) => {
+    setArtList(prev => {
+      console.log(prev);
+      return prev.map((art, index) => {
+        if (index === idx) {
+          return {...art, auctionNowPrice: art.auctionNowPrice + art.auctionGap}
+        }
+        return {...art}
+      })
+    })
+  }
+
+
+  const artTabMenu = artList.map((art, idx) => {
+    return {
+      name: idx+1,
+      content:
+        <div className="curation-art-container" key={`curation__art-detail-${art.artSeq}`}>
+          <div className='curation__art-img'
+            style={{
+              backgroundImage : `url(${getArtThumbnail(art.curationThumbnail, art.artistSeq)})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              borderRadius: '5px'
+            }}
+          >
+          </div>
+          <div className='curation__art-info-container'>
+            <h2 className='curation__art-name'>{art.artName}</h2>
+            <div className='curation__art-description' style={{whiteSpace: "pre-line"}}>{art.artDescription}</div>
+            <div className='curation__art-start-price'>시작 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionStartPrice}</span></div>
+            <div className='curation__art-now-price'>현재 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionNowPrice}</span></div>
+            <div className='curation__btns'>
+              <div style={{width: '60%'}} onClick={(e)=>handleAuctionPrice(e, artIndex)} ><GreenBtn className='curation__participate-auction' style={{width: "100%"}} ><FontAwesomeIcon icon={faHand}/>  {art.auctionNowPrice + art.auctionGap}원에 입찰하기</GreenBtn></div>
+              <div style={{width: '40%', marginLeft: "10px"}}>{outBtn}</div>
+            </div>
+          </div>
+        </div>
+    }
+  })
 
   return (
     <Frame>
-      <Swiper
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
-        // spaceBetween={25}
-        slidesPerView={1}
-        slidesPerGroup={1}
-        navigation
-        pagination={{ clickable: true }}
-        scrollbar={{ draggable: true }}
-      >
-        { newCurationArtsList.map((art) =>
-            <SwiperSlide key={`openvidu__art-info-${art.artSeq}`}>
-              <div className="curation-art-container">
-                <img alt={`${art.artistNickName} 작가의 작품 ${art.artName}`}
-                     className='curation__art-img'
-                     src={getArtThumbnail(art.curationThumbnail, art.artistSeq)}
-                />
-                <div className='curation__art-info-container'>
-                  <h2 className='curation__art-name'>{art.artName}</h2>
-                  <div className='curation__art-description' style={{whiteSpace: "pre-line"}}>{art.artDescription}</div>
-                  <div className='curation__art-start-price'>시작 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionStartPrice}</span></div>
-                  <div className='curation__art-now-price'>현재 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionNowPrice}</span></div>
-                  <div className='curation__btns'>
-                    <GreenBtn className='curation__participate-auction' style={{width: '60%'}}><FontAwesomeIcon icon={faHand}/> {art.auctionGap}원 추가하기</GreenBtn>
-                    {outBtn}
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-        )}
-      </Swiper>
+      {/*<Swiper*/}
+      {/*  modules={[Navigation, Pagination, Scrollbar, A11y]}*/}
+      {/*  // spaceBetween={25}*/}
+      {/*  slidesPerView={1}*/}
+      {/*  slidesPerGroup={1}*/}
+      {/*  navigation*/}
+      {/*  pagination={{ clickable: true }}*/}
+      {/*  scrollbar={{ draggable: true }}*/}
+      {/*>*/}
+      {/*  { newCurationArtsList.map((art) =>*/}
+      {/*      <SwiperSlide key={`openvidu__art-info-${art.artSeq}`}>*/}
+      {/*        <div className="curation-art-container">*/}
+      {/*          <img alt={`${art.artistNickName} 작가의 작품 ${art.artName}`}*/}
+      {/*               className='curation__art-img'*/}
+      {/*               src={getArtThumbnail(art.curationThumbnail, art.artistSeq)}*/}
+      {/*          />*/}
+      {/*          <div className='curation__art-info-container'>*/}
+      {/*            <h2 className='curation__art-name'>{art.artName}</h2>*/}
+      {/*            <div className='curation__art-description' style={{whiteSpace: "pre-line"}}>{art.artDescription}</div>*/}
+      {/*            <div className='curation__art-start-price'>시작 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionStartPrice}</span></div>*/}
+      {/*            <div className='curation__art-now-price'>현재 가격 : <span style={{fontWeight: 'bold'}}>{art.auctionNowPrice}</span></div>*/}
+      {/*            <div className='curation__btns'>*/}
+      {/*              <GreenBtn className='curation__participate-auction' style={{width: '60%'}}><FontAwesomeIcon icon={faHand}/> {art.auctionGap}원 추가하기</GreenBtn>*/}
+      {/*              {outBtn}*/}
+      {/*            </div>*/}
+      {/*          </div>*/}
+      {/*        </div>*/}
+      {/*      </SwiperSlide>*/}
+      {/*  )}*/}
+      {/*</Swiper>*/}
+      <TabMenuComponent style={{width: '100%'}} menuData={artTabMenu} index={artIndex} setIndex={setArtIndex}/>
     </Frame>
   );
 }
