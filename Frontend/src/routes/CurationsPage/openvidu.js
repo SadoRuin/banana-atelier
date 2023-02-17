@@ -225,6 +225,8 @@ class Openvidu extends Component {
     axiosReissue()
 
     axiosAuth.put(`/curations/${this.state.curationSeq}/end`)
+      .then(console.log('종료 성공'))
+      .catch(console.log("종료 실패"))
 
     const mySession = this.state.session;
 
@@ -252,7 +254,7 @@ class Openvidu extends Component {
 
   render() {
     // const mySessionId = this.state.mySessionId;
-    const nickname = localStorage.getItem("nickname")
+    // const nickname = localStorage.getItem("nickname")
     console.log(this.state.curationSeq);
     console.log(this.state.curationArtList);
     console.log(this.state.artistSeq)
@@ -297,7 +299,7 @@ class Openvidu extends Component {
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="session-header">
-              <h1 id="session-title">🍌{nickname}🍌 작가님의 큐레이션</h1>
+              <h1 id="session-title">🍌{this.state.curationArtList[0].artistNickName}🍌 작가님의 큐레이션</h1>
               {/*<RedBtn*/}
               {/*  type="button"*/}
               {/*  id="buttonLeaveSession"*/}
