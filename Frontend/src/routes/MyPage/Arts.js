@@ -36,7 +36,7 @@ export async function loader ({params}) {
   return [userArts, userLikes, userMasterpieces]
 }
 
-function ArtsRoot() {
+function Arts() {
   const [userArts, userLikes, userMasterpieces] = useLoaderData();
   const [isMyPage, isArtist] = useOutletContext();
   const [artsIndex, setArtsIndex] = useState(0);
@@ -128,4 +128,4 @@ function ArtsRoot() {
   );
 }
 
-export default ArtsRoot;
+export default Arts;

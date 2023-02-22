@@ -13,7 +13,7 @@ import {
   WhiteBtn,
   YellowBtn,
 } from "../../components/commons/buttons";
-import NoticesDetail from "./NoticesDetail";
+import NoticeDetail from "./NoticeDetail";
 import styles from "./Notice.module.css";
 
 export async function loader({ params }) {
@@ -57,7 +57,7 @@ export async function action({ request }) {
   return redirect("../notices");
 }
 
-function NoticesRoot() {
+function Notices() {
   const [isMyPage, isArtist] = useOutletContext();
   const [nickname, userSeq, userNotices, followingNotices] = useLoaderData();
   const [noticeIndex, setNoticeIndex] = useState(0);
@@ -172,7 +172,7 @@ function NoticesRoot() {
                   </div>
                   <div>
                     {userNoticesOpen[notice.noticeSeq] ? (
-                      <NoticesDetail
+                      <NoticeDetail
                         artistSeq={notice.userSeq}
                         noticeSeq={notice.noticeSeq}
                         notice_title={notice.noticeTitle}
@@ -225,7 +225,7 @@ function NoticesRoot() {
 
                 <div>
                   {followingNoticesOpen[notice.noticeSeq] ? (
-                    <NoticesDetail
+                    <NoticeDetail
                       artistSeq={notice.userSeq}
                       noticeSeq={notice.noticeSeq}
                       notice_title={notice.noticeTitle}
@@ -262,4 +262,4 @@ function NoticesRoot() {
   );
 }
 
-export default NoticesRoot;
+export default Notices;

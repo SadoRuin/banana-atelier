@@ -8,7 +8,7 @@ export function loader({params}) {
     // return notice;
 }
 
-function NoticesDetail({artistSeq, noticeSeq, notice_title, notice_content}) {
+function NoticeDetail({artistSeq, noticeSeq, notice_title, notice_content}) {
     const [noticeTitle, setNoticeTitle] = useState(notice_title);
     const [noticeContent, setNoticeContent] = useState(notice_content);
     const [isUpdate, setIsUpdate] = useState(false);
@@ -77,4 +77,4 @@ function NoticesDetail({artistSeq, noticeSeq, notice_title, notice_content}) {
     );
 }
 
-export default NoticesDetail;
+export default NoticeDetail;

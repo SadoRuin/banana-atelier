@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
-import {Provider} from 'react-redux';
-import {applyMiddleware, createStore} from 'redux';
+import { applyMiddleware, createStore } from 'redux';
+import { Provider } from 'react-redux';
 import promiseMiddleware from 'redux-promise'
 import ReduxThunk from 'redux-thunk'
+import { persistStore } from "redux-persist"
+import { PersistGate } from "redux-persist/integration/react"
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import reportWebVitals from './reportWebVitals';
+
 import rootReducer from './_reducers'
-import {persistStore} from "redux-persist"
-import {PersistGate} from "redux-persist/integration/react"
-import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
+import './index.css';
 
 // 로그인 & 회원가입
 import LoginPage from "./routes/LoginPage/LoginPage";
@@ -22,45 +23,34 @@ import Error from './routes/Error'
 import Layout from "./routes/LayoutPage/Layout"
 
 // 랜딩 페이지
-import LandingPage, {loader as LandingLoader} from "./routes/LandingPage/LandingPage";
+import LandingPage, { loader as LandingLoader } from "./routes/LandingPage/LandingPage";
 
 // 작품 페이지
-import ArtsMain, {loader as ArtsLoader} from "./routes/ArtsPage/ArtsMain";
-import ArtsDetail, {action as ArtsDetailAction, loader as ArtsDetailLoader} from "./routes/ArtsPage/ArtsDetail";
+import ArtsMain, { loader as ArtsLoader } from "./routes/ArtsPage/ArtsMain";
+import ArtDetail, { action as ArtDetailAction, loader as ArtDetailLoader } from "./routes/ArtsPage/ArtDetail";
 
 // 큐레이션 페이지
-import CurationsMain, {loader as curationListLoader} from "./routes/CurationsPage/CurationsMain";
-// import CurationsOnAir, {loader as CurationsOnAirLoader} from "./routes/CurationsPage/CurationsOnAir"
-// import CurationsUpcoming from "./routes/CurationsPage/CurationsUpcoming";
+import CurationsMain, { loader as CurationsMainLoader } from "./routes/CurationsPage/CurationsMain";
 import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
-import CurationsDetail, {loader as CurationsDetailLoader, action as CurationDetailAction} from "./routes/CurationsPage/CurationsDetail";
-
-// import CurationsOpenVidu from './routes/CurationsPage/CurationsOpenVidu';
-import Openvidu from "./routes/CurationsPage/openvidu";
-import { loader as OpenviduLoader } from "./routes/CurationsPage/openvidu";
+import CurationDetail, { loader as CurationDetailLoader, action as CurationDetailAction } from "./routes/CurationsPage/CurationDetail";
+import Openvidu, { loader as OpenviduLoader } from "./routes/CurationsPage/openvidu";
 
 // 마이페이지
-import MyPageLayout, {loader as MyPageLoader} from "./routes/MyPage/Layout";
-
+import MyPageLayout, { loader as MyPageLoader } from "./routes/MyPage/Layout";
 // 작품탭
-import ArtsRoot, {loader as ArtsMyPageLoader} from "./routes/MyPage/ArtsRoot";
-
+import MyPageArts, { loader as MyPageArtsLoader } from "./routes/MyPage/Arts";
 // 공지사항탭
-import NoticesRoot, {action as NoticesAction, loader as NoticesLoader} from "./routes/MyPage/NoticesRoot";
-import NoticesDetail, {loader as noticeLoader} from "./routes/MyPage/NoticesDetail"
-
+import MyPageNotices, { action as MyPageNoticesAction, loader as MyPageNoticesLoader } from "./routes/MyPage/Notices";
+import MyPageNoticeDetail, { loader as MyPageNoticeDetailLoader } from "./routes/MyPage/NoticeDetail"
 // 큐레이션탭
-import CurationsRoot from "./routes/MyPage/CurationsRoot";
-import { loader as CurationsRootLoader } from  "./routes/MyPage/CurationsRoot";
-import CurationsRegister, {loader as CurationRegisterLoader} from "./routes/MyPage/CurationsRegister";
-
-// 모달(프로필 수정, 작품 업로드, 대표작품 설정)
+import MyPageCurations, { loader as MyPageCurationsLoader } from "./routes/MyPage/Curations";
+import MyPageCurationRegister, { loader as MyPageCurationRegisterLoader } from "./routes/MyPage/CurationRegister";
+// 프로필 수정
 import EditProfile from "./routes/MyPage/EditProfile";
 // 작품 업로드
-import Upload, {action as UploadAction} from "./routes/MyPage/Upload"
+import Upload, { action as UploadAction } from "./routes/MyPage/Upload"
 // 대표작품 설정
 import SetMasterpiece, { action as SetMasterpieceAction, loader as SetMasterpieceLoader } from "./routes/MyPage/SetMasterpiece"
-
 
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
@@ -68,113 +58,61 @@ const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      {/* 로그인 */}
-      <Route path="/login" element={<LoginPage/>}/>
-      {/* 회원가입 */}
-      <Route path="/signup" element={<SignUpPage/>}/>
+      {/* 로그인, 회원가입 */}
+      <Route path="/login" element={ <LoginPage /> } />
+      <Route path="/signup" element={ <SignUpPage /> } />
 
       {/* Nav바 + Footer */}
-      <Route
-        path="/"
-        element={<Layout/>}
-        errorElement={<Error/>}
-      >
-        <Route errorElement={<Error/>}>
+      <Route path="/" element={ <Layout /> } errorElement={ <Error /> }>
+        <Route errorElement={ <Error /> }>
+
           {/* 랜딩 페이지 */}
-          <Route index element={<LandingPage/>} loader={LandingLoader} errorElement={<Error/>}/>
+          <Route index element={ <LandingPage /> } loader={ LandingLoader } errorElement={ <Error /> } />
 
           {/* 작품 페이지 */}
-          <Route path="arts" element={<ArtsMain/>} loader={ArtsLoader}/>
-          <Route path=":nickname/:art_seq" element={<ArtsDetail/>} loader={ArtsDetailLoader} action={ArtsDetailAction}/>
+          <Route path="arts" element={ <ArtsMain /> } loader={ ArtsLoader } />
+          <Route path=":nickname/:art_seq" element={ <ArtDetail /> } loader={ ArtDetailLoader } action={ ArtDetailAction } />
 
           {/* 큐레이션 페이지 */}
-          <Route path="curations" element={<CurationsMain/>} loader={curationListLoader}/>
-          <Route path="curations/detail/:curation_seq" element={<CurationsDetail/>} loader={CurationsDetailLoader} action={CurationDetailAction}/>
-          <Route path="curations/on_air/:curation_seq" element={<Openvidu />} loader={OpenviduLoader} />
-
-
-          {/*<Route path="curations/on_air" element={<CurationsOnAir/>} loader={CurationsOnAirLoader}/>*/}
-          {/*<Route path="curations/upcoming" element={<CurationsUpcoming/>}/>*/}
-          <Route path="curations/end" element={<CurationsEnd/>}/>
-
-
-          {/* 커미션 페이지 */}
-          {/*<Route path="commissions" element={ <CommissionsMain /> } />*/}
-          {/*<Route path="commissions/detail" element={ <CommissionsDetail /> } />*/}
-          {/*<Route path="commissions/detail/register" element={ <CommissionsRegister/> } />*/}
+          <Route path="curations" element={ <CurationsMain /> } loader={ CurationsMainLoader } />
+          <Route path="curations/end" element={ <CurationsEnd /> } />
+          <Route path="curations/detail/:curation_seq" element={ <CurationDetail /> } loader={ CurationDetailLoader } action={ CurationDetailAction } />
+          <Route path="curations/on_air/:curation_seq" element={ <Openvidu /> } loader={ OpenviduLoader } />
 
           {/*마이페이지*/}
-          <Route
-            path=":nickname_user_seq"
-            element={<MyPageLayout/>}
-            loader={MyPageLoader}
-          >
-            <Route errorElement={<Error/>}>
+          <Route path=":nickname_user_seq" element={ <MyPageLayout /> } loader={ MyPageLoader }>
+            <Route errorElement={ <Error /> }>
               {/* 마이페이지 작품 */}
-              <Route
-                index
-                element={<ArtsRoot/>}
-                loader={ArtsMyPageLoader}
-              />
+              <Route index element={ <MyPageArts /> } loader={ MyPageArtsLoader } />
               {/* 마이페이지 공지 */}
-              <Route
-                path="notices"
-                element={<NoticesRoot/>}
-                loader={NoticesLoader}
-                action={NoticesAction}
-              >
-                {/*<Route*/}
-                {/*  path="mine"*/}
-                {/*  element={ <NoticesMine /> }*/}
-                {/*  loader={getNotices}/>*/}
-                {/*<Route*/}
-                {/*  path="following"*/}
-                {/*  element={ <NoticesFollowing /> }*/}
-                {/*  loader={getNotices}*/}
-                {/*/>*/}
-                <Route
-                  path=":notice_id"
-                  element={<NoticesDetail/>}
-                  loader={noticeLoader}
-                />
+              <Route path="notices" element={ <MyPageNotices /> } loader={ MyPageNoticesLoader } action={ MyPageNoticesAction }>
+                <Route path=":notice_id" element={ <MyPageNoticeDetail /> } loader={ MyPageNoticeDetailLoader } />
               </Route>
-
               {/* 마이페이지 큐레이션*/}
-              <Route
-                path="curations"
-                element={<CurationsRoot/>}
-                loader={CurationsRootLoader}
-              />
-
-              {/*<Route path="commissions" element={ <Commissions /> } />*/}
-              {/*<Route path="commissions/detail" element={ <MyPageCommissionsDetail /> } />*/}
-
-              <Route path="edit_profile" element={<EditProfile/>}></Route>
-              <Route path="upload" element={<Upload/>} action={UploadAction}></Route>
-              <Route path="set_masterpiece" element={<SetMasterpiece/>} loader={SetMasterpieceLoader}
-                      action={SetMasterpieceAction}></Route>
-              <Route path="curation_register" element={<CurationsRegister/>} loader={CurationRegisterLoader}/>
+              <Route path="curations" element={ <MyPageCurations /> } loader={ MyPageCurationsLoader } />
+              {/* 마이페이지 프로필수정/업로드/대표작품 설정 */}
+              <Route path="edit_profile" element={ <EditProfile /> } />
+              <Route path="upload" element={ <Upload /> } action={ UploadAction } />
+              <Route path="set_masterpiece" element={ <SetMasterpiece /> } loader={ SetMasterpieceLoader } action={ SetMasterpieceAction } />
+              <Route path="curation_register" element={ <MyPageCurationRegister /> } loader={ MyPageCurationRegisterLoader } />
             </Route>
           </Route>
-
         </Route>
       </Route>
-
     </Route>
   )
 )
+
 let store = createStoreWithMiddleware(rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ &&
   window.__REDUX_DEVTOOLS_EXTENSION__()
 )
-let persistor = persistStore(store)
 
+let persistor = persistStore(store)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider
-    store={store}
-  >
+  <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <RouterProvider router={router}/>
     </PersistGate>
