@@ -1,21 +1,27 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import "./LoginPage.css";
-import {landingRendering, loginCode, loginUser, signup_login_reset,} from "../../_actions/user_action";
 import {useNavigate} from "react-router-dom";
-import logo from "../../assets/글씨_250.png";
 import axios from "axios";
+
+import "./LoginPage.css";
+import logo from "../../assets/글씨_250.png";
+import { landingRendering, loginCode, loginUser, signup_login_reset } from "../../_actions/user_action";
 
 export default function LoginPage(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // 이메일, 비밀번호 입력
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
-    const [pwMessage, setPwMessage] = useState("");
-    const afterSignup = useSelector((state) => state.user.sign_login);
-    console.log("afterSignup ===>>>", afterSignup);
 
+    // 로그인 도중 안내 문구
+    const [pwMessage, setPwMessage] = useState("");
+
+    // 회원가입 직후에 true, 나머지 경우는 모두 false
+    const afterSignup = useSelector((state) => state.user.sign_login);
+
+    // 비밀번호 재발급
     const handleFindPw = (event) => {
         event.preventDefault();
         let body = {
@@ -35,14 +41,17 @@ export default function LoginPage(props) {
             });
     };
 
+    // 이메일 입력하기
     const onEmailHandler = (event) => {
         setEmail(event.target.value);
     };
 
+    // 비밀번호 입력하기
     const onPasswordHandler = (event) => {
         setPassword(event.target.value);
     };
 
+    // 회원가입 완료 후 실행되는 함수
     const onSubmitHandler = (event) => {
         event.preventDefault();
 
@@ -75,6 +84,7 @@ export default function LoginPage(props) {
             });
         dispatch(loginCode());
     };
+
     return (
         <div className="login-container">
             <div className="login-box">

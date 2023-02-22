@@ -4,6 +4,9 @@ import {
     LANDING_RENDERING_LOGOUT, LANDING_RENDERING_RESET, SIGNUP_LOGIN, SIGNUP_LOGIN_RESET
 } from '../_actions/types'
 
+// login_status : 로그인 상태 시 true, 로그아웃 상태 시 false
+// landing_status : 1, 2, 3 의 상태가 있으며 로그인, 로그아웃 시 상태 변함
+// sign_login : 회원가입 직후 로그인 화면인 경우만 true
 const initialState = {
     login_status: false,
     landing_status: 1,
@@ -22,7 +25,7 @@ export default function user (state = initialState, action) {
         case CHECK_EMAIL:
             return { ...state, payload: action.payload }
 
-            case CHECK_EMAIL_CODE:
+        case CHECK_EMAIL_CODE:
             return { ...state, payload: action.payload }
 
         case CHECK_NICKNAME:

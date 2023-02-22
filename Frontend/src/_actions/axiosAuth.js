@@ -1,5 +1,7 @@
 import axios from "axios";
 
+// Access Token은 localStorage에, Refresh Token은 DB에 저장
+// Access Token이 만료되었거나 만료 시간이 30초 미만이라면 Access Token의 갱신을 위한 함수
 export const axiosReissue = () => {
     let expiration = +localStorage.getItem("expiration")
     let nowTime = new Date()
@@ -17,19 +19,13 @@ export const axiosReissue = () => {
         })
         .catch(error => {
             console.log(error)
-            // localStorage.removeItem("token")
-            // localStorage.removeItem("expiration")
-            // localStorage.removeItem("nickname")
-            // localStorage.removeItem("profileImg")
-            // localStorage.removeItem("role")
-            // localStorage.removeItem("userSeq")
             localStorage.clear();
             return window.location.pathname='/login';
         })
     }
 }
 
-
+// baseURL과 header에 access token을 지닌 axios 인스턴스
 export const axiosAuth = axios.create({
     baseURL: 'https://i8a108.p.ssafy.io/api/',
     headers: {
