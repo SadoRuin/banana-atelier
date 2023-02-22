@@ -8,7 +8,7 @@ import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import { YellowBtn, RedBtn, LikeBtn } from "../../components/commons/buttons";
 import {Category} from "../../components/commons/Category";
-import './ArtsDetail.css'
+import './ArtDetail.css'
 
 export async function loader ({params}) {
   axiosReissue();
@@ -52,7 +52,7 @@ export async function action ({request, params}) {
 }
 
 
-function ArtsDetail() {
+function ArtDetail() {
   const [artData, likeList] = useLoaderData();
   let likeState = likeList?.find((like) => like.artSeq === artData.artSeq) || false;
   const [isLiked, setIsLiked] = useState(likeState)
@@ -161,4 +161,4 @@ function ArtsDetail() {
   )
 }
 
-export default ArtsDetail
+export default ArtDetail

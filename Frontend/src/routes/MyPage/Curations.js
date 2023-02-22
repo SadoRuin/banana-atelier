@@ -32,7 +32,7 @@ export async function loader ({params}) {
   return [curationsList, bookmarkedList, followingCurationsList];
 }
 
-function CurationsRoot() {
+function Curations() {
   const [, isArtist] = useOutletContext();
   const [curationsList, bookmarkedList, followingCurationsList] = useLoaderData();
   const [curationsIndex, setCurationsIndex] = useState(0)
@@ -108,4 +108,4 @@ function CurationsRoot() {
   );
 }
 
-export default CurationsRoot;
+export default Curations;

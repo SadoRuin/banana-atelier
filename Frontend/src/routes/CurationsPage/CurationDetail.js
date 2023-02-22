@@ -12,7 +12,7 @@ import ArtItemMyPage from "../../components/MyPage/ArtItemMyPage";
 import { getArtImage } from '../../components/commons/imageModule';
 
 import { BookmarkBtn, RedBtn, YellowBtn } from "../../components/commons/buttons";
-import '../ArtsPage/ArtsDetail.css'
+import '../ArtsPage/ArtDetail.css'
 import '../MyPage/ArtsRoot.css'
 
 
@@ -58,7 +58,7 @@ export async function action ({request, params}) {
   return redirect('../')
 }
 
-function CurationsDetail() {
+function CurationDetail() {
   const [curationDetail, curationDetailArts, isBookmarked] = useLoaderData();
   const navigate = useNavigate()
 
@@ -200,4 +200,4 @@ function CurationsDetail() {
   )
 }
 
-export default CurationsDetail
+export default CurationDetail

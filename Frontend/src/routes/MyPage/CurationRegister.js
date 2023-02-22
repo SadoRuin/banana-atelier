@@ -17,7 +17,7 @@ export async function loader ({params}) {
 }
 
 
-function CurationsRegister() {
+function CurationRegister() {
   const userArts = useLoaderData();
   const navigate = useNavigate();
   const [curationsList, setCurationsList] = useState([]);
@@ -186,4 +186,4 @@ function CurationsRegister() {
   );
 }
 
-export default CurationsRegister;
+export default CurationRegister;

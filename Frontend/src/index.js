@@ -23,28 +23,28 @@ import Error from './routes/Error'
 import Layout from "./routes/LayoutPage/Layout"
 
 // 랜딩 페이지
-import LandingPage, {loader as LandingLoader} from "./routes/LandingPage/LandingPage";
+import LandingPage, { loader as LandingLoader } from "./routes/LandingPage/LandingPage";
 
 // 작품 페이지
-import ArtsMain, {loader as ArtsLoader} from "./routes/ArtsPage/ArtsMain";
-import ArtsDetail, {action as ArtsDetailAction, loader as ArtsDetailLoader} from "./routes/ArtsPage/ArtsDetail";
+import ArtsMain, { loader as ArtsLoader } from "./routes/ArtsPage/ArtsMain";
+import ArtDetail, { action as ArtDetailAction, loader as ArtDetailLoader } from "./routes/ArtsPage/ArtDetail";
 
 // 큐레이션 페이지
-import CurationsMain, { loader as curationListLoader } from "./routes/CurationsPage/CurationsMain";
+import CurationsMain, { loader as CurationsMainLoader } from "./routes/CurationsPage/CurationsMain";
 import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
-import CurationsDetail, { loader as CurationsDetailLoader, action as CurationDetailAction } from "./routes/CurationsPage/CurationsDetail";
+import CurationDetail, { loader as CurationDetailLoader, action as CurationDetailAction } from "./routes/CurationsPage/CurationDetail";
 import Openvidu, { loader as OpenviduLoader } from "./routes/CurationsPage/openvidu";
 
 // 마이페이지
 import MyPageLayout, { loader as MyPageLoader } from "./routes/MyPage/Layout";
 // 작품탭
-import ArtsRoot, { loader as ArtsMyPageLoader } from "./routes/MyPage/ArtsRoot";
+import MyPageArts, { loader as MyPageArtsLoader } from "./routes/MyPage/Arts";
 // 공지사항탭
-import NoticesRoot, { action as NoticesAction, loader as NoticesLoader } from "./routes/MyPage/NoticesRoot";
-import NoticesDetail, { loader as noticeLoader } from "./routes/MyPage/NoticesDetail"
+import MyPageNotices, { action as MyPageNoticesAction, loader as MyPageNoticesLoader } from "./routes/MyPage/Notices";
+import MyPageNoticeDetail, { loader as MyPageNoticeDetailLoader } from "./routes/MyPage/NoticeDetail"
 // 큐레이션탭
-import CurationsRoot, { loader as CurationsRootLoader } from "./routes/MyPage/CurationsRoot";
-import CurationsRegister, { loader as CurationRegisterLoader } from "./routes/MyPage/CurationsRegister";
+import MyPageCurations, { loader as MyPageCurationsLoader } from "./routes/MyPage/Curations";
+import MyPageCurationRegister, { loader as MyPageCurationRegisterLoader } from "./routes/MyPage/CurationRegister";
 // 프로필 수정
 import EditProfile from "./routes/MyPage/EditProfile";
 // 작품 업로드
@@ -71,30 +71,30 @@ const router = createBrowserRouter(
 
           {/* 작품 페이지 */}
           <Route path="arts" element={ <ArtsMain /> } loader={ ArtsLoader } />
-          <Route path=":nickname/:art_seq" element={ <ArtsDetail /> } loader={ ArtsDetailLoader } action={ ArtsDetailAction } />
+          <Route path=":nickname/:art_seq" element={ <ArtDetail /> } loader={ ArtDetailLoader } action={ ArtDetailAction } />
 
           {/* 큐레이션 페이지 */}
-          <Route path="curations" element={ <CurationsMain /> } loader={ curationListLoader } />
+          <Route path="curations" element={ <CurationsMain /> } loader={ CurationsMainLoader } />
           <Route path="curations/end" element={ <CurationsEnd /> } />
-          <Route path="curations/detail/:curation_seq" element={ <CurationsDetail /> } loader={ CurationsDetailLoader } action={ CurationDetailAction } />
+          <Route path="curations/detail/:curation_seq" element={ <CurationDetail /> } loader={ CurationDetailLoader } action={ CurationDetailAction } />
           <Route path="curations/on_air/:curation_seq" element={ <Openvidu /> } loader={ OpenviduLoader } />
 
           {/*마이페이지*/}
           <Route path=":nickname_user_seq" element={ <MyPageLayout /> } loader={ MyPageLoader }>
             <Route errorElement={ <Error /> }>
               {/* 마이페이지 작품 */}
-              <Route index element={ <ArtsRoot /> } loader={ ArtsMyPageLoader } />
+              <Route index element={ <MyPageArts /> } loader={ MyPageArtsLoader } />
               {/* 마이페이지 공지 */}
-              <Route path="notices" element={ <NoticesRoot /> } loader={ NoticesLoader } action={ NoticesAction }>
-                <Route path=":notice_id" element={ <NoticesDetail /> } loader={ noticeLoader } />
+              <Route path="notices" element={ <MyPageNotices /> } loader={ MyPageNoticesLoader } action={ MyPageNoticesAction }>
+                <Route path=":notice_id" element={ <MyPageNoticeDetail /> } loader={ MyPageNoticeDetailLoader } />
               </Route>
               {/* 마이페이지 큐레이션*/}
-              <Route path="curations" element={ <CurationsRoot /> } loader={ CurationsRootLoader } />
+              <Route path="curations" element={ <MyPageCurations /> } loader={ MyPageCurationsLoader } />
               {/* 마이페이지 프로필수정/업로드/대표작품 설정 */}
               <Route path="edit_profile" element={ <EditProfile /> } />
               <Route path="upload" element={ <Upload /> } action={ UploadAction } />
               <Route path="set_masterpiece" element={ <SetMasterpiece /> } loader={ SetMasterpieceLoader } action={ SetMasterpieceAction } />
-              <Route path="curation_register" element={ <CurationsRegister /> } loader={ CurationRegisterLoader } />
+              <Route path="curation_register" element={ <MyPageCurationRegister /> } loader={ MyPageCurationRegisterLoader } />
             </Route>
           </Route>
         </Route>
