@@ -18,7 +18,7 @@ export default function LoginPage(props) {
     // 로그인 도중 안내 문구
     const [pwMessage, setPwMessage] = useState("");
 
-    // 회원가입 직후에만 true, 나머지 경우는 모두 false
+    // 회원가입 직후에 true, 나머지 경우는 모두 false
     const afterSignup = useSelector((state) => state.user.sign_login);
 
     // 비밀번호 재발급
