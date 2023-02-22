@@ -1,12 +1,13 @@
-import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+import { yupResolver } from "@hookform/resolvers/yup";
 import styles from "./SignUpPage.module.css";
-import logo from "../../assets/글씨_250.png";
-import {useNavigate} from "react-router-dom";
-import {useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import "../../components/commons/commons.css";
+import logo from "../../assets/글씨_250.png";
+import * as yup from "yup";
 import {
     check_email,
     check_email_code,
@@ -16,11 +17,11 @@ import {
     signUpUser,
 } from "../../_actions/user_action";
 
+
 function SignUpPage(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const afterSignup = useSelector((state) => state.user.sign_login);
-    console.log("afterSignup ===>>>", afterSignup);
+
     // 이메일 인증번호 발송 하단 멘트 (인증번호가 발송되었습니다.)
     const [emailValidMessage, SetEmailValidMessage] = useState("");
 
@@ -36,10 +37,13 @@ function SignUpPage(props) {
     // 닉네임 인증 완료라면? true
     const [nicknameValidCheck, SetNicknameValidCheck] = useState(false);
 
+    // 이메일 인증 하단 멘트
     const [verifyMessage, SetVerifyMessage] = useState("인증번호 발송");
 
+    // 로그인 관련 경고 문구
     const [alertMessage, SetAlertMessage] = useState("");
 
+    // yup 라이브러리 이용
     const formSchema = yup.object({
         nickname: yup.string().required("닉네임을 입력해주세요."),
         email: yup.string().required("이메일을 입력해주세요.").email("이메일 형식이 아닙니다."),
@@ -54,23 +58,21 @@ function SignUpPage(props) {
             ),
         passwordConfirm: yup.string().oneOf([yup.ref("password")], "비밀번호가 다릅니다."),
     });
-
     const {
         register,
         handleSubmit,
-        // watch,
         formState: {errors},
     } = useForm({
         mode: "onChange",
         resolver: yupResolver(formSchema),
     });
 
+    // 닉네임 중복체크
     const onCheckNickname = () => {
         const nickname = document.querySelector("#nickname");
         let body = {
             nickname: nickname.value,
         };
-
         dispatch(check_nickname(body))
             .then((response) => {
                 if (response.payload.message === "사용가능한 닉네임입니다.") {
@@ -78,12 +80,13 @@ function SignUpPage(props) {
                     SetNicknameValidCheck(true);
                 }
             })
-            .catch((error) => {
+            .catch(() => {
                 setNicknameCheck("중복된 닉네임입니다.");
                 SetNicknameValidCheck(false);
             });
     };
 
+    // 이메일 인증
     const emailVerify = () => {
         SetVerifyMessage("인증번호 재발송");
         const emailValid = document.querySelector("#email");
@@ -103,6 +106,7 @@ function SignUpPage(props) {
             });
     };
 
+    // 인증코드 유효성 검사
     const VerifyCheck = () => {
         const emailValid = document.querySelector("#email");
         const verifychecknum = document.querySelector("#verifycheck");
@@ -126,6 +130,7 @@ function SignUpPage(props) {
             });
     };
 
+    // 회원가입 버튼 클릭 후 실행되는 함수
     const onSubmit = (data) => {
         let body = {
             email: data.email,
@@ -138,7 +143,7 @@ function SignUpPage(props) {
             SetAlertMessage("인증코드 확인을 하세요.");
         } else {
             dispatch(signUpUser(body))
-                .then((response) => {
+                .then(() => {
                     dispatch(signup_login());
                     alert("회원가입이 완료되었습니다.");
                     navigate("/login");
@@ -149,6 +154,7 @@ function SignUpPage(props) {
                 });
         }
     };
+
 
     return (
         <div className={styles["sign-up-container"]}>
@@ -250,10 +256,7 @@ function SignUpPage(props) {
                             </div>
 
                             <div className={styles["full-btn"]}>
-                                {/* <input type="submit" vaule="회원가입하기" disabled={errors || watch()} /> */}
                                 <button className={styles["form-btn"]}>회원가입</button>
-                                {/* <button disabled={!emailCheck || !nicknameValidCheck} className='yellow_button' style={{width: '100%', marginTop: '15px'}}>회원가입</button> */}
-                                {/* <button disabled={!emailCheck || !nicknameCheck} >회원가입</button> */}
                             </div>
                             <div className={styles["hidden-msg"]}>{alertMessage}</div>
                         </form>
