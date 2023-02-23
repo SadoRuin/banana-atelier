@@ -1,12 +1,13 @@
-import React , {useState} from 'react'
+import React , { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLoaderData } from 'react-router-dom';
+import { useNavigate, useLoaderData, useSearchParams } from 'react-router-dom';
 
 import { landingRenderingReset } from '../../_actions/user_action'
 import axiosCustom from '../../_actions/axiosCustom';
 import ArtComponent from "../../components/commons/ArtComponent";
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
-import {Category} from "../../components/commons/Category";
+import { Category } from "../../components/commons/Category";
+import './ArtsMain.css'
 
 
 export async function loader ({request}) {
@@ -14,18 +15,18 @@ export async function loader ({request}) {
   const categorySeq = url.searchParams.get("category") || null;
 
   const artsTrendAll = await axiosCustom.get('arts/trend')
-    .then(response=>response.data)
+    .then(response=> response.data)
     .catch(() => null)
 
   const artsPopularAll = await axiosCustom.get('arts/popular')
-    .then(response=>response.data)
+    .then(response => response.data)
     .catch(() => null)
 
   const artsNewAll = await axiosCustom.get('arts/new')
-    .then(response=>response.data)
+    .then(response => response.data)
     .catch(() => null)
   
-  const artsAll = categorySeq?
+  const artsAll = categorySeq ?
     await axiosCustom.get(`arts/category/${categorySeq}`)
       .then(response => response.data)
       .catch(() => null) :
@@ -44,6 +45,8 @@ function ArtsMain() {
   const [artsTrend, artsPopular, artsNew, artsAll] = useLoaderData();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const categorySeq = +searchParams.get('category');
 
   const landingStatus = useSelector(state => state.user.landing_status);
   if (landingStatus === 2) {
@@ -54,24 +57,24 @@ function ArtsMain() {
       .then(()=>window.location.reload())
   }
 
-  const artsSortMenuData = [
+  const [artsMainIndex, setArtsMainIndex] = useState(0);
+  const artsMainMenuData = [
     {
       name: "트렌드 작품",
       content:
         <div className="grid__main-components">
-          {artsTrend?.map((art) =>
-            <div key={`art-item_${art.artSeq}`}>
-              <ArtComponent
-                nickname={art.nickname}
-                profileImg={art.profileImg}
-                userSeq={art.userSeq}
-                artThumbnail={art.artThumbnail}
-                artName={art.artName}
-                artSeq={art.artSeq}
-                artHit={art.artHit}
-                artLikeCount={art.artLikeCount}
-              />
-            </div>
+          { artsTrend?.map((art) =>
+            <ArtComponent
+              key={`art-main__trend-${art.artSeq}`}
+              nickname={art.nickname}
+              profileImg={art.profileImg}
+              userSeq={art.userSeq}
+              artThumbnail={art.artThumbnail}
+              artName={art.artName}
+              artSeq={art.artSeq}
+              artHit={art.artHit}
+              artLikeCount={art.artLikeCount}
+            />
           )}
         </div>
     },
@@ -79,19 +82,18 @@ function ArtsMain() {
       name: "전체 작품",
       content:
         <div className="grid__main-components">
-          {artsAll?.map((art) =>
-            <div key={`art-item_${art.artSeq}`}>
-              <ArtComponent
-                nickname={art.nickname}
-                profileImg={art.profileImg}
-                userSeq={art.userSeq}
-                artThumbnail={art.artThumbnail}
-                artName={art.artName}
-                artSeq={art.artSeq}
-                artHit={art.artHit}
-                artLikeCount={art.artLikeCount}
-              />
-            </div>
+          { artsAll?.map((art) =>
+            <ArtComponent
+              key={`art-main__all-${art.artSeq}`}
+              nickname={art.nickname}
+              profileImg={art.profileImg}
+              userSeq={art.userSeq}
+              artThumbnail={art.artThumbnail}
+              artName={art.artName}
+              artSeq={art.artSeq}
+              artHit={art.artHit}
+              artLikeCount={art.artLikeCount}
+            />
           )}
         </div>
     },
@@ -99,19 +101,18 @@ function ArtsMain() {
       name: "새로 나온 작품",
       content:
         <div className="grid__main-components">
-          {artsNew.map((art) =>
-            <div key={`art-item_${art.artSeq}`}>
-              <ArtComponent
-                nickname={art.nickname}
-                profileImg={art.profileImg}
-                userSeq={art.userSeq}
-                artThumbnail={art.artThumbnail}
-                artName={art.artName}
-                artSeq={art.artSeq}
-                artHit={art.artHit}
-                artLikeCount={art.artLikeCount}
-              />
-            </div>
+          { artsNew.map((art) =>
+            <ArtComponent
+              key={`art-main__new-${art.artSeq}`}
+              nickname={art.nickname}
+              profileImg={art.profileImg}
+              userSeq={art.userSeq}
+              artThumbnail={art.artThumbnail}
+              artName={art.artName}
+              artSeq={art.artSeq}
+              artHit={art.artHit}
+              artLikeCount={art.artLikeCount}
+            />
           )}
         </div>
     },
@@ -119,41 +120,36 @@ function ArtsMain() {
       name: "인기 많은 작품",
       content:
         <div className="grid__main-components">
-          {artsPopular.map((art) =>
-            <div key={`art-item_${art.artSeq}`}>
-              <ArtComponent
-                nickname={art.nickname}
-                profileImg={art.profileImg}
-                userSeq={art.userSeq}
-                artThumbnail={art.artThumbnail}
-                artName={art.artName}
-                artSeq={art.artSeq}
-                artHit={art.artHit}
-                artLikeCount={art.artLikeCount}
-              />
-            </div>
+          { artsPopular.map((art) =>
+            <ArtComponent
+              key={`art-main__popular-${art.artSeq}`}
+              nickname={art.nickname}
+              profileImg={art.profileImg}
+              userSeq={art.userSeq}
+              artThumbnail={art.artThumbnail}
+              artName={art.artName}
+              artSeq={art.artSeq}
+              artHit={art.artHit}
+              artLikeCount={art.artLikeCount}
+            />
           )}
         </div>
     }
   ]
 
-  const [sortIndex, setSortIndex] = useState(0);
-
   return (
     <div>
       <div className="art-main__category" style={{display: 'flex', width: '75%', justifyContent: 'space-between', marginTop: '30px'}}>
-        <Category onClick={() => {navigate('/arts')}}>전체</Category>
-        <Category onClick={() => {navigate({search: '?category=1' })}}>일러스트레이션</Category>
-        <Category onClick={() => {navigate({search: '?category=2' })}}>캐릭터디자인</Category>
-        <Category onClick={() => {navigate({search: '?category=3' })}}>디지털 아트</Category>
-        <Category onClick={() => {navigate({search: '?category=4' })}}>타이포그래피</Category>
-        <Category onClick={() => {navigate({search: '?category=5' })}}>포토그래피</Category>
-        <Category onClick={() => {navigate({search: '?category=6' })}}>파인아트</Category>
-        <Category onClick={() => {navigate({search: '?category=7' })}}>공예</Category>
+        <Category className={categorySeq === 0? 'navCategory' : ''} onClick={() => {navigate('/arts')}}>전체</Category>
+        <Category className={categorySeq === 1? 'navCategory' : ''} onClick={() => {navigate({search: '?category=1' })}}>일러스트레이션</Category>
+        <Category className={categorySeq === 2? 'navCategory' : ''} onClick={() => {navigate({search: '?category=2' })}}>캐릭터디자인</Category>
+        <Category className={categorySeq === 3? 'navCategory' : ''} onClick={() => {navigate({search: '?category=3' })}}>디지털 아트</Category>
+        <Category className={categorySeq === 4? 'navCategory' : ''} onClick={() => {navigate({search: '?category=4' })}}>타이포그래피</Category>
+        <Category className={categorySeq === 5? 'navCategory' : ''} onClick={() => {navigate({search: '?category=5' })}}>포토그래피</Category>
+        <Category className={categorySeq === 6? 'navCategory' : ''} onClick={() => {navigate({search: '?category=6' })}}>파인아트</Category>
+        <Category className={categorySeq === 7? 'navCategory' : ''} onClick={() => {navigate({search: '?category=7' })}}>공예</Category>
       </div>
-
-      <TabMenuComponent menuData={artsSortMenuData} index={sortIndex} setIndex={setSortIndex} />
-
+      <TabMenuComponent menuData={artsMainMenuData} index={artsMainIndex} setIndex={setArtsMainIndex} />
     </div>
   )
 }
