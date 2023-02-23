@@ -6,13 +6,13 @@ import './CurationsRegister.css';
 import CurationPieceItem from "../../components/MyPage/CurationPieceItem";
 
 export async function loader ({params}) {
-  console.log(params);
   const [, userSeq] = params.nickname_user_seq.split('@')
-  console.log(userSeq);
   axiosReissue();
-  const userArts = await axiosAuth.get(`arts/${userSeq}`)
-    .then(response => response.data)
-    .catch(error=> console.log(error))
+
+  let userArts = [];
+  await axiosAuth.get(`arts/${userSeq}`)
+    .then(response => userArts = response.data)
+
   return userArts;
 }
 
@@ -22,10 +22,7 @@ function CurationRegister() {
   const navigate = useNavigate();
   const [curationsList, setCurationsList] = useState([]);
 
-  console.log(userArts);
-
   const handleSelected = (e) => {
-    console.log('눌렸음!');
     let artSeq = Number(e.target.value);
     if (e.target.checked) {
       if (curationsList.length === 10) {
@@ -49,7 +46,6 @@ function CurationRegister() {
           alert('숫자만 입력해주세요!')
           auctionGap = +prompt("경매 호가 단위를 입력해주세요(숫자만)");
         }
-        console.log(auctionGap, auctionStartPrice)
 
         if (Number.isInteger(auctionGap) && Number.isInteger(auctionStartPrice) && auctionStartPrice > 0 && auctionGap > 0){
           const curationArt = userArts.find((art)=>art.artSeq === artSeq);
