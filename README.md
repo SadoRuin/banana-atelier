@@ -41,7 +41,7 @@
 - **신선호**: Frontend, 팀장
 - **박시현**: Frontend, 부팀장
 - **김규리**: Frontend, 와이어프레임 설계
-- **박윤환**: Frontend, DevOps 담당
+- **박윤환**: Backend, DevOps 담당
 - **박주희**: Backend, Frontend
 - **손유진**: Backend
 
