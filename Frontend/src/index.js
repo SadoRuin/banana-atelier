@@ -31,7 +31,6 @@ import ArtDetail, { action as ArtDetailAction, loader as ArtDetailLoader } from 
 
 // 큐레이션 페이지
 import CurationsMain, { loader as CurationsMainLoader } from "./routes/CurationsPage/CurationsMain";
-import CurationsEnd from "./routes/CurationsPage/CurationsEnd";
 import CurationDetail, { loader as CurationDetailLoader, action as CurationDetailAction } from "./routes/CurationsPage/CurationDetail";
 import Openvidu, { loader as OpenviduLoader } from "./routes/CurationsPage/openvidu";
 
@@ -75,7 +74,6 @@ const router = createBrowserRouter(
 
           {/* 큐레이션 페이지 */}
           <Route path="curations" element={ <CurationsMain /> } loader={ CurationsMainLoader } />
-          <Route path="curations/end" element={ <CurationsEnd /> } />
           <Route path="curations/detail/:curation_seq" element={ <CurationDetail /> } loader={ CurationDetailLoader } action={ CurationDetailAction } />
           <Route path="curations/on_air/:curation_seq" element={ <Openvidu /> } loader={ OpenviduLoader } />
 

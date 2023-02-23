@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link, useLoaderData } from 'react-router-dom';
-import {axiosAuth} from '../../_actions/axiosAuth'
+import { useLoaderData } from 'react-router-dom';
+import { axiosAuth } from '../../_actions/axiosAuth'
 
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -8,28 +8,22 @@ import "swiper/css"; //basic
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import TabMenuComponent, {TabContent, TabMenu} from "../../components/commons/TabMenuComponent";
+import TabMenuComponent, { TabContent, TabMenu } from "../../components/commons/TabMenuComponent";
 import CurationComponent from '../../components/commons/CurationComponent';
 
 export async function loader() {
-  const curationsInitList = await axiosAuth.get(`curations/init`)
-    .then(response=>response.data)
-    .catch(error=>console.log(error))
-  const curationsOnList = await axiosAuth.get('curations/on')
-    .then(response=>response.data)
-    .catch(error=>console.log(error))
-  const curationsEndList = await axiosAuth.get('curations/end')
-    .then(response=>response.data)
-    .catch(error=>console.log(error))
-  return { curationsInitList, curationsOnList, curationsEndList }
+  let curationsInitList, curationsOnList, curationsEndList = null;
+  await axiosAuth.get(`curations/init`)
+    .then(response => curationsInitList = response.data)
+  await axiosAuth.get('curations/on')
+    .then(response => curationsOnList = response.data)
+  await axiosAuth.get('curations/end')
+    .then(response => curationsEndList = response.data)
+  return [curationsInitList, curationsOnList, curationsEndList]
 }
 
-
 function CurationsMain() {
-  const { curationsInitList, curationsOnList, curationsEndList } = useLoaderData();
-
-  console.log(curationsEndList)
-
+  const [curationsInitList, curationsOnList, curationsEndList] = useLoaderData();
   const [onAirIndex, setOnAirIndex] = useState(0);
   const [initIndex, setInitIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(0);
@@ -45,7 +39,6 @@ function CurationsMain() {
         a.curationStartTime[4] - b.curationStartTime[4] ||
         a.curationStartTime[5] - b.curationStartTime[5] );
     }
-
     // 내림차순 == 최신순
     else if (keyword === "new") {
       return data.sort((a, b) =>
@@ -67,18 +60,18 @@ function CurationsMain() {
       content:
         sortByBookmark(curationsOnList).map((list) =>
           <SwiperSlide key={`on-curations__bm-${list.curationSeq}`}>
-              <CurationComponent
-                nickname={list.userNickname}
-                profileImg={list.profileImg}
-                userSeq={list.userSeq}
-                curationThumbnail={list.curationThumbnail}
-                curationName={list.curationName}
-                curationSeq={list.curationSeq}
-                curationHit={list.curationHit}
-                curationBmCount={list.curationBmCount}
-                curationStartTime={list.curationStartTime}
-                curationStatus={list.curationStatus}
-              />
+            <CurationComponent
+              nickname={list.userNickname}
+              profileImg={list.profileImg}
+              userSeq={list.userSeq}
+              curationThumbnail={list.curationThumbnail}
+              curationName={list.curationName}
+              curationSeq={list.curationSeq}
+              curationHit={list.curationHit}
+              curationBmCount={list.curationBmCount}
+              curationStartTime={list.curationStartTime}
+              curationStatus={list.curationStatus}
+            />
           </SwiperSlide>)
     },
     { 
@@ -322,12 +315,9 @@ function CurationsMain() {
       </div>
 
       <div>
-        <Link to="end" className="link">
-          <h2>종료된 큐레이션 {`>`}</h2>
-        </Link>
+        <h2>종료된 큐레이션</h2>
         <TabMenuComponent menuData={endMenuData} index={endIndex} setIndex={setEndIndex} />
       </div>
-
     </div>
   )
 }
