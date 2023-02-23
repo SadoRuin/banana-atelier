@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLoaderData, Link, redirect, useOutletContext } from "react-router-dom";
+import { useLoaderData, Link, useOutletContext } from "react-router-dom";
 
 import { axiosAuth, axiosReissue } from "../../_actions/axiosAuth";
 import TabMenuComponent from "../../components/commons/TabMenuComponent";
@@ -13,25 +13,16 @@ export async function loader ({params}) {
   const userSeq = params.nickname_user_seq.split('@')[1];
   axiosReissue();
 
+  let userArts, userLikes, userMasterpieces = [];
   // 작가의 작품
-  const userArts = await axiosAuth(`arts/${userSeq}`)
-    .then(response => response.data)
-    .catch((error) => error.response.status === 401 ? error : null )
+  await axiosAuth(`arts/${userSeq}`)
+    .then(response => userArts = response.data)
   // 작가가 좋아요한 작품
-  const userLikes = await axiosAuth(`arts/${userSeq}/like`)
-    .then(response => response.data)
-    .catch((error) => error.response.status === 401 ? error : null )
+  await axiosAuth(`arts/${userSeq}/like`)
+    .then(response => userLikes = response.data)
   // 작가의 대표작품
-  const userMasterpieces = await axiosAuth(`arts/${userSeq}/masterpiece`)
-    .then(response => response.data)
-    .catch((error) => error.response.status === 401 ? error : null )
-  console.log(userArts);
-  console.log(userLikes);
-  console.log(userMasterpieces);
-  // 401은 권한이 없다는 뜻이므로 login으로 보내버리자
-  if (userArts?.response?.status === 401 || userLikes?.response?.status === 401 || userMasterpieces?.response?.status === 401) {
-    return redirect("/login")
-  }
+  await axiosAuth(`arts/${userSeq}/masterpiece`)
+    .then(response => userMasterpieces = response.data)
 
   return [userArts, userLikes, userMasterpieces]
 }
