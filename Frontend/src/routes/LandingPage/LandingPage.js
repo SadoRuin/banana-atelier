@@ -9,7 +9,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import axiosCustom from "../../_actions/axiosCustom";
-import { axiosReissue } from "../../_actions/axiosAuth";
 import { landingRenderingReset } from "../../_actions/user_action";
 import ArtComponent from "../../components/commons/ArtComponent";
 import CurationComponent from "../../components/commons/CurationComponent";
@@ -17,26 +16,19 @@ import CurationComponent from "../../components/commons/CurationComponent";
 import "../MyPage/ArtsRoot.css";
 
 export async function loader() {
-  axiosReissue();
+  let artsList, curationOnList, curationInitList;
+  await axiosCustom.get('arts/all' )
+    .then(response => artsList = response.data)
+    .catch(() => artsList = [])
+  await axiosCustom.get('curations/on' )
+    .then(response => curationOnList = response.data)
+    .catch(() => curationOnList = [])
+  await axiosCustom.get('curations/init' )
+    .then(response => curationInitList = response.data)
+    .catch(() => curationInitList = [])
 
-  let artsList,
-    curationOnList,
-    curationInitList = null;
-  await axiosCustom
-    .get("arts/all")
-    .then((response) => (artsList = response.data))
-    .catch(() => (artsList = []));
-
-  await axiosCustom
-    .get("curations/on")
-    .then((response) => (curationOnList = response.data))
-    .catch(() => (curationOnList = []));
-  await axiosCustom
-    .get("curations/init")
-    .then((response) => (curationInitList = response.data))
-    .catch(() => (curationInitList = []));
-
-  return [artsList, curationOnList, curationInitList];
+  const curationsList = [...curationOnList, ...curationInitList];
+  return [artsList, curationsList];
 }
 
 function LandingPage() {
@@ -48,18 +40,12 @@ function LandingPage() {
     dispatch(landingRenderingReset()).then(() => window.location.reload());
   }
 
-  const [artsList, curationOnList, curationInitList] = useLoaderData();
+  const [artsList, curationsList] = useLoaderData();
 
-  const curationsList = curationOnList.concat(curationInitList);
-  console.log(curationsList);
   return (
     <div>
       <div>
-        <h1>
-          <Link className="link" to="curations">
-            큐레이션🍌
-          </Link>
-        </h1>
+        <h1><Link className="link" to="curations">큐레이션🍌</Link></h1>
         <Swiper
           // install Swiper modules
           modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -78,9 +64,9 @@ function LandingPage() {
           loop={true}
           scrollbar={{ draggable: true }}
         >
-          {curationsList.length ? (
+          { curationsList.length ? (
             curationsList.map((curation) => (
-              <SwiperSlide key={`end-curations__old-${curation.curationSeq}`}>
+              <SwiperSlide key={`landing__curation-${curation.curationSeq}`}>
                 <CurationComponent
                   nickname={curation.userNickname}
                   profileImg={curation.profileImg}
@@ -102,15 +88,11 @@ function LandingPage() {
       </div>
 
       <div>
-        <h1>
-          <Link className="link" to="arts">
-            트렌딩🔥
-          </Link>
-        </h1>
+        <h1><Link className="link" to="arts">트렌딩🔥</Link></h1>
         <div className="grid__main-components">
           {artsList.map((art) => (
             <ArtComponent
-              key={`art-item_${art.artSeq}`}
+              key={`landing__art-${art.artSeq}`}
               nickname={art.nickname}
               profileImg={art.profileImg}
               userSeq={art.userSeq}
