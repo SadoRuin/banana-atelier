@@ -1,66 +1,52 @@
 import React, { useState } from 'react'
 import { Link, useLoaderData, redirect, Form, useNavigate } from 'react-router-dom'
-import { axiosReissue, axiosAuth } from '../../_actions/axiosAuth';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHeart, faEye, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart, faEye, faDownload } from '@fortawesome/free-solid-svg-icons'
 
+import { axiosReissue, axiosAuth } from '../../_actions/axiosAuth';
 import ProfileImg from "../../components/commons/ProfileImg";
 import { getArtImage } from "../../components/commons/imageModule";
 import { YellowBtn, RedBtn, LikeBtn } from "../../components/commons/buttons";
-import {Category} from "../../components/commons/Category";
+import { Category } from "../../components/commons/Category";
 import './ArtDetail.css'
 
 export async function loader ({params}) {
   axiosReissue();
-  let artSeq = params.art_seq;
 
-  let artData = null
+  let artSeq = params.art_seq;
+  let artData, likeList;
+
   await axiosAuth.get(`arts/detail/${artSeq}`)
     .then(response => artData = response.data)
-    .catch(error => console.log(error))
-
-  let likeList = null;
+    .catch(error => error)
   await axiosAuth.get(`arts/${localStorage.getItem("userSeq")}/like`)
-    .then(response=> likeList = response.data)
-    .catch(error => console.log(error))
+    .then(response => likeList = response.data)
+    .catch(() => null)
 
   return [artData, likeList];
 }
 
 export async function action ({request, params}) {
-  console.log(request);
   const artSeq = +params.art_seq;
   if (request.method === "DELETE") {
     const body = {
       "seq" : artSeq
     }
-    console.log(body)
-    await axiosAuth.delete('arts/delete', {
-      data: {
-        seq : artSeq
-      }
-    })
-      .then(response => console.log(response))
-      .catch(error => console.log(error))
-
+    await axiosAuth.delete('arts/delete', { data: body })
   }
   else if (request.method === "PUT") {
-    console.log("put")
+    // console.log("put")
   }
-
   return redirect('/')
 }
 
-
 function ArtDetail() {
   const [artData, likeList] = useLoaderData();
-  let likeState = likeList?.find((like) => like.artSeq === artData.artSeq) || false;
+  let likeState = !!likeList?.find((like) => like.artSeq === artData.artSeq);
   const [isLiked, setIsLiked] = useState(likeState)
   const [likeCount, setLikeCount] = useState(artData.artLikeCount)
   const [downloadCount, setDownloadCount] = useState(artData.artDownloadCount)
   const navigate = useNavigate()
-  console.log(likeList)
-  console.log(likeState);
 
   return (
     <div>
@@ -92,15 +78,12 @@ function ArtDetail() {
               {artData.artDescription}
             </div>
 
-
-
             <Category className="art-detail__category" onClick={() => {navigate({pathname: '/arts', search: `?category=${artData.artCategory.id}`})}}>
               {artData.artCategory.artCategoryName}
             </Category>
           </div>
 
           <div>
-
             <div className="art-detail__sub-info">
               <div className="views">
                 <FontAwesomeIcon icon={faEye} /> {artData.artHit}
@@ -118,19 +101,13 @@ function ArtDetail() {
               <form onSubmit={(event) => {
                 event.preventDefault()
                 axiosReissue();
-                console.log(artData.artSeq)
                 let body = { "seq": artData.artSeq };
                 if (isLiked) {
                   axiosAuth.delete(`arts/like`, {data: body})
-                  .then(response => response)
-                  .catch(error => {
-                    console.log(error)
-                  })
                   setLikeCount(prev => prev - 1)
                 }
                 else if (!isLiked) {
                   axiosAuth.post(`arts/like`, body)
-                    .then(response => response)
                   setLikeCount(prev => prev + 1)
                 }
                 setIsLiked(prev=>!prev)
@@ -148,15 +125,6 @@ function ArtDetail() {
           </div>
         </div>
       </div>
-
-      {/*<div className="familiar_arts">*/}
-      {/*  <h2>비슷한 작품</h2>*/}
-      {/*  <div>*/}
-      {/*    비슷한 작품 컴포넌트들이 올 곳*/}
-      {/*  </div>*/}
-      {/*</div>*/}
-
-
     </div>
   )
 }
